@@ -18,6 +18,7 @@ package org.apache.spark.sql.delta
 
 import org.apache.spark.sql.delta.actions.{Metadata, Protocol, TableFeatureProtocolUtils}
 
+import org.apache.spark.sql.types.StructField
 
 /**
  * Utility functions for Row Tracking that are shared between Row IDs and Row Commit Versions.
@@ -87,5 +88,9 @@ object RowTracking {
   private[delta] def removeRowTrackingTableFeature(protocol: Protocol): Protocol = {
     val writerFeaturesWithoutRowTracking = protocol.writerFeatures.map(_ - RowTrackingFeature.name)
     protocol.copy(writerFeatures = writerFeaturesWithoutRowTracking)
+  }
+  def createMetadataStructFields(protocol: Protocol, metadata: Metadata, nullable: Boolean)
+  : Iterable[StructField] = {
+    RowId.createBaseRowIdField(protocol, metadata)
   }
 }

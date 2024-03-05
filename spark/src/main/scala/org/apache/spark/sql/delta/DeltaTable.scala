@@ -423,6 +423,45 @@ object DeltaTableUtils extends PredicateHelper
   }
 
   /**
+   * Returns a (possibly rewritten) version of [[target]] for which a call to
+   * [[getMetadataAttributeByName("_metadata")]] will always succeed.
+   * @param generateRowIndexFilterColumn If `true` we will generate a special column with
+   *                                     row skipping information based on the filter to the schema.
+   * @param generateRowIndexFilterId If `true`, adds row_index_filter_id to the _metadata column.
+   */
+  def withFileMetadataColumn(target: LogicalPlan,
+      generateRowIndexFilterColumn: Boolean,
+      generateRowIndexFilterId: Boolean): LogicalPlan = {
+    val newTarget = target
+
+    // For most simple plans, spark's metadata column propagation Just Works.
+    if (newTarget.getMetadataAttributeByNameOpt(FileFormat.METADATA_NAME).isDefined) {
+      return newTarget
+    }
+
+    // Some plan node (e.g. [[SubqueryAlias]]) blocked propagation of the file metadata column. Find
+    // it, and inject it manually into all [[Project]] nodes of the plan so it becomes available at
+    // the plan output. Since the plan's [[metadataOutput]] will not contain this injected column,
+    // we must use a uuid-decorated column name to manually avoid any possible naming collisions.
+    val injectedColName = s"metadata-${java.util.UUID.randomUUID()}"
+    newTarget.transformUp {
+      case l: LogicalRelation =>
+        // The column may or may not have been renamed already, and may or may not already appear in
+        // the scan's output. To be safe, just use a [[Project]] to select and rename the column.
+        val fileMetadataColumnAttr = l.getMetadataAttributeByName(FileFormat.METADATA_NAME)
+        val renamedFileMetadataColumnAttr = Alias(fileMetadataColumnAttr, injectedColName)()
+        Project(projectList = l.output :+ renamedFileMetadataColumnAttr, l)
+
+      case p: Project =>
+        p.copy(projectList = p.projectList :+ UnresolvedAttribute.quoted(injectedColName))
+    }
+  }
+
+  /** Finds and returns the file source metadata column from a dataframe */
+  def getFileMetadataColumn(df: DataFrame): Column =
+    df.metadataColumn(FileFormat.METADATA_NAME)
+
+  /**
    * Update FileFormat for a plan and return the updated plan
    *
    * @param target Target plan to update
