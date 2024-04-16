@@ -1248,7 +1248,7 @@ trait OptimisticTransactionImpl extends TransactionalWrite
     }
 
     try {
-      val tags = Map.empty[String, String]
+      val tags = RowTracking.addPreservedRowTrackingTagIfNotSet(snapshot)
       val commitInfo = CommitInfo(
         NANOSECONDS.toMillis(commitStartNano),
         operation = op.name,

@@ -26,7 +26,8 @@ import org.apache.spark.sql.catalyst.TableIdentifier
 import org.apache.spark.sql.test.SharedSparkSession
 
 class RowTrackingConflictResolutionSuite extends QueryTest
-  with SharedSparkSession with RowIdTestUtils {
+  with SharedSparkSession
+  with RowIdTestUtils {
 
   private val testTableName = "test_table"
 

@@ -126,7 +126,8 @@ case class DeleteCommand(
         }
 
         val deleteActions = performDelete(sparkSession, deltaLog, txn)
-        txn.commitIfNeeded(deleteActions, DeltaOperations.Delete(condition.toSeq))
+        txn.commitIfNeeded(deleteActions, DeltaOperations.Delete(condition.toSeq),
+          RowTracking.addPreservedRowTrackingTagIfEnabled(txn.protocol, txn.metadata))
       }
       // Re-cache all cached plans(including this relation itself, if it's cached) that refer to
       // this data source relation.
@@ -325,7 +326,9 @@ case class DeleteCommand(
               // Keep everything from the resolved target except a new TahoeFileIndex
               // that only involves the affected files instead of all files.
               val newTarget = DeltaTableUtils.replaceFileIndex(target, baseRelation.location)
-              val targetDF = Dataset.ofRows(sparkSession, newTarget)
+              val targetDF = RowTracking.preserveRowTrackingColumns(
+                dfWithoutRowTrackingColumns = Dataset.ofRows(sparkSession, newTarget),
+                snapshot = txn.snapshot)
               val filterCond = Not(EqualNullSafe(cond, Literal.TrueLiteral))
               val rewrittenActions = rewriteFiles(txn, targetDF, filterCond, filesToRewrite.length)
               val (changeFiles, rewrittenFiles) = rewrittenActions
