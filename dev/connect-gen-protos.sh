@@ -24,9 +24,9 @@ if [[ $# -gt 1 ]]; then
   exit -1
 fi
 
-DELTA_HOME="$(cd "`dirname $0`"/../..; pwd)"
+DELTA_HOME="$(cd "`dirname $0`"/..; pwd)"
 cd "$DELTA_HOME"
-
+echo $DELTA_HOME
 
 OUTPUT_PATH=${DELTA_HOME}/python/delta/connect/proto/
 if [[ $# -eq 1 ]]; then
