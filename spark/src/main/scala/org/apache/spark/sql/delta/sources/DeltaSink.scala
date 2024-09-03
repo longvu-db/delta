@@ -41,6 +41,7 @@ import org.apache.spark.sql.execution.streaming.{IncrementalExecution, Sink, Str
 import org.apache.spark.sql.streaming.OutputMode
 import org.apache.spark.sql.types.{DataType, NullType, StructType}
 import org.apache.spark.util.Utils
+import org.apache.spark.sql.ColumnImplicitsShim._
 
 /**
  * A streaming sink that writes data into a Delta Table.
@@ -203,7 +204,7 @@ case class DeltaSink(
         allowStructEvolution = canMergeSchema,
         columnName = columnName
       )
-      new Column(Alias(castExpr, columnName)())
+      Column(Alias(castExpr, columnName)())
     }
 
     data.queryExecution match {
