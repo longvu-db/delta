@@ -268,11 +268,6 @@ trait StatisticsCollection extends DeltaLogging {
         case (c, SkippingEligibleDataType(StringType), true) =>
           substring(min(c), 0, stringPrefix)
 
-        // Write null for min/max Variant stats because collecting variant stats is not supported
-        // yet.
-        case (c, SkippingEligibleDataType(_: VariantType), true) =>
-          lit(null).cast(VariantType)
-
         // Collect all numeric min values
         case (c, SkippingEligibleDataType(_), true) =>
           min(c)
@@ -283,11 +278,6 @@ trait StatisticsCollection extends DeltaLogging {
           val udfTruncateMax =
             DeltaUDF.stringFromString(StatisticsCollection.truncateMaxStringAgg(stringPrefix)_)
           udfTruncateMax(max(c))
-
-        // Write null for min/max Variant stats because collecting variant stats is not supported
-        // yet.
-        case (c, SkippingEligibleDataType(_: VariantType), true) =>
-          lit(null).cast(VariantType)
 
         // Collect all numeric max values
         case (c, SkippingEligibleDataType(_), true) =>

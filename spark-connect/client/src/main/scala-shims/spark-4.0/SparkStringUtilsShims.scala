@@ -28,4 +28,3 @@ object SparkStringUtilsShims {
     SparkStringUtils.sideBySide(left, right)
   }
 }
-

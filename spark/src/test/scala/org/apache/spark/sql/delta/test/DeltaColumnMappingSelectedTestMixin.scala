@@ -32,8 +32,6 @@ import org.apache.spark.SparkFunSuite
 trait DeltaColumnMappingSelectedTestMixin extends SparkFunSuite
   with DeltaSQLTestUtils with DeltaColumnMappingTestUtils {
 
-  protected def skipTests: Seq[String] = Seq()
-
   protected def runOnlyTests: Seq[String] = Seq()
 
   /**
@@ -50,7 +48,7 @@ trait DeltaColumnMappingSelectedTestMixin extends SparkFunSuite
     require(!runAllTests || runOnlyTests.isEmpty,
       "If `runAllTests` is true then `runOnlyTests` must be empty")
 
-    if ((runAllTests || runOnlyTests.contains(testName)) && !skipTests.contains(testName)) {
+    if (runAllTests || runOnlyTests.contains(testName)) {
       super.test(s"$testName - column mapping $columnMappingMode mode", testTags: _*) {
         testsRun.add(testName)
         withSQLConf(

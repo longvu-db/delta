@@ -1052,6 +1052,34 @@ trait DeltaSQLConfBase extends DeltaSQLConfUtils {
     final val list = Set(NONE, ALL, AUTO)
   }
 
+  val REPLACE_ON_OPTION_IN_DATAFRAME_WRITER_ENABLED =
+    buildConf("replaceOn.dataframe.writer.enabled")
+      .internal()
+      .doc("When false, the `replaceOn` option is blocked in DataFrameWriter APIs.")
+      .booleanConf
+      .createWithDefault(true)
+
+  val REPLACE_USING_OPTION_IN_DATAFRAME_WRITER_ENABLED =
+    buildConf("replaceUsing.dataframe.writer.enabled")
+      .internal()
+      .doc("When false, the `replaceUsing` option is blocked in DataFrameWriter APIs.")
+      .booleanConf
+      .createWithDefault(true)
+
+  val INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE =
+    buildConf("insertReplaceOnOrUsing.materializeSource")
+      .internal()
+      .doc("When to materialize the source plan during INSERT REPLACE ON/USING execution. " +
+        "The value 'none' means source will never be materialized. " +
+        "The value 'all' means source will always be materialized. " +
+        "The value 'auto' means sources will not be materialized when they are certain to be " +
+        "deterministic."
+      )
+      .stringConf
+      .transform(_.toLowerCase(Locale.ROOT))
+      .checkValues(MergeMaterializeSource.list)
+      .createWithDefault(MergeMaterializeSource.AUTO)
+
   val MERGE_MATERIALIZE_SOURCE =
     buildConf("merge.materializeSource")
       .internal()
@@ -3042,18 +3070,6 @@ trait DeltaSQLConfBase extends DeltaSQLConfUtils {
       """
         | If true, attach the 'variantShredding-preview' table feature when enabling shredding
         | on a table. When false, the 'variantShredding' feature is used instead.""".stripMargin)
-    .booleanConf
-    .createWithDefault(true)
-
-  val COLLECT_VARIANT_DATA_SKIPPING_STATS =
-    buildConf("variantShredding.collectVariantDataSkippingStats")
-    .internal()
-    .doc(
-      """
-        | If enabled, Spark writes to Delta could collect data skipping stats for Variant
-        | columns. Currently, this config is used to ensure that new checkpoints preserve previous
-        | Variant stats."""
-        .stripMargin)
     .booleanConf
     .createWithDefault(true)
 
