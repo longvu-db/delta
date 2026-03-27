@@ -1,7 +1,7 @@
 package org.apache.spark.sql.delta.test.shims;
 /**
  * Test shim for INVALID_DEFAULT_VALUE error codes that changed between Spark versions.
- * In Spark 4.1, the error code is INVALID_DEFAULT_VALUE.UNRESOLVED_EXPRESSION
+ * In Spark 4.0, the error code is INVALID_DEFAULT_VALUE.NOT_CONSTANT
  */
 public  class InvalidDefaultValueErrorShims$ {
   /**

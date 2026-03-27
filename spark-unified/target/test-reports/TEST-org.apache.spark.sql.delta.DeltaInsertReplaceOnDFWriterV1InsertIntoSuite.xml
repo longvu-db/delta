@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuite hostname="ip-10-91-24-247" name="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite" tests="1" errors="0" failures="1" skipped="0" time="9.081" timestamp="2026-03-27T20:34:45">
+          <properties>
+      <property name="java.specification.version" value="17"/><property name="sun.jnu.encoding" value="UTF-8"/><property name="sun.arch.data.model" value="64"/><property name="java.vendor.url" value="https://ubuntu.com/"/><property name="sun.boot.library.path" value="/usr/lib/jvm/java-17-openjdk-amd64/lib"/><property name="sun.java.command" value="build/sbt-launch-1.9.9.jar set every scalafmtCheck := {} set (kernelUnityCatalog / Compile / compile) := sbt.internal.inc.Analysis.empty set (kernelDefaults / Compile / compile) := sbt.internal.inc.Analysis.empty spark/testOnly org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite -- -z &quot;replaceOn with always-false&quot;"/><property name="jdk.debug" value="release"/><property name="java.specification.vendor" value="Oracle Corporation"/><property name="java.version.date" value="2025-04-15"/><property name="java.home" value="/usr/lib/jvm/java-17-openjdk-amd64"/><property name="file.separator" value="/"/><property name="java.vm.compressedOopsMode" value="Zero based"/><property name="line.separator" value="
+"/><property name="java.specification.name" value="Java Platform API Specification"/><property name="java.vm.specification.vendor" value="Oracle Corporation"/><property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/><property name="java.runtime.version" value="17.0.15+6-Ubuntu-0ubuntu120.04"/><property name="user.name" value="long.vu"/><property name="log4j.ignoreTCL" value="true"/><property name="file.encoding" value="UTF-8"/><property name="jnidispatch.path" value="/home/long.vu/.cache/JNA/temp/jna6059750397090532431.tmp"/><property name="jna.loaded" value="true"/><property name="java.io.tmpdir" value="/tmp"/><property name="java.version" value="17.0.15"/><property name="java.vm.specification.name" value="Java Virtual Machine Specification"/><property name="native.encoding" value="UTF-8"/><property name="java.library.path" value="/usr/local/cuda-12.8/lib64:/usr/local/nvidia/lib64:/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/><property name="java.vendor" value="Ubuntu"/><property name="java.specification.maintenance.version" value="1"/><property name="sun.io.unicode.encoding" value="UnicodeLittle"/><property name="java.class.path" value="build/sbt-launch-1.9.9.jar"/><property name="java.vm.vendor" value="Ubuntu"/><property name="jline.shutdownhook" value="false"/><property name="user.timezone" value="Etc/UTC"/><property name="java.vm.specification.version" value="17"/><property name="os.name" value="Linux"/><property name="sun.java.launcher" value="SUN_STANDARD"/><property name="sun.cpu.endian" value="little"/><property name="user.home" value="/home/long.vu"/><property name="user.language" value="en"/><property name="sbt.ipcsocket.tmpdir" value="/run/user/1000/.sbt388b57e8/ipcsocket"/><property name="swoval.tmpdir" value="/run/user/1000/.sbt388b57e8/swoval"/><property name="jline.esc.timeout" value="0"/><property name="path.separator" value=":"/><property name="os.version" value="5.4.0-1154-aws-fips"/><property name="jna.nosys" value="true"/><property name="java.runtime.name" value="OpenJDK Runtime Environment"/><property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/><property name="jna.platform.library.path" value="/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu:/usr/lib64:/lib64:/usr/lib:/lib:/lib32:/usr/local/cuda/targets/x86_64-linux/lib:/usr/lib/x86_64-linux-gnu/libfakeroot"/><property name="java.vendor.url.bug" value="https://bugs.launchpad.net/ubuntu/+source/openjdk-17"/><property name="user.dir" value="/home/long.vu/delta"/><property name="os.arch" value="amd64"/><property name="java.util.logging.manager" value="wvlet.log.AirframeLogManager"/><property name="java.vm.info" value="mixed mode, sharing"/><property name="java.vm.version" value="17.0.15+6-Ubuntu-0ubuntu120.04"/><property name="java.class.version" value="61.0"/>
+    </properties>
+          <testcase classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite" name="replaceOn with always-false condition appends all rows" time="9.081">
+                      <failure message="org.scalatest.exceptions.TestFailedException: 
+Results do not match for query:
+Timezone: sun.util.calendar.ZoneInfo[id=&quot;America/Los_Angeles&quot;,offset=-28800000,dstSavings=3600000,useDaylight=true,transitions=185,lastRule=java.util.SimpleTimeZone[id=America/Los_Angeles,offset=-28800000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+Timezone Env: 
+
+== Parsed Logical Plan ==
+'Sort ['id ASC NULLS FIRST], true
++- Relation [id#994,data#995] parquet
+
+== Analyzed Logical Plan ==
+id: int, data: string
+Sort [id#994 ASC NULLS FIRST], true
++- Relation [id#994,data#995] parquet
+
+== Optimized Logical Plan ==
+Sort [id#994 ASC NULLS FIRST], true
++- Relation [id#994,data#995] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=true
++- == Final Plan ==
+   ResultQueryStage 1
+   +- *(2) Sort [id#994 ASC NULLS FIRST], true, 0
+      +- AQEShuffleRead coalesced
+         +- ShuffleQueryStage 0
+            +- Exchange rangepartitioning(id#994 ASC NULLS FIRST, 5), ENSURE_REQUIREMENTS, [plan_id=357]
+               +- *(1) ColumnarToRow
+                  +- FileScan parquet [id#994,data#995] Batched: true, DataFilters: [], Format: Parquet, Location: PreparedDeltaFileIndex(1 paths)[file:/tmp/spark-803d0681-fab3-4f6e-87a5-7d8b0e467471], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;id:int,data:string&gt;
++- == Initial Plan ==
+   Sort [id#994 ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(id#994 ASC NULLS FIRST, 5), ENSURE_REQUIREMENTS, [plan_id=288]
+      +- FileScan parquet [id#994,data#995] Batched: true, DataFilters: [], Format: Parquet, Location: PreparedDeltaFileIndex(1 paths)[file:/tmp/spark-803d0681-fab3-4f6e-87a5-7d8b0e467471], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;id:int,data:string&gt;
+
+== Results ==
+
+== Results ==
+!== Correct Answer - 4 ==   == Spark Answer - 2 ==
+!struct&lt;&gt;                   struct&lt;id:int,data:string&gt;
+![1,original1]              [10,new1]
+![2,original2]              [20,new2]
+![10,new1]                  
+![20,new2]                  
+    
+       " type="sbt.ForkMain$ForkError">sbt.ForkMain$ForkError: org.scalatest.exceptions.TestFailedException: 
+Results do not match for query:
+Timezone: sun.util.calendar.ZoneInfo[id=&quot;America/Los_Angeles&quot;,offset=-28800000,dstSavings=3600000,useDaylight=true,transitions=185,lastRule=java.util.SimpleTimeZone[id=America/Los_Angeles,offset=-28800000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+Timezone Env: 
+
+== Parsed Logical Plan ==
+'Sort ['id ASC NULLS FIRST], true
++- Relation [id#994,data#995] parquet
+
+== Analyzed Logical Plan ==
+id: int, data: string
+Sort [id#994 ASC NULLS FIRST], true
++- Relation [id#994,data#995] parquet
+
+== Optimized Logical Plan ==
+Sort [id#994 ASC NULLS FIRST], true
++- Relation [id#994,data#995] parquet
+
+== Physical Plan ==
+AdaptiveSparkPlan isFinalPlan=true
++- == Final Plan ==
+   ResultQueryStage 1
+   +- *(2) Sort [id#994 ASC NULLS FIRST], true, 0
+      +- AQEShuffleRead coalesced
+         +- ShuffleQueryStage 0
+            +- Exchange rangepartitioning(id#994 ASC NULLS FIRST, 5), ENSURE_REQUIREMENTS, [plan_id=357]
+               +- *(1) ColumnarToRow
+                  +- FileScan parquet [id#994,data#995] Batched: true, DataFilters: [], Format: Parquet, Location: PreparedDeltaFileIndex(1 paths)[file:/tmp/spark-803d0681-fab3-4f6e-87a5-7d8b0e467471], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;id:int,data:string&gt;
++- == Initial Plan ==
+   Sort [id#994 ASC NULLS FIRST], true, 0
+   +- Exchange rangepartitioning(id#994 ASC NULLS FIRST, 5), ENSURE_REQUIREMENTS, [plan_id=288]
+      +- FileScan parquet [id#994,data#995] Batched: true, DataFilters: [], Format: Parquet, Location: PreparedDeltaFileIndex(1 paths)[file:/tmp/spark-803d0681-fab3-4f6e-87a5-7d8b0e467471], PartitionFilters: [], PushedFilters: [], ReadSchema: struct&lt;id:int,data:string&gt;
+
+== Results ==
+
+== Results ==
+!== Correct Answer - 4 ==   == Spark Answer - 2 ==
+!struct&lt;&gt;                   struct&lt;id:int,data:string&gt;
+![1,original1]              [10,new1]
+![2,original2]              [20,new2]
+![10,new1]                  
+![20,new2]                  
+    
+       
+	at org.scalatest.Assertions.newAssertionFailedException(Assertions.scala:472)
+	at org.scalatest.Assertions.newAssertionFailedException$(Assertions.scala:471)
+	at org.apache.spark.sql.QueryTest$.newAssertionFailedException(QueryTest.scala:259)
+	at org.scalatest.Assertions.fail(Assertions.scala:933)
+	at org.scalatest.Assertions.fail$(Assertions.scala:929)
+	at org.apache.spark.sql.QueryTest$.fail(QueryTest.scala:259)
+	at org.apache.spark.sql.QueryTest$.checkAnswer(QueryTest.scala:269)
+	at org.apache.spark.sql.QueryTest.checkAnswer(QueryTest.scala:155)
+	at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterTests.$anonfun$$init$$5(DeltaInsertReplaceOnDFWriterTests.scala:96)
+	at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterTests.$anonfun$$init$$5$adapted(DeltaInsertReplaceOnDFWriterTests.scala:78)
+	at org.apache.spark.sql.test.SQLTestUtils.$anonfun$withTempDir$1(SQLTestUtils.scala:81)
+	at org.apache.spark.sql.test.SQLTestUtils.$anonfun$withTempDir$1$adapted(SQLTestUtils.scala:80)
+	at org.apache.spark.SparkFunSuite.withTempDir(SparkFunSuite.scala:245)
+	at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.org$apache$spark$sql$test$SQLTestUtils$$super$withTempDir(DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:32)
+	at org.apache.spark.sql.test.SQLTestUtils.withTempDir(SQLTestUtils.scala:80)
+	at org.apache.spark.sql.test.SQLTestUtils.withTempDir$(SQLTestUtils.scala:79)
+	at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.withTempDir(DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:32)
+	at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterTests.$anonfun$$init$$4(DeltaInsertReplaceOnDFWriterTests.scala:78)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at org.scalatest.enablers.Timed$$anon$1.timeoutAfter(Timed.scala:127)
+	at org.scalatest.concurrent.TimeLimits$.failAfterImpl(TimeLimits.scala:282)
+	at org.scalatest.concurrent.TimeLimits.failAfter(TimeLimits.scala:231)
+	at org.scalatest.concurrent.TimeLimits.failAfter$(TimeLimits.scala:230)
+	at org.apache.spark.SparkFunSuite.failAfter(SparkFunSuite.scala:69)
+	at org.apache.spark.SparkFunSuite.$anonfun$test$2(SparkFunSuite.scala:155)
+	at org.scalatest.OutcomeOf.outcomeOf(OutcomeOf.scala:85)
+	at org.scalatest.OutcomeOf.outcomeOf$(OutcomeOf.scala:83)
+	at org.scalatest.OutcomeOf$.outcomeOf(OutcomeOf.scala:104)
+	at org.scalatest.Transformer.apply(Transformer.scala:22)
+	at org.scalatest.Transformer.apply(Transformer.scala:20)
+	at org.scalatest.funsuite.AnyFunSuiteLike$$anon$1.apply(AnyFunSuiteLike.scala:226)
+	at org.apache.spark.SparkFunSuite.withFixture(SparkFunSuite.scala:227)
+	at org.scalatest.funsuite.AnyFunSuiteLike.invokeWithFixture$1(AnyFunSuiteLike.scala:224)
+	at org.scalatest.funsuite.AnyFunSuiteLike.$anonfun$runTest$1(AnyFunSuiteLike.scala:236)
+	at org.scalatest.SuperEngine.runTestImpl(Engine.scala:306)
+	at org.scalatest.funsuite.AnyFunSuiteLike.runTest(AnyFunSuiteLike.scala:236)
+	at org.scalatest.funsuite.AnyFunSuiteLike.runTest$(AnyFunSuiteLike.scala:218)
+	at org.apache.spark.SparkFunSuite.org$scalatest$BeforeAndAfterEach$$super$runTest(SparkFunSuite.scala:69)
+	at org.scalatest.BeforeAndAfterEach.runTest(BeforeAndAfterEach.scala:234)
+	at org.scalatest.BeforeAndAfterEach.runTest$(BeforeAndAfterEach.scala:227)
+	at org.apache.spark.SparkFunSuite.runTest(SparkFunSuite.scala:69)
+	at org.scalatest.funsuite.AnyFunSuiteLike.$anonfun$runTests$1(AnyFunSuiteLike.scala:269)
+	at org.scalatest.SuperEngine.$anonfun$runTestsInBranch$1(Engine.scala:413)
+	at scala.collection.immutable.List.foreach(List.scala:323)
+	at org.scalatest.SuperEngine.traverseSubNodes$1(Engine.scala:401)
+	at org.scalatest.SuperEngine.runTestsInBranch(Engine.scala:396)
+	at org.scalatest.SuperEngine.runTestsImpl(Engine.scala:475)
+	at org.scalatest.funsuite.AnyFunSuiteLike.runTests(AnyFunSuiteLike.scala:269)
+	at org.scalatest.funsuite.AnyFunSuiteLike.runTests$(AnyFunSuiteLike.scala:268)
+	at org.scalatest.funsuite.AnyFunSuite.runTests(AnyFunSuite.scala:1564)
+	at org.scalatest.Suite.run(Suite.scala:1114)
+	at org.scalatest.Suite.run$(Suite.scala:1096)
+	at org.scalatest.funsuite.AnyFunSuite.org$scalatest$funsuite$AnyFunSuiteLike$$super$run(AnyFunSuite.scala:1564)
+	at org.scalatest.funsuite.AnyFunSuiteLike.$anonfun$run$1(AnyFunSuiteLike.scala:273)
+	at org.scalatest.SuperEngine.runImpl(Engine.scala:535)
+	at org.scalatest.funsuite.AnyFunSuiteLike.run(AnyFunSuiteLike.scala:273)
+	at org.scalatest.funsuite.AnyFunSuiteLike.run$(AnyFunSuiteLike.scala:272)
+	at org.apache.spark.SparkFunSuite.org$scalatest$BeforeAndAfterAll$$super$run(SparkFunSuite.scala:69)
+	at org.scalatest.BeforeAndAfterAll.liftedTree1$1(BeforeAndAfterAll.scala:213)
+	at org.scalatest.BeforeAndAfterAll.run(BeforeAndAfterAll.scala:210)
+	at org.scalatest.BeforeAndAfterAll.run$(BeforeAndAfterAll.scala:208)
+	at org.apache.spark.SparkFunSuite.run(SparkFunSuite.scala:69)
+	at org.scalatest.tools.Framework.org$scalatest$tools$Framework$$runSuite(Framework.scala:321)
+	at org.scalatest.tools.Framework$ScalaTestTask.execute(Framework.scala:517)
+	at sbt.ForkMain$Run.lambda$runTest$1(ForkMain.java:414)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+</failure>
+                    </testcase>
+          <system-out><![CDATA[]]></system-out>
+          <system-err><![CDATA[]]></system-err>
+        </testsuite>

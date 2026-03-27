@@ -54,7 +54,7 @@ class DeltaInsertReplaceOnDFWriterV1SaveSuite
   // Misaligned column blocking only applies for replaceUsing, not replaceOn.
   test("save - replaceOn with misaligned column positions between source and target") {
     withSQLConf(
-        SQLConf.INSERT_INTO_REPLACE_USING_DISALLOW_MISALIGNED_COLUMNS_ENABLED.key -> "true") {
+        "spark.sql.insertIntoReplaceUsingDisallowMisalignedColumnsEnabled" -> "true") {
       withTempDir { dir =>
         val path = dir.getAbsolutePath
         // Target schema: (id, data), id at position 0

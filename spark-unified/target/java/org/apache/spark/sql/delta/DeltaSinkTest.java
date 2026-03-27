@@ -11,9 +11,6 @@ public abstract class DeltaSinkTest extends org.apache.spark.sql.QueryTest imple
   public  org.apache.spark.sql.streaming.StreamTest.CheckAnswerRows$ CheckAnswerRows ()  { throw new RuntimeException(); }
   public  org.apache.spark.sql.streaming.StreamTest.CheckAnswerRowsByFunc$ CheckAnswerRowsByFunc ()  { throw new RuntimeException(); }
   public  org.apache.spark.sql.streaming.StreamTest.CheckAnswerRowsContains$ CheckAnswerRowsContains ()  { throw new RuntimeException(); }
-  public  org.apache.spark.sql.streaming.StreamTest.CheckAnswerRowsContainsWithTimeout$ CheckAnswerRowsContainsWithTimeout ()  { throw new RuntimeException(); }
-  public  org.apache.spark.sql.streaming.StreamTest.CheckAnswerRowsNoWait$ CheckAnswerRowsNoWait ()  { throw new RuntimeException(); }
-  public  org.apache.spark.sql.streaming.StreamTest.CheckAnswerWithTimeout$ CheckAnswerWithTimeout ()  { throw new RuntimeException(); }
   public  org.apache.spark.sql.streaming.StreamTest.CheckLastBatch$ CheckLastBatch ()  { throw new RuntimeException(); }
   public  org.apache.spark.sql.streaming.StreamTest.CheckNewAnswer$ CheckNewAnswer ()  { throw new RuntimeException(); }
   public  org.apache.spark.sql.streaming.StreamTest.CheckNewAnswerRows$ CheckNewAnswerRows ()  { throw new RuntimeException(); }
@@ -27,8 +24,6 @@ public abstract class DeltaSinkTest extends org.apache.spark.sql.QueryTest imple
   public  org.apache.spark.sql.streaming.StreamTest.StartStream$ StartStream ()  { throw new RuntimeException(); }
   public  org.apache.spark.sql.streaming.StreamTest.StopStream$ StopStream ()  { throw new RuntimeException(); }
   public  org.apache.spark.sql.streaming.StreamTest.StreamProgressLockedActions$ StreamProgressLockedActions ()  { throw new RuntimeException(); }
-  public  org.apache.spark.sql.streaming.StreamTest.WaitUntilBatchProcessed$ WaitUntilBatchProcessed ()  { throw new RuntimeException(); }
-  public  org.apache.spark.sql.streaming.StreamTest.WaitUntilCurrentBatchProcessed$ WaitUntilCurrentBatchProcessed ()  { throw new RuntimeException(); }
   protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> allNulls ()  { throw new RuntimeException(); }
   protected  org.apache.spark.rdd.RDD<org.apache.spark.sql.test.SQLTestData.ArrayData> arrayData ()  { throw new RuntimeException(); }
   public  void beforeAll ()  { throw new RuntimeException(); }

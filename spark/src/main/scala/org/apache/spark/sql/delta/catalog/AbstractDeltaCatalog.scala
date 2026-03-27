@@ -200,15 +200,28 @@ class AbstractDeltaCatalog extends DelegatingCatalogExtension
       )
 
     val writer = sourceQuery.map { df =>
-      WriteIntoDelta(
+      val deltaOptions = new DeltaOptions(withDb.storage.properties, spark.sessionState.conf)
+      val writeCmd = WriteIntoDelta(
         DeltaUtils.getDeltaLogFromTableOrPath(spark, existingTableOpt, new Path(loc)),
         operation.mode,
-        new DeltaOptions(withDb.storage.properties, spark.sessionState.conf),
+        deltaOptions,
         withDb.partitionColumnNames,
         withDb.properties ++ commentOpt.map("comment" -> _),
         df,
         Some(tableDesc),
         schemaInCatalog = if (newSchema != schema) Some(newSchema) else None)
+      if (deltaOptions.isReplaceOnOrUsingDefined) {
+        DeltaInsertReplaceOnOrUsingCommand.createCmdForSaveAndSaveAsTable(
+          deltaTable = DeltaTableV2(
+            spark = spark,
+            path = writeCmd.deltaLog.dataPath,
+            catalogTable = Some(tableDesc)),
+          data = df,
+          writeCmd = writeCmd,
+          apiOrigin = InsertReplaceOnOrUsingAPIOrigin.DFv1SaveAsTable)
+      } else {
+        writeCmd
+      }
     }
 
     CreateDeltaTableCommand(

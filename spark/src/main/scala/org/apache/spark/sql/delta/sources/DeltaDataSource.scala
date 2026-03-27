@@ -25,7 +25,7 @@ import com.databricks.spark.util.DatabricksLogging
 import org.apache.spark.internal.MDC
 import org.apache.spark.sql.delta._
 import org.apache.spark.sql.delta.catalog.DeltaTableV2
-import org.apache.spark.sql.delta.commands.WriteIntoDelta
+import org.apache.spark.sql.delta.commands.{DeltaInsertReplaceOnOrUsingCommand, InsertReplaceOnOrUsingAPIOrigin, WriteIntoDelta}
 import org.apache.spark.sql.delta.commands.cdc.CDCReader
 import org.apache.spark.sql.delta.logging.DeltaLogKeys
 import org.apache.spark.sql.delta.metering.DeltaLogging
@@ -245,10 +245,11 @@ class DeltaDataSource
 
     val deltaLog = Utils.getDeltaLogFromTableOrPath(
       sqlContext.sparkSession, catalogTableOpt, new Path(path), parameters)
-    WriteIntoDelta(
+    val deltaOptions = new DeltaOptions(parameters, sqlContext.sparkSession.sessionState.conf)
+    val writeCmd = WriteIntoDelta(
       deltaLog = deltaLog,
       mode = mode,
-      new DeltaOptions(parameters, sqlContext.sparkSession.sessionState.conf),
+      deltaOptions,
       partitionColumns = partitionColumns,
       configuration = DeltaConfigs.validateConfigurations(
         parameters.filterKeys(_.startsWith("delta.")).toMap),
@@ -256,7 +257,20 @@ class DeltaDataSource
       // empty catalogTable is acceptable as the code path is only for path based writes
       // (df.write.save("path")) which does not need to use/update catalog
       catalogTableOpt = None
-      ).run(sqlContext.sparkSession)
+      )
+    val finalWriteCmd = if (deltaOptions.isReplaceOnOrUsingDefined) {
+      DeltaInsertReplaceOnOrUsingCommand.createCmdForSaveAndSaveAsTable(
+        deltaTable = DeltaTableV2(
+          spark = sqlContext.sparkSession,
+          path = deltaLog.dataPath,
+          catalogTable = None),
+        data = data,
+        writeCmd = writeCmd,
+        apiOrigin = InsertReplaceOnOrUsingAPIOrigin.DFv1Save)
+    } else {
+      writeCmd
+    }
+    finalWriteCmd.run(sqlContext.sparkSession)
 
     deltaLog.createRelation(catalogTableOpt = catalogTableOpt)
   }

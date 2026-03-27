@@ -1,15 +1,32 @@
-[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/CustomCatalogSuite.scala:23:97: Unused import
-[warn] import org.apache.spark.sql.delta.test.{DeltaSQLCommandTest, DummyCatalog, DummySessionCatalog, DummySessionCatalogInner}
-[warn]                                                                                                 ^
-[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/CustomCatalogSuite.scala:24:29: Unused import
-[warn] import org.apache.hadoop.fs.Path
-[warn]                             ^
-[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeleteSuiteBase.scala:22:42: Unused import
-[warn] import org.apache.spark.{SparkThrowable, SparkUnsupportedOperationException}
-[warn]                                          ^
-[warn] 1 deprecation (since 2.13.0); re-run with -deprecation for details
-[warn] four warnings found
-[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/generatedsuites/DeleteSuitesDeleteBaseTests.scala:33:41: Unused import
-[warn] import org.apache.spark.sql.delta.rowid._
-[warn]                                         ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnOrUsingCommonTests.scala:43:30: Unused import
+[warn] import org.apache.spark.util.Utils
+[warn]                              ^
 [warn] one warning found
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterTests.scala:30:45: Unused import
+[warn] import org.apache.spark.sql.functions.{lit, rand, udf}
+[warn]                                             ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:19:35: Unused import
+[warn] import com.databricks.spark.util.{Log4jUsageLogger, UsageRecord}
+[warn]                                   ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:19:53: Unused import
+[warn] import com.databricks.spark.util.{Log4jUsageLogger, UsageRecord}
+[warn]                                                     ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:24:38: Unused import
+[warn] import org.apache.spark.sql.internal.SQLConf
+[warn]                                      ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:25:36: Unused import
+[warn] import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
+[warn]                                    ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:25:49: Unused import
+[warn] import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
+[warn]                                                 ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:25:61: Unused import
+[warn] import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
+[warn]                                                             ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:25:74: Unused import
+[warn] import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
+[warn]                                                                          ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeltaInsertReplaceOnDFWriterV1SaveSuite.scala:23:38: Unused import
+[warn] import org.apache.spark.sql.internal.SQLConf
+[warn]                                      ^
+[warn] 9 warnings found

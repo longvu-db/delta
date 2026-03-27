@@ -477,14 +477,6 @@
 [debug] start file /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/CreateDeltaTableLike.scala
 [debug] end file /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/CreateDeltaTableLike.scala
 [debug] start file /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala
-[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:592:22: 
-[error]       'count(String)' returns 'TypedColumn' and touches ScalaReflection which is inefficient in concurrent queries.
-[error]       In most cases, you don't need a 'TypedColumn' and you should use 'count(new Column("..."))' instead.
-[error]       If you must use it, wrap the code block with
-[error]       // scalastyle:off countstring
-[error]       count("foo")
-[error]       // scalastyle:on countstring
-[error]     
 [debug] end file /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala
 [debug] start file /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/OptimizeTableStrategy.scala
 [debug] end file /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/OptimizeTableStrategy.scala
@@ -665,7 +657,7 @@
 [debug] start file /home/long.vu/delta/spark/src/main/scala-shims/spark-4.0/QualifiedColTypeShims.scala
 [debug] end file /home/long.vu/delta/spark/src/main/scala-shims/spark-4.0/QualifiedColTypeShims.scala
 [info] scalastyle Processed 328 file(s)
-[info] scalastyle Found 1 errors
+[info] scalastyle Found 0 errors
 [info] scalastyle Found 0 warnings
 [info] scalastyle Found 0 infos
 [info] scalastyle Finished in 7 ms

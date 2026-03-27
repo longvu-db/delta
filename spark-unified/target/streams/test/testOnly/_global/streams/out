@@ -1,175 +1,127 @@
-[debug] javaOptions: Vector(-Xmx1024m, -Dspark.ui.enabled=false, -Dspark.ui.showConsoleProgress=false, -Dspark.databricks.delta.snapshotPartitions=2, -Dspark.sql.shuffle.partitions=5, -Ddelta.log.cacheSize=3, -Dspark.databricks.delta.delta.log.cacheSize=3, -Dspark.sql.sources.parallelPartitionDiscovery.parallelism=5, -Xmx1024m, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, --add-opens=java.base/sun.nio.ch=ALL-UNNAMED, --add-opens=java.base/sun.util.calendar=ALL-UNNAMED, -Dlog4j.configurationFile=log4j2.properties, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.invoke=ALL-UNNAMED, --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=java.base/java.util.concurrent=ALL-UNNAMED, --add-opens=java.base/sun.nio.ch=ALL-UNNAMED, --add-opens=java.base/sun.nio.cs=ALL-UNNAMED, --add-opens=java.base/sun.security.action=ALL-UNNAMED, --add-opens=java.base/sun.util.calendar=ALL-UNNAMED, -Dspark.ui.enabled=false, -Dspark.ui.showConsoleProgress=false, -Dspark.databricks.delta.snapshotPartitions=2, -Dspark.sql.shuffle.partitions=5, -Ddelta.log.cacheSize=3, -Dspark.databricks.delta.delta.log.cacheSize=3, -Dspark.sql.sources.parallelPartitionDiscovery.parallelism=5, -Xmx1024m)
+[debug] javaOptions: Vector(-Xmx1024m, -Dspark.ui.enabled=false, -Dspark.ui.showConsoleProgress=false, -Dspark.databricks.delta.snapshotPartitions=2, -Dspark.sql.shuffle.partitions=5, -Ddelta.log.cacheSize=3, -Dspark.databricks.delta.delta.log.cacheSize=3, -Dspark.sql.sources.parallelPartitionDiscovery.parallelism=5, -Xmx1024m, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, --add-opens=java.base/sun.nio.ch=ALL-UNNAMED, --add-opens=java.base/sun.util.calendar=ALL-UNNAMED, -Dlog4j.configurationFile=log4j2.properties, -Duser.timezone=UTC, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.invoke=ALL-UNNAMED, --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=java.base/java.util.concurrent=ALL-UNNAMED, --add-opens=java.base/sun.nio.ch=ALL-UNNAMED, --add-opens=java.base/sun.nio.cs=ALL-UNNAMED, --add-opens=java.base/sun.security.action=ALL-UNNAMED, --add-opens=java.base/sun.util.calendar=ALL-UNNAMED, -Dspark.ui.enabled=false, -Dspark.ui.showConsoleProgress=false, -Dspark.databricks.delta.snapshotPartitions=2, -Dspark.sql.shuffle.partitions=5, -Ddelta.log.cacheSize=3, -Dspark.databricks.delta.delta.log.cacheSize=3, -Dspark.sql.sources.parallelPartitionDiscovery.parallelism=5, -Xmx1024m)
 [debug] Forking tests - parallelism = false
 [debug] Create a single-thread test executor
 [debug] Runner for org.scalatest.tools.Framework produced 1 initial tasks for 1 tests.
-[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite, sbt.ForkMain$SubclassFingerscan@d4342c2, false, [SuiteSelector])
-[info] DeltaInsertIntoMissingColumnSuite:
-[info] - all test cases are implemented
-[info] - DFv2 overwritePartitions() - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT OVERWRITE PARTITION (partition) (columns) - insert with missing top-level column, schemaEvolution=true
-[info] - Streaming toTable() - insert with missing top-level column, schemaEvolution=true
-[info] - DFv1 saveAsTable() - Append - insert with missing top-level column, schemaEvolution=true
-[info] - DFv1 save() - Append - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT OVERWRITE (columns) - Overwrite - insert with missing top-level column, schemaEvolution=true
-[info] - DFv1 save() - Overwrite - insert with missing top-level column, schemaEvolution=true
-[info] - DFv1 saveAsTable() - Overwrite - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT INTO (columns) - Append - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT INTO BY NAME - Append - insert with missing top-level column, schemaEvolution=true
-[info] - DFv2 append() - insert with missing top-level column, schemaEvolution=true
-[info] - DFv2 overwrite() - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT OVERWRITE BY NAME - Overwrite - insert with missing top-level column, schemaEvolution=true
-[info] - DFv2 overwrite() - insert with missing nested field, schemaEvolution=true
-[info] - DFv2 overwritePartitions() - insert with missing nested field, schemaEvolution=true
-[info] - Streaming toTable() - insert with missing nested field, schemaEvolution=true
-[info] - DFv1 saveAsTable() - Append - insert with missing nested field, schemaEvolution=true
-[info] - DFv1 save() - Append - insert with missing nested field, schemaEvolution=true
-[info] - DFv1 save() - Overwrite - insert with missing nested field, schemaEvolution=true
-[info] - DFv1 saveAsTable() - Overwrite - insert with missing nested field, schemaEvolution=true
-[info] - DFv2 append() - insert with missing nested field, schemaEvolution=true
-[info] - INSERT OVERWRITE BY NAME - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT OVERWRITE PARTITION (partition) (columns) - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - Streaming toTable() - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT OVERWRITE (columns) - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT INTO (columns) - Append - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT INTO BY NAME - Append - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv2 overwrite() - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv2 overwritePartitions() - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv1 saveAsTable() - Append - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv1 save() - Append - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv1 save() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv1 saveAsTable() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv2 append() - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv2 overwrite() - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv2 overwritePartitions() - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv1 saveAsTable() - Append - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv1 save() - Append - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv1 save() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv1 saveAsTable() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv2 append() - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - Streaming toTable() - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv1 insertInto() - Overwrite - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT INTO - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT INTO REPLACE WHERE - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT OVERWRITE - insert with missing top-level column, schemaEvolution=true
-[info] - DFv1 insertInto() - Append - insert with missing top-level column, schemaEvolution=true
-[info] - DFv1 insertInto() - dynamic partition overwrite - insert with missing top-level column, schemaEvolution=true
-[info] - INSERT OVERWRITE PARTITION (partition) - insert with missing top-level column, schemaEvolution=true
-[info] - DFv1 insertInto() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT INTO - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT INTO REPLACE WHERE - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT OVERWRITE - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv1 insertInto() - Append - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - DFv1 insertInto() - dynamic partition overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT OVERWRITE PARTITION (partition) - insert with implicit cast and missing top-level column,schemaEvolution=true
-[info] - INSERT OVERWRITE BY NAME - Overwrite - insert with missing nested field, schemaEvolution=true
-[info] - DFv1 insertInto() - Overwrite - insert with missing nested field, schemaEvolution=true
-[info] - INSERT OVERWRITE PARTITION (partition) (columns) - insert with missing nested field, schemaEvolution=true
-[info] - INSERT INTO (columns) - Append - insert with missing nested field, schemaEvolution=true
-[info] - INSERT INTO BY NAME - Append - insert with missing nested field, schemaEvolution=true
-[info] - INSERT INTO REPLACE WHERE - insert with missing nested field, schemaEvolution=true
-[info] - INSERT INTO - insert with missing nested field, schemaEvolution=true
-[info] - INSERT OVERWRITE (columns) - Overwrite - insert with missing nested field, schemaEvolution=true
-[info] - INSERT OVERWRITE - insert with missing nested field, schemaEvolution=true
-[info] - DFv1 insertInto() - Append - insert with missing nested field, schemaEvolution=true
-[info] - DFv1 insertInto() - dynamic partition overwrite - insert with missing nested field, schemaEvolution=true
-[info] - INSERT OVERWRITE PARTITION (partition) - insert with missing nested field, schemaEvolution=true
-[info] - INSERT OVERWRITE BY NAME - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv1 insertInto() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - INSERT OVERWRITE PARTITION (partition) (columns) - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - INSERT INTO (columns) - Append - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - INSERT INTO BY NAME - Append - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - INSERT INTO REPLACE WHERE - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - INSERT INTO - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - INSERT OVERWRITE (columns) - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - INSERT OVERWRITE - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv1 insertInto() - Append - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv1 insertInto() - dynamic partition overwrite - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - INSERT OVERWRITE PARTITION (partition) - insert with implicit cast and missing nested field,schemaEvolution=true
-[info] - DFv2 overwritePartitions() - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT OVERWRITE PARTITION (partition) (columns) - insert with missing top-level column, schemaEvolution=false
-[info] - Streaming toTable() - insert with missing top-level column, schemaEvolution=false
-[info] - DFv1 saveAsTable() - Append - insert with missing top-level column, schemaEvolution=false
-[info] - DFv1 save() - Append - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT OVERWRITE (columns) - Overwrite - insert with missing top-level column, schemaEvolution=false
-[info] - DFv1 save() - Overwrite - insert with missing top-level column, schemaEvolution=false
-[info] - DFv1 saveAsTable() - Overwrite - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT INTO (columns) - Append - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT INTO BY NAME - Append - insert with missing top-level column, schemaEvolution=false
-[info] - DFv2 append() - insert with missing top-level column, schemaEvolution=false
-[info] - DFv2 overwrite() - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT OVERWRITE BY NAME - Overwrite - insert with missing top-level column, schemaEvolution=false
-[info] - DFv2 overwrite() - insert with missing nested field, schemaEvolution=false
-[info] - DFv2 overwritePartitions() - insert with missing nested field, schemaEvolution=false
-[info] - Streaming toTable() - insert with missing nested field, schemaEvolution=false
-[info] - DFv1 saveAsTable() - Append - insert with missing nested field, schemaEvolution=false
-[info] - DFv1 save() - Append - insert with missing nested field, schemaEvolution=false
-[info] - DFv1 save() - Overwrite - insert with missing nested field, schemaEvolution=false
-[info] - DFv1 saveAsTable() - Overwrite - insert with missing nested field, schemaEvolution=false
-[info] - DFv2 append() - insert with missing nested field, schemaEvolution=false
-[info] - INSERT OVERWRITE BY NAME - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT OVERWRITE PARTITION (partition) (columns) - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - Streaming toTable() - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT OVERWRITE (columns) - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT INTO (columns) - Append - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT INTO BY NAME - Append - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv2 overwrite() - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv2 overwritePartitions() - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv1 saveAsTable() - Append - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv1 save() - Append - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv1 save() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv1 saveAsTable() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv2 append() - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv2 overwrite() - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv2 overwritePartitions() - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv1 saveAsTable() - Append - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv1 save() - Append - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv1 save() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv1 saveAsTable() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv2 append() - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - Streaming toTable() - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv1 insertInto() - Overwrite - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT INTO - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT INTO REPLACE WHERE - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT OVERWRITE - insert with missing top-level column, schemaEvolution=false
-[info] - DFv1 insertInto() - Append - insert with missing top-level column, schemaEvolution=false
-[info] - DFv1 insertInto() - dynamic partition overwrite - insert with missing top-level column, schemaEvolution=false
-[info] - INSERT OVERWRITE PARTITION (partition) - insert with missing top-level column, schemaEvolution=false
-[info] - DFv1 insertInto() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT INTO - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT INTO REPLACE WHERE - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT OVERWRITE - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv1 insertInto() - Append - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - DFv1 insertInto() - dynamic partition overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT OVERWRITE PARTITION (partition) - insert with implicit cast and missing top-level column,schemaEvolution=false
-[info] - INSERT OVERWRITE BY NAME - Overwrite - insert with missing nested field, schemaEvolution=false
-[info] - DFv1 insertInto() - Overwrite - insert with missing nested field, schemaEvolution=false
-[info] - INSERT OVERWRITE PARTITION (partition) (columns) - insert with missing nested field, schemaEvolution=false
-[info] - INSERT INTO (columns) - Append - insert with missing nested field, schemaEvolution=false
-[info] - INSERT INTO BY NAME - Append - insert with missing nested field, schemaEvolution=false
-[info] - INSERT INTO REPLACE WHERE - insert with missing nested field, schemaEvolution=false
-[info] - INSERT INTO - insert with missing nested field, schemaEvolution=false
-[info] - INSERT OVERWRITE (columns) - Overwrite - insert with missing nested field, schemaEvolution=false
-[info] - INSERT OVERWRITE - insert with missing nested field, schemaEvolution=false
-[info] - DFv1 insertInto() - Append - insert with missing nested field, schemaEvolution=false
-[info] - DFv1 insertInto() - dynamic partition overwrite - insert with missing nested field, schemaEvolution=false
-[info] - INSERT OVERWRITE PARTITION (partition) - insert with missing nested field, schemaEvolution=false
-[info] - INSERT OVERWRITE BY NAME - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv1 insertInto() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - INSERT OVERWRITE PARTITION (partition) (columns) - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - INSERT INTO (columns) - Append - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - INSERT INTO BY NAME - Append - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - INSERT INTO REPLACE WHERE - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - INSERT INTO - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - INSERT OVERWRITE (columns) - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - INSERT OVERWRITE - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv1 insertInto() - Append - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - DFv1 insertInto() - dynamic partition overwrite - insert with implicit cast and missing nested field,schemaEvolution=false
-[info] - INSERT OVERWRITE PARTITION (partition) - insert with implicit cast and missing nested field,schemaEvolution=false
-[debug]     Produced 0 nested tasks and 161 events.
-[info] Run completed in 3 minutes, 57 seconds.
-[info] Total number of tests run: 161
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite, sbt.ForkMain$SubclassFingerscan@a4102b8, false, [SuiteSelector])
+[info] DeltaInsertReplaceOnDFWriterV1InsertIntoSuite:
+[info] - replaceOn with always-false condition appends all rows *** FAILED ***
+[info]   Results do not match for query:
+[info]   Timezone: sun.util.calendar.ZoneInfo[id="America/Los_Angeles",offset=-28800000,dstSavings=3600000,useDaylight=true,transitions=185,lastRule=java.util.SimpleTimeZone[id=America/Los_Angeles,offset=-28800000,dstSavings=3600000,useDaylight=true,startYear=0,startMode=3,startMonth=2,startDay=8,startDayOfWeek=1,startTime=7200000,startTimeMode=0,endMode=3,endMonth=10,endDay=1,endDayOfWeek=1,endTime=7200000,endTimeMode=0]]
+[info]   Timezone Env: 
+[info]   
+[info]   == Parsed Logical Plan ==
+[info]   'Sort ['id ASC NULLS FIRST], true
+[info]   +- Relation [id#994,data#995] parquet
+[info]   
+[info]   == Analyzed Logical Plan ==
+[info]   id: int, data: string
+[info]   Sort [id#994 ASC NULLS FIRST], true
+[info]   +- Relation [id#994,data#995] parquet
+[info]   
+[info]   == Optimized Logical Plan ==
+[info]   Sort [id#994 ASC NULLS FIRST], true
+[info]   +- Relation [id#994,data#995] parquet
+[info]   
+[info]   == Physical Plan ==
+[info]   AdaptiveSparkPlan isFinalPlan=true
+[info]   +- == Final Plan ==
+[info]      ResultQueryStage 1
+[info]      +- *(2) Sort [id#994 ASC NULLS FIRST], true, 0
+[info]         +- AQEShuffleRead coalesced
+[info]            +- ShuffleQueryStage 0
+[info]               +- Exchange rangepartitioning(id#994 ASC NULLS FIRST, 5), ENSURE_REQUIREMENTS, [plan_id=357]
+[info]                  +- *(1) ColumnarToRow
+[info]                     +- FileScan parquet [id#994,data#995] Batched: true, DataFilters: [], Format: Parquet, Location: PreparedDeltaFileIndex(1 paths)[file:/tmp/spark-803d0681-fab3-4f6e-87a5-7d8b0e467471], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<id:int,data:string>
+[info]   +- == Initial Plan ==
+[info]      Sort [id#994 ASC NULLS FIRST], true, 0
+[info]      +- Exchange rangepartitioning(id#994 ASC NULLS FIRST, 5), ENSURE_REQUIREMENTS, [plan_id=288]
+[info]         +- FileScan parquet [id#994,data#995] Batched: true, DataFilters: [], Format: Parquet, Location: PreparedDeltaFileIndex(1 paths)[file:/tmp/spark-803d0681-fab3-4f6e-87a5-7d8b0e467471], PartitionFilters: [], PushedFilters: [], ReadSchema: struct<id:int,data:string>
+[info]   
+[info]   == Results ==
+[info]   
+[info]   == Results ==
+[info]   !== Correct Answer - 4 ==   == Spark Answer - 2 ==
+[info]   !struct<>                   struct<id:int,data:string>
+[info]   ![1,original1]              [10,new1]
+[info]   ![2,original2]              [20,new2]
+[info]   ![10,new1]                  
+[info]   ![20,new2] (QueryTest.scala:269)
+[info]   org.scalatest.exceptions.TestFailedException:
+[info]   at org.scalatest.Assertions.newAssertionFailedException(Assertions.scala:472)
+[info]   at org.scalatest.Assertions.newAssertionFailedException$(Assertions.scala:471)
+[info]   at org.apache.spark.sql.QueryTest$.newAssertionFailedException(QueryTest.scala:259)
+[info]   at org.scalatest.Assertions.fail(Assertions.scala:933)
+[info]   at org.scalatest.Assertions.fail$(Assertions.scala:929)
+[info]   at org.apache.spark.sql.QueryTest$.fail(QueryTest.scala:259)
+[info]   at org.apache.spark.sql.QueryTest$.checkAnswer(QueryTest.scala:269)
+[info]   at org.apache.spark.sql.QueryTest.checkAnswer(QueryTest.scala:155)
+[info]   at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterTests.$anonfun$$init$$5(DeltaInsertReplaceOnDFWriterTests.scala:96)
+[info]   at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterTests.$anonfun$$init$$5$adapted(DeltaInsertReplaceOnDFWriterTests.scala:78)
+[info]   at org.apache.spark.sql.test.SQLTestUtils.$anonfun$withTempDir$1(SQLTestUtils.scala:81)
+[info]   at org.apache.spark.sql.test.SQLTestUtils.$anonfun$withTempDir$1$adapted(SQLTestUtils.scala:80)
+[info]   at org.apache.spark.SparkFunSuite.withTempDir(SparkFunSuite.scala:245)
+[info]   at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.org$apache$spark$sql$test$SQLTestUtils$$super$withTempDir(DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:32)
+[info]   at org.apache.spark.sql.test.SQLTestUtils.withTempDir(SQLTestUtils.scala:80)
+[info]   at org.apache.spark.sql.test.SQLTestUtils.withTempDir$(SQLTestUtils.scala:79)
+[info]   at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.withTempDir(DeltaInsertReplaceOnDFWriterV1InsertIntoSuite.scala:32)
+[info]   at org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterTests.$anonfun$$init$$4(DeltaInsertReplaceOnDFWriterTests.scala:78)
+[info]   at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+[info]   at org.scalatest.enablers.Timed$$anon$1.timeoutAfter(Timed.scala:127)
+[info]   at org.scalatest.concurrent.TimeLimits$.failAfterImpl(TimeLimits.scala:282)
+[info]   at org.scalatest.concurrent.TimeLimits.failAfter(TimeLimits.scala:231)
+[info]   at org.scalatest.concurrent.TimeLimits.failAfter$(TimeLimits.scala:230)
+[info]   at org.apache.spark.SparkFunSuite.failAfter(SparkFunSuite.scala:69)
+[info]   at org.apache.spark.SparkFunSuite.$anonfun$test$2(SparkFunSuite.scala:155)
+[info]   at org.scalatest.OutcomeOf.outcomeOf(OutcomeOf.scala:85)
+[info]   at org.scalatest.OutcomeOf.outcomeOf$(OutcomeOf.scala:83)
+[info]   at org.scalatest.OutcomeOf$.outcomeOf(OutcomeOf.scala:104)
+[info]   at org.scalatest.Transformer.apply(Transformer.scala:22)
+[info]   at org.scalatest.Transformer.apply(Transformer.scala:20)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike$$anon$1.apply(AnyFunSuiteLike.scala:226)
+[info]   at org.apache.spark.SparkFunSuite.withFixture(SparkFunSuite.scala:227)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.invokeWithFixture$1(AnyFunSuiteLike.scala:224)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.$anonfun$runTest$1(AnyFunSuiteLike.scala:236)
+[info]   at org.scalatest.SuperEngine.runTestImpl(Engine.scala:306)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.runTest(AnyFunSuiteLike.scala:236)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.runTest$(AnyFunSuiteLike.scala:218)
+[info]   at org.apache.spark.SparkFunSuite.org$scalatest$BeforeAndAfterEach$$super$runTest(SparkFunSuite.scala:69)
+[info]   at org.scalatest.BeforeAndAfterEach.runTest(BeforeAndAfterEach.scala:234)
+[info]   at org.scalatest.BeforeAndAfterEach.runTest$(BeforeAndAfterEach.scala:227)
+[info]   at org.apache.spark.SparkFunSuite.runTest(SparkFunSuite.scala:69)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.$anonfun$runTests$1(AnyFunSuiteLike.scala:269)
+[info]   at org.scalatest.SuperEngine.$anonfun$runTestsInBranch$1(Engine.scala:413)
+[info]   at scala.collection.immutable.List.foreach(List.scala:323)
+[info]   at org.scalatest.SuperEngine.traverseSubNodes$1(Engine.scala:401)
+[info]   at org.scalatest.SuperEngine.runTestsInBranch(Engine.scala:396)
+[info]   at org.scalatest.SuperEngine.runTestsImpl(Engine.scala:475)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.runTests(AnyFunSuiteLike.scala:269)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.runTests$(AnyFunSuiteLike.scala:268)
+[info]   at org.scalatest.funsuite.AnyFunSuite.runTests(AnyFunSuite.scala:1564)
+[info]   at org.scalatest.Suite.run(Suite.scala:1114)
+[info]   at org.scalatest.Suite.run$(Suite.scala:1096)
+[info]   at org.scalatest.funsuite.AnyFunSuite.org$scalatest$funsuite$AnyFunSuiteLike$$super$run(AnyFunSuite.scala:1564)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.$anonfun$run$1(AnyFunSuiteLike.scala:273)
+[info]   at org.scalatest.SuperEngine.runImpl(Engine.scala:535)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.run(AnyFunSuiteLike.scala:273)
+[info]   at org.scalatest.funsuite.AnyFunSuiteLike.run$(AnyFunSuiteLike.scala:272)
+[info]   at org.apache.spark.SparkFunSuite.org$scalatest$BeforeAndAfterAll$$super$run(SparkFunSuite.scala:69)
+[info]   at org.scalatest.BeforeAndAfterAll.liftedTree1$1(BeforeAndAfterAll.scala:213)
+[info]   at org.scalatest.BeforeAndAfterAll.run(BeforeAndAfterAll.scala:210)
+[info]   at org.scalatest.BeforeAndAfterAll.run$(BeforeAndAfterAll.scala:208)
+[info]   at org.apache.spark.SparkFunSuite.run(SparkFunSuite.scala:69)
+[info]   at org.scalatest.tools.Framework.org$scalatest$tools$Framework$$runSuite(Framework.scala:321)
+[info]   at org.scalatest.tools.Framework$ScalaTestTask.execute(Framework.scala:517)
+[info]   at sbt.ForkMain$Run.lambda$runTest$1(ForkMain.java:414)
+[info]   at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+[info]   at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+[info]   at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+[info]   at java.base/java.lang.Thread.run(Thread.java:840)
+[debug]     Produced 0 nested tasks and 1 events.
+[info] Run completed in 11 seconds, 249 milliseconds.
+[info] Total number of tests run: 1
 [info] Suites: completed 1, aborted 0
-[info] Tests: succeeded 161, failed 0, canceled 0, ignored 0, pending 0
-[info] All tests passed.
-[debug] Passed tests:
-[debug] 	org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite
+[info] Tests: succeeded 0, failed 1, canceled 0, ignored 0, pending 0
+[info] *** 1 TEST FAILED ***
+[error] Failed tests:
+[error] 	org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite
+[error] (spark / Test / testOnly) sbt.TestsFailedException: Tests unsuccessful

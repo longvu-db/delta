@@ -5,4 +5,4 @@
 [debug] Framework implementation 'zio.test.sbt.ZTestFramework' not present.
 [debug] Framework implementation 'weaver.framework.CatsEffect' not present.
 [debug] Framework implementation 'hedgehog.sbt.Framework' not present.
-[debug] Framework implementation 'com.github.sbt.junit.jupiter.api.JupiterFramework' not present.
+[debug] Framework implementation 'net.aichler.jupiter.api.JupiterFramework' not present.

@@ -1,6 +1,6 @@
 package org.apache.spark.sql.delta.logging;
 public  class CustomLogKeys {
-  static public  class CUSTOM_LOG_KEY$ extends org.apache.spark.sql.delta.logging.DeltaLogKey implements scala.Product, java.io.Serializable {
+  static public  class CUSTOM_LOG_KEY$ implements org.apache.spark.sql.delta.logging.DeltaLogKey, scala.Product, java.io.Serializable {
     /**
      * Static reference to the singleton instance of this Scala object.
      */

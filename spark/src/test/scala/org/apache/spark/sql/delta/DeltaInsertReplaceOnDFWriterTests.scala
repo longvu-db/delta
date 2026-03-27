@@ -1288,14 +1288,14 @@ trait DeltaInsertReplaceOnDFWriterTests
     for (materializationMode <- DeltaSQLConf.MergeMaterializeSource.list) {
       withSQLConf(
           DeltaSQLConf.INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE.key -> materializationMode,
-          DeltaSQLConf.MERGE_DISABLE_SOURCE_MATERIALIZATION_NOT_ALLOWED.key -> "false") {
+          "spark.databricks.delta.merge.disableSourceMaterializationNotAllowed" -> "false") {
         runWithNonDeltaSource()
       }
     }
 
     withSQLConf(
         DeltaSQLConf.INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE.key -> "none",
-        DeltaSQLConf.MERGE_DISABLE_SOURCE_MATERIALIZATION_NOT_ALLOWED.key -> "true") {
+        "spark.databricks.delta.merge.disableSourceMaterializationNotAllowed" -> "true") {
       checkError(
         exception = intercept[DeltaUnsupportedOperationException] {
           runWithNonDeltaSource()

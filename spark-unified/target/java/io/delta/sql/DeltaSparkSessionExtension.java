@@ -57,5 +57,4 @@ public  class DeltaSparkSessionExtension extends io.delta.sql.AbstractDeltaSpark
     public  org.apache.spark.sql.catalyst.plans.logical.LogicalPlan apply (org.apache.spark.sql.catalyst.plans.logical.LogicalPlan plan)  { throw new RuntimeException(); }
   }
   public   DeltaSparkSessionExtension ()  { throw new RuntimeException(); }
-  public  void apply (org.apache.spark.sql.SparkSessionExtensions extensions)  { throw new RuntimeException(); }
 }

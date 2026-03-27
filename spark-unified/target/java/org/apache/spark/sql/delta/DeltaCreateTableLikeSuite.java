@@ -1,5 +1,5 @@
 package org.apache.spark.sql.delta;
-public  class DeltaCreateTableLikeSuite extends org.apache.spark.sql.QueryTest implements org.apache.spark.sql.test.SharedSparkSession, org.apache.spark.sql.delta.test.DeltaSQLCommandTest, org.apache.spark.sql.delta.test.DeltaSQLTestUtils {
+public  class DeltaCreateTableLikeSuite extends org.apache.spark.sql.QueryTest implements org.apache.spark.sql.test.SharedSparkSession, org.apache.spark.sql.delta.test.DeltaSQLCommandTest {
   public   DeltaCreateTableLikeSuite ()  { throw new RuntimeException(); }
   public  org.scalatest.concurrent.AbstractPatienceConfiguration.PatienceConfig$ PatienceConfig ()  { throw new RuntimeException(); }
   protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> allNulls ()  { throw new RuntimeException(); }
@@ -45,7 +45,6 @@ public  class DeltaCreateTableLikeSuite extends org.apache.spark.sql.QueryTest i
   protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> courseSales ()  { throw new RuntimeException(); }
   public  void createTable (java.lang.String srcTbl, java.lang.String format, boolean addTblProperties, boolean addComment)  { throw new RuntimeException(); }
   protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> decimalData ()  { throw new RuntimeException(); }
-  protected  java.lang.String defaultTempDirPrefix ()  { throw new RuntimeException(); }
   protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> emptyTestData ()  { throw new RuntimeException(); }
   protected  boolean enableAutoThreadAudit ()  { throw new RuntimeException(); }
   protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> intervalData ()  { throw new RuntimeException(); }

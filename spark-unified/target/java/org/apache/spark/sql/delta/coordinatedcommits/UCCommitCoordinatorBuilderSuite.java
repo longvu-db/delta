@@ -5,13 +5,13 @@ public  class UCCommitCoordinatorBuilderSuite extends org.apache.spark.SparkFunS
     static public  java.lang.String toString ()  { throw new RuntimeException(); }
     public  java.lang.String name ()  { throw new RuntimeException(); }
     public  scala.Option<java.lang.String> uri ()  { throw new RuntimeException(); }
-    public  scala.collection.immutable.Map<java.lang.String, java.lang.String> configMap ()  { throw new RuntimeException(); }
+    public  scala.Option<java.lang.String> token ()  { throw new RuntimeException(); }
     public  scala.Option<java.lang.String> metastoreId ()  { throw new RuntimeException(); }
     public  scala.Option<java.lang.String> path ()  { throw new RuntimeException(); }
     // not preceding
-    public   CatalogTestConfig (java.lang.String name, scala.Option<java.lang.String> uri, scala.collection.immutable.Map<java.lang.String, java.lang.String> configMap, scala.Option<java.lang.String> metastoreId, scala.Option<java.lang.String> path)  { throw new RuntimeException(); }
+    public   CatalogTestConfig (java.lang.String name, scala.Option<java.lang.String> uri, scala.Option<java.lang.String> token, scala.Option<java.lang.String> metastoreId, scala.Option<java.lang.String> path)  { throw new RuntimeException(); }
   }
-  public  class CatalogTestConfig$ extends scala.runtime.AbstractFunction5<java.lang.String, scala.Option<java.lang.String>, scala.collection.immutable.Map<java.lang.String, java.lang.String>, scala.Option<java.lang.String>, scala.Option<java.lang.String>, org.apache.spark.sql.delta.coordinatedcommits.UCCommitCoordinatorBuilderSuite.CatalogTestConfig> implements java.io.Serializable {
+  public  class CatalogTestConfig$ extends scala.runtime.AbstractFunction5<java.lang.String, scala.Option<java.lang.String>, scala.Option<java.lang.String>, scala.Option<java.lang.String>, scala.Option<java.lang.String>, org.apache.spark.sql.delta.coordinatedcommits.UCCommitCoordinatorBuilderSuite.CatalogTestConfig> implements java.io.Serializable {
     /**
      * Static reference to the singleton instance of this Scala object.
      */

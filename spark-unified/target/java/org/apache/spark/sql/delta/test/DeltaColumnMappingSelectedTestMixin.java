@@ -11,6 +11,5 @@ public  interface DeltaColumnMappingSelectedTestMixin extends org.apache.spark.s
    */
   public  boolean runAllTests ()  ;
   public  scala.collection.immutable.Seq<java.lang.String> runOnlyTests ()  ;
-  public  scala.collection.immutable.Seq<java.lang.String> skipTests ()  ;
   public  void test (java.lang.String testName, scala.collection.immutable.Seq<org.scalatest.Tag> testTags, scala.Function0<java.lang.Object> testFun, org.scalactic.source.Position pos)  ;
 }

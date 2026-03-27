@@ -23,7 +23,6 @@ import scala.reflect.ClassTag
 import scala.util.control.NonFatal
 
 import com.databricks.spark.util.{Log4jUsageLogger, MetricDefinitions, UsageRecord}
-import com.databricks.sql.logging.SQLUsageLogging
 import org.apache.spark.sql.delta.DeltaTestUtils.BOOLEAN_DOMAIN
 import org.apache.spark.sql.delta.actions.{AddFile, RemoveFile}
 import org.apache.spark.sql.delta.commands.{InsertReplaceOnOrUsingMaterializeSourceError, InsertReplaceOnOrUsingStats}
@@ -31,13 +30,13 @@ import org.apache.spark.sql.delta.commands.cdc.CDCReader
 import org.apache.spark.sql.delta.commands.merge.{MergeIntoMaterializeSourceError, MergeIntoMaterializeSourceErrorType, MergeIntoMaterializeSourceReason}
 import org.apache.spark.sql.delta.sources.DeltaSQLConf
 import org.apache.spark.sql.delta.util.JsonUtils
-import org.apache.spark.sql.util.QueryTag
 
 import org.apache.spark.{SparkException, SparkNumberFormatException}
 import org.apache.spark.sql.{AnalysisException, QueryTest, Row}
 import org.apache.spark.sql.catalyst.TableIdentifier
 import org.apache.spark.sql.functions.{lit, rand, udf}
 import org.apache.spark.sql.internal.SQLConf
+import org.apache.spark.sql.delta.test.DeltaSQLCommandTest
 import org.apache.spark.sql.test.SharedSparkSession
 import org.apache.spark.sql.types.{IntegerType, StringType}
 import org.apache.spark.storage.StorageLevel
@@ -45,7 +44,8 @@ import org.apache.spark.util.Utils
 
 trait DeltaInsertReplaceOnOrUsingTestUtils
   extends QueryTest
-  with SharedSparkSession {
+  with SharedSparkSession
+  with DeltaSQLCommandTest {
 
   protected def createTable(
      tableName: String,
@@ -506,8 +506,8 @@ trait DeltaInsertReplaceOnOrUsingCommonTests extends DeltaInsertReplaceOnOrUsing
   } {
     val testParamsMsg = s" cdcReuseDataFiles=$cdcReuseDataFiles, dvsEnabled=$dvsEnabled"
     test("INSERT REPLACE ON/USING with CDF enabled -" + testParamsMsg) {
-      withSQLConf(DeltaSQLConf.
-          INSERT_ATOMIC_REPLACE_CDC_REUSE_DATA_FILES.key -> cdcReuseDataFiles.toString) {
+      withSQLConf(
+          "spark.databricks.delta.insertAtomicReplace.cdcReuseDataFiles" -> cdcReuseDataFiles.toString) {
         withTable("target", "source") {
           val numRowsPerFile = 10
           val numFiles = 10
@@ -808,14 +808,14 @@ trait DeltaInsertReplaceOnOrUsingCommonTests extends DeltaInsertReplaceOnOrUsing
     for (materializationMode <- DeltaSQLConf.MergeMaterializeSource.list) {
       withSQLConf(
         DeltaSQLConf.INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE.key -> materializationMode,
-        DeltaSQLConf.MERGE_DISABLE_SOURCE_MATERIALIZATION_NOT_ALLOWED.key -> "false") {
+        "spark.databricks.delta.merge.disableSourceMaterializationNotAllowed" -> "false") {
         runInsertReplaceOnOrUsingWithNonDeltaSource()
       }
     }
 
     withSQLConf(
       DeltaSQLConf.INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE.key -> "none",
-      DeltaSQLConf.MERGE_DISABLE_SOURCE_MATERIALIZATION_NOT_ALLOWED.key -> "true"
+      "spark.databricks.delta.merge.disableSourceMaterializationNotAllowed" -> "true"
     ) {
       checkError(
         exception = intercept[DeltaUnsupportedOperationException] {
@@ -1137,7 +1137,7 @@ trait DeltaInsertReplaceOnOrUsingCommonTests extends DeltaInsertReplaceOnOrUsing
 
   test("invalid REPLACE ON/USING query with more columns to insert when schema evolution is off") {
     withSQLConf(DeltaSQLConf.DELTA_SCHEMA_AUTO_MIGRATE.key -> "false",
-                DeltaSQLConf.WORKLOAD_BASED_COLUMNS_CONFLICT_RESOLUTION_ENABLED.key -> "false") {
+                "spark.databricks.delta.workloadBasedColumnsConflictResolution.enabled" -> "false") {
       withTable("target", "source") {
         createTable(
           tableName = "target",
@@ -1272,7 +1272,7 @@ trait DeltaInsertReplaceOnOrUsingCommonTests extends DeltaInsertReplaceOnOrUsing
   test("REPLACE ON/USING BY NAME with a struct column in a different column position " +
       "should be resolved by name") {
     withSQLConf(
-        DeltaSQLConf.DELTA_SCHEMA_MISMATCH_LOGGING_ENABLED.key -> "true",
+        "spark.databricks.delta.schemaMismatchLogging.enabled" -> "true",
         SQLConf.ANSI_ENABLED.key -> "true") {
       withTable("target") {
         createTable(
@@ -1310,7 +1310,7 @@ trait DeltaInsertReplaceOnOrUsingCommonTests extends DeltaInsertReplaceOnOrUsing
 
   test("REPLACE ON/USING BY NAME should resolve struct fields by position") {
     withSQLConf(
-      DeltaSQLConf.DELTA_SCHEMA_MISMATCH_LOGGING_ENABLED.key -> "true",
+      "spark.databricks.delta.schemaMismatchLogging.enabled" -> "true",
       SQLConf.ANSI_ENABLED.key -> "true") {
       withTable("target") {
         createTable(
