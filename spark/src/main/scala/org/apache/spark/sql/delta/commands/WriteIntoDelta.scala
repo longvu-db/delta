@@ -99,6 +99,37 @@ case class WriteIntoDelta(
 
   private def isOverwriteOperation: Boolean = mode == SaveMode.Overwrite
 
+  private def validateReplaceOnOrUsingOptionCombinations(
+      sparkSession: SparkSession): Unit = {
+    if (options.replaceOn.isDefined && options.replaceUsing.isDefined) {
+      throw DeltaErrors.incompatibleDataFrameOptions(
+        DeltaOptions.REPLACE_ON_OPTION,
+        DeltaOptions.REPLACE_USING_OPTION)
+    }
+    val replaceOnOrUsingOption = if (options.replaceOn.isDefined) {
+      DeltaOptions.REPLACE_ON_OPTION
+    } else {
+      DeltaOptions.REPLACE_USING_OPTION
+    }
+    if (options.replaceWhere.isDefined) {
+      throw DeltaErrors
+        .overwriteByFilterIncompatibleReplaceOnOrUsingError()
+    }
+    if (options.partitionOverwriteModeInOptions) {
+      throw DeltaErrors
+        .dynamicPartitionOverwriteIncompatibleReplaceOnOrUsingError()
+    }
+    if (options.canOverwriteSchema && isOverwriteOperation) {
+      throw DeltaErrors.incompatibleDataFrameOptions(
+        DeltaOptions.OVERWRITE_SCHEMA_OPTION,
+        replaceOnOrUsingOption)
+    }
+    if (options.rearrangeOnly) {
+      throw DeltaErrors.incompatibleDataFrameOptions(
+        DeltaOptions.DATA_CHANGE_OPTION, replaceOnOrUsingOption)
+    }
+  }
+
   override protected val canOverwriteSchema: Boolean =
     options.canOverwriteSchema && isOverwriteOperation && options.replaceWhere.isEmpty
 
@@ -143,6 +174,11 @@ case class WriteIntoDelta(
         DeltaLog.assertRemovable(txn.snapshot)
       }
     }
+    // Validate replaceOn/Using option combinations
+    if (options.isReplaceOnOrUsingDefined) {
+      validateReplaceOnOrUsingOptionCombinations(sparkSession)
+    }
+
     val isReplaceWhere = mode == SaveMode.Overwrite && options.replaceWhere.nonEmpty
     val finalClusterBySpecOpt =
       if (mode == SaveMode.Append || isReplaceWhere ||

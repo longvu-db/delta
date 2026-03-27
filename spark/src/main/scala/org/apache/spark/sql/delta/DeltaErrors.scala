@@ -3996,6 +3996,33 @@ trait DeltaErrorsBase
       messageParameters = Array(misalignedCols.map(toSQLId).mkString(", ")))
   }
 
+  def incompatibleDataFrameOptions(
+      option1: String, option2: String): Throwable = {
+    new DeltaIllegalArgumentException(
+      errorClass = "DELTA_INCOMPATIBLE_DATAFRAME_OPTIONS",
+      messageParameters = Array(option1, option2))
+  }
+
+  def overwriteByFilterIncompatibleReplaceOnOrUsingError(): Throwable = {
+    new DeltaIllegalArgumentException(
+      errorClass = "DELTA_OVERWRITE_BY_FILTER_INCOMPATIBLE_REPLACE_ON_OR_USING",
+      messageParameters = Array.empty)
+  }
+
+  def dynamicPartitionOverwriteIncompatibleReplaceOnOrUsingError(): Throwable = {
+    new DeltaIllegalArgumentException(
+      errorClass =
+        "DELTA_DYNAMIC_PARTITION_OVERWRITE_INCOMPATIBLE_REPLACE_ON_OR_USING",
+      messageParameters = Array.empty)
+  }
+
+  def dfv2CreateReplaceIncompatibleReplaceOnOrUsing(): Throwable = {
+    new DeltaAnalysisException(
+      errorClass =
+        "DELTA_DFV2_CREATE_REPLACE_INCOMPATIBLE_REPLACE_ON_OR_USING",
+      messageParameters = Array.empty)
+  }
+
   def replaceOnOrUsingNonExistentTableException(): Throwable = {
     new DeltaAnalysisException(
       errorClass = "DELTA_REPLACE_ON_OR_USING_NON_EXISTENT_TABLE",

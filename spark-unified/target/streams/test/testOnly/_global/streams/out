@@ -2,7 +2,174 @@
 [debug] Forking tests - parallelism = false
 [debug] Create a single-thread test executor
 [debug] Runner for org.scalatest.tools.Framework produced 6 initial tasks for 6 tests.
-[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1InsertIntoSuite, sbt.ForkMain$SubclassFingerscan@a4102b8, false, [SuiteSelector])
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite, sbt.ForkMain$SubclassFingerscan@a4102b8, false, [SuiteSelector])
+[info] DeltaInsertReplaceOnDFWriterV1InsertIntoSuite:
+[info] - replaceOn with always-true condition replaces all rows
+[info] - replaceOn with always-false condition appends all rows
+[info] - basic replaceOn with single matching column
+[info] - replaceOn with multiple matching columns
+[info] - replaceOn with duplicate rows in source
+[info] - replaceOn with empty target table
+[info] - replaceOn with empty source
+[info] - replaceOn with filtered source
+[info] - replaceOn with PARTITIONED table
+[info] - replaceOn with CLUSTERED table
+[info] - replaceOn with NORMAL table
+[info] - replaceOn with NULL-safe equality condition
+[info] - replaceOn with condition referencing only target side
+[info] - replaceOn with condition referencing only source side
+[info] - replaceOn with IN predicate in condition
+[info] - replaceOn condition with function (e.g., abs)
+[info] - replaceOn with mergeSchema adds new columns
+[info] - replaceOn with fewer source columns fills missing target columns with null (excluded) !!! IGNORED !!!
+[info] - replaceOn with mergeSchema referencing new columns in condition
+[info] - replaceOn null-safe equality matching between existing columns with NULL values and new columns with NULL values (excluded) !!! IGNORED !!!
+[info] - replaceOn with source from spark.table()
+[info] - replaceOn with source from spark.sql()
+[info] - replaceOn with targetAlias and source .as resolves ambiguous columns
+[info] - targetAlias resolves ambiguity with compound AND condition
+[info] - ambiguous: identical alias for target and source
+[info] - ambiguous: no source alias, bare 'id' on both sides
+[info] - replaceOn with unresolvable column errors
+[info] - replaceOn condition uses aliases for both sides but user forgot targetAlias option
+[info] - replaceOn condition uses aliases for both sides but user forgot source .as alias
+[info] - replaceOn condition uses aliases for both sides but user forgot both aliases
+[info] - ambiguous: compound condition, all columns overlap
+[info] - ambiguous: multiple overlapping columns, only one without alias
+[info] - same column name with different types fails schema merge (excluded) !!! IGNORED !!!
+[info] - replaceOn with different schemas, without mergeSchema fails (excluded) !!! IGNORED !!!
+[info] - replaceOn with wrong targetAlias errors on unresolved columns
+[info] - replaceOn targetAlias is case insensitive
+[info] - replaceOn with numeric targetAlias '22' resolves with backticks
+[info] - replaceOn with numeric targetAlias '22' without backticks fails on type extraction
+[info] - replaceOn with space containing targetAlias 'hello world' resolves with backticks
+[info] - replaceOn with space containing targetAlias without backticks fails to parse
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=none
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=all
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=auto
+[info] - replaceOn with non-deterministic source records materialization reason
+[info] - replaceOn disableSourceMaterializationNotAllowed errors when materializeSource set to none
+[info] - materialize source unpersist with 1 kill attempts succeeds
+[info] - materialize source unpersist with 2 kill attempts succeeds
+[info] - materialize source unpersist with 3 kill attempts succeeds
+[info] - materialize source unpersist with 4 kill attempts fails
+[info] - insertInto: replaceOn on empty table via path
+[info] - insertInto: replaceOn on empty named table
+[info] - insertInto: replaceOn on non-empty named table
+[info] - insertInto: replaceOn on non-existing named table fails
+[info] - insertInto: replaceOn with swapped column order
+[info] - insertInto: replaceOn with misaligned columns
+[debug]     Produced 0 nested tasks and 55 events.
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite, sbt.ForkMain$SubclassFingerscan@11dc3715, false, [SuiteSelector])
+[info] DeltaInsertReplaceOnDFWriterV1SaveSuite:
+[info] - replaceOn with always-true condition replaces all rows
+[info] - replaceOn with always-false condition appends all rows
+[info] - basic replaceOn with single matching column
+[info] - replaceOn with multiple matching columns
+[info] - replaceOn with duplicate rows in source
+[info] - replaceOn with empty target table
+[info] - replaceOn with empty source
+[info] - replaceOn with filtered source
+[info] - replaceOn with PARTITIONED table
+[info] - replaceOn with CLUSTERED table
+[info] - replaceOn with NORMAL table
+[info] - replaceOn with NULL-safe equality condition
+[info] - replaceOn with condition referencing only target side
+[info] - replaceOn with condition referencing only source side
+[info] - replaceOn with IN predicate in condition
+[info] - replaceOn condition with function (e.g., abs)
+[info] - replaceOn with mergeSchema adds new columns
+[info] - replaceOn with fewer source columns fills missing target columns with null
+[info] - replaceOn with mergeSchema referencing new columns in condition
+[info] - replaceOn null-safe equality matching between existing columns with NULL values and new columns with NULL values
+[info] - replaceOn with source from spark.table()
+[info] - replaceOn with source from spark.sql()
+[info] - replaceOn with targetAlias and source .as resolves ambiguous columns
+[info] - targetAlias resolves ambiguity with compound AND condition
+[info] - ambiguous: identical alias for target and source
+[info] - ambiguous: no source alias, bare 'id' on both sides
+[info] - replaceOn with unresolvable column errors
+[info] - replaceOn condition uses aliases for both sides but user forgot targetAlias option
+[info] - replaceOn condition uses aliases for both sides but user forgot source .as alias
+[info] - replaceOn condition uses aliases for both sides but user forgot both aliases
+[info] - ambiguous: compound condition, all columns overlap
+[info] - ambiguous: multiple overlapping columns, only one without alias
+[info] - same column name with different types fails schema merge
+[info] - replaceOn with different schemas, without mergeSchema fails
+[info] - replaceOn with wrong targetAlias errors on unresolved columns
+[info] - replaceOn targetAlias is case insensitive
+[info] - replaceOn with numeric targetAlias '22' resolves with backticks
+[info] - replaceOn with numeric targetAlias '22' without backticks fails on type extraction
+[info] - replaceOn with space containing targetAlias 'hello world' resolves with backticks
+[info] - replaceOn with space containing targetAlias without backticks fails to parse
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=none
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=all
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=auto
+[info] - replaceOn with non-deterministic source records materialization reason
+[info] - replaceOn disableSourceMaterializationNotAllowed errors when materializeSource set to none
+[info] - materialize source unpersist with 1 kill attempts succeeds
+[info] - materialize source unpersist with 2 kill attempts succeeds
+[info] - materialize source unpersist with 3 kill attempts succeeds
+[info] - materialize source unpersist with 4 kill attempts fails
+[info] - save - replaceOn with misaligned column positions between source and target
+[info] - apiOrigin is 'DFv1Save' for DataFrameWriter save()
+[info] - apiOrigin is recorded even when DFv1Save replaceOn fails
+[debug]     Produced 0 nested tasks and 52 events.
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite, sbt.ForkMain$SubclassFingerscan@69930714, false, [SuiteSelector])
+[info] DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite:
+[info] - replaceOn with always-true condition replaces all rows
+[info] - replaceOn with always-false condition appends all rows
+[info] - basic replaceOn with single matching column
+[info] - replaceOn with multiple matching columns
+[info] - replaceOn with duplicate rows in source
+[info] - replaceOn with empty target table
+[info] - replaceOn with empty source
+[info] - replaceOn with filtered source
+[info] - replaceOn with PARTITIONED table
+[info] - replaceOn with CLUSTERED table
+[info] - replaceOn with NORMAL table
+[info] - replaceOn with NULL-safe equality condition
+[info] - replaceOn with condition referencing only target side
+[info] - replaceOn with condition referencing only source side
+[info] - replaceOn with IN predicate in condition
+[info] - replaceOn condition with function (e.g., abs)
+[info] - replaceOn with mergeSchema adds new columns
+[info] - replaceOn with fewer source columns fills missing target columns with null
+[info] - replaceOn with mergeSchema referencing new columns in condition
+[info] - replaceOn null-safe equality matching between existing columns with NULL values and new columns with NULL values
+[info] - replaceOn with source from spark.table()
+[info] - replaceOn with source from spark.sql()
+[info] - replaceOn with targetAlias and source .as resolves ambiguous columns
+[info] - targetAlias resolves ambiguity with compound AND condition
+[info] - ambiguous: identical alias for target and source
+[info] - ambiguous: no source alias, bare 'id' on both sides
+[info] - replaceOn with unresolvable column errors
+[info] - replaceOn condition uses aliases for both sides but user forgot targetAlias option
+[info] - replaceOn condition uses aliases for both sides but user forgot source .as alias
+[info] - replaceOn condition uses aliases for both sides but user forgot both aliases
+[info] - ambiguous: compound condition, all columns overlap
+[info] - ambiguous: multiple overlapping columns, only one without alias
+[info] - same column name with different types fails schema merge
+[info] - replaceOn with different schemas, without mergeSchema fails
+[info] - replaceOn with wrong targetAlias errors on unresolved columns
+[info] - replaceOn targetAlias is case insensitive
+[info] - replaceOn with numeric targetAlias '22' resolves with backticks
+[info] - replaceOn with numeric targetAlias '22' without backticks fails on type extraction
+[info] - replaceOn with space containing targetAlias 'hello world' resolves with backticks
+[info] - replaceOn with space containing targetAlias without backticks fails to parse
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=none
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=all
+[info] - replaceOn with non-Delta source records materialization reason, materializationMode=auto
+[info] - replaceOn with non-deterministic source records materialization reason
+[info] - replaceOn disableSourceMaterializationNotAllowed errors when materializeSource set to none
+[info] - materialize source unpersist with 1 kill attempts succeeds
+[info] - materialize source unpersist with 2 kill attempts succeeds
+[info] - materialize source unpersist with 3 kill attempts succeeds
+[info] - materialize source unpersist with 4 kill attempts fails
+[info] - saveAsTable: replaceOn with always-true condition replaces all
+[info] - saveAsTable: basic replaceOn with single matching column
+[debug]     Produced 0 nested tasks and 51 events.
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1InsertIntoSuite, sbt.ForkMain$SubclassFingerscan@7a52f2a2, false, [SuiteSelector])
 [info] DeltaInsertReplaceUsingDFWriterV1InsertIntoSuite:
 [info] - replaceUsing with single column
 [info] - replaceUsing with multiple columns
@@ -65,7 +232,7 @@
 [info] - insertInto: replaceUsing with misaligned USING columns, disallow conf disabled
 [info] - insertInto: replaceUsing with aligned USING column but mismatched non-USING column names, which triggers schemaAdjustment
 [debug]     Produced 0 nested tasks and 60 events.
-[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveSuite, sbt.ForkMain$SubclassFingerscan@11dc3715, false, [SuiteSelector])
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveSuite, sbt.ForkMain$SubclassFingerscan@78047b92, false, [SuiteSelector])
 [info] DeltaInsertReplaceUsingDFWriterV1SaveSuite:
 [info] - replaceUsing with single column
 [info] - replaceUsing with multiple columns
@@ -126,7 +293,7 @@
 [info] - save with replaceUsing: inserts by name with misaligned column positions
 [info] - save with replaceUsing: inserts struct fields by name
 [debug]     Produced 0 nested tasks and 58 events.
-[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveAsTableSuite, sbt.ForkMain$SubclassFingerscan@69930714, false, [SuiteSelector])
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveAsTableSuite, sbt.ForkMain$SubclassFingerscan@8909f18, false, [SuiteSelector])
 [info] DeltaInsertReplaceUsingDFWriterV1SaveAsTableSuite:
 [info] - replaceUsing with single column
 [info] - replaceUsing with multiple columns
@@ -189,174 +356,7 @@
 [info] - saveAsTable: replaceUsing on non-existent table errors
 [info] - saveAsTable: replaceUsing with schema evolution
 [debug]     Produced 0 nested tasks and 60 events.
-[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite, sbt.ForkMain$SubclassFingerscan@7a52f2a2, false, [SuiteSelector])
-[info] DeltaInsertReplaceOnDFWriterV1InsertIntoSuite:
-[info] - replaceOn with always-true condition replaces all rows
-[info] - replaceOn with always-false condition appends all rows
-[info] - basic replaceOn with single matching column
-[info] - replaceOn with multiple matching columns
-[info] - replaceOn with duplicate rows in source
-[info] - replaceOn with empty target table
-[info] - replaceOn with empty source
-[info] - replaceOn with filtered source
-[info] - replaceOn with PARTITIONED table
-[info] - replaceOn with CLUSTERED table
-[info] - replaceOn with NORMAL table
-[info] - replaceOn with NULL-safe equality condition
-[info] - replaceOn with condition referencing only target side
-[info] - replaceOn with condition referencing only source side
-[info] - replaceOn with IN predicate in condition
-[info] - replaceOn condition with function (e.g., abs)
-[info] - replaceOn with mergeSchema adds new columns
-[info] - replaceOn with fewer source columns fills missing target columns with null (excluded) !!! IGNORED !!!
-[info] - replaceOn with mergeSchema referencing new columns in condition
-[info] - replaceOn null-safe equality matching between existing columns with NULL values and new columns with NULL values (excluded) !!! IGNORED !!!
-[info] - replaceOn with source from spark.table()
-[info] - replaceOn with source from spark.sql()
-[info] - replaceOn with targetAlias and source .as resolves ambiguous columns
-[info] - targetAlias resolves ambiguity with compound AND condition
-[info] - ambiguous: identical alias for target and source
-[info] - ambiguous: no source alias, bare 'id' on both sides
-[info] - replaceOn with unresolvable column errors
-[info] - replaceOn condition uses aliases for both sides but user forgot targetAlias option
-[info] - replaceOn condition uses aliases for both sides but user forgot source .as alias
-[info] - replaceOn condition uses aliases for both sides but user forgot both aliases
-[info] - ambiguous: compound condition, all columns overlap
-[info] - ambiguous: multiple overlapping columns, only one without alias
-[info] - same column name with different types fails schema merge (excluded) !!! IGNORED !!!
-[info] - replaceOn with different schemas, without mergeSchema fails (excluded) !!! IGNORED !!!
-[info] - replaceOn with wrong targetAlias errors on unresolved columns
-[info] - replaceOn targetAlias is case insensitive
-[info] - replaceOn with numeric targetAlias '22' resolves with backticks
-[info] - replaceOn with numeric targetAlias '22' without backticks fails on type extraction
-[info] - replaceOn with space containing targetAlias 'hello world' resolves with backticks
-[info] - replaceOn with space containing targetAlias without backticks fails to parse
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=none
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=all
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=auto
-[info] - replaceOn with non-deterministic source records materialization reason
-[info] - replaceOn disableSourceMaterializationNotAllowed errors when materializeSource set to none
-[info] - materialize source unpersist with 1 kill attempts succeeds
-[info] - materialize source unpersist with 2 kill attempts succeeds
-[info] - materialize source unpersist with 3 kill attempts succeeds
-[info] - materialize source unpersist with 4 kill attempts fails
-[info] - insertInto: replaceOn on empty table via path
-[info] - insertInto: replaceOn on empty named table
-[info] - insertInto: replaceOn on non-empty named table
-[info] - insertInto: replaceOn on non-existing named table fails
-[info] - insertInto: replaceOn with swapped column order
-[info] - insertInto: replaceOn with misaligned columns
-[debug]     Produced 0 nested tasks and 55 events.
-[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite, sbt.ForkMain$SubclassFingerscan@78047b92, false, [SuiteSelector])
-[info] DeltaInsertReplaceOnDFWriterV1SaveSuite:
-[info] - replaceOn with always-true condition replaces all rows
-[info] - replaceOn with always-false condition appends all rows
-[info] - basic replaceOn with single matching column
-[info] - replaceOn with multiple matching columns
-[info] - replaceOn with duplicate rows in source
-[info] - replaceOn with empty target table
-[info] - replaceOn with empty source
-[info] - replaceOn with filtered source
-[info] - replaceOn with PARTITIONED table
-[info] - replaceOn with CLUSTERED table
-[info] - replaceOn with NORMAL table
-[info] - replaceOn with NULL-safe equality condition
-[info] - replaceOn with condition referencing only target side
-[info] - replaceOn with condition referencing only source side
-[info] - replaceOn with IN predicate in condition
-[info] - replaceOn condition with function (e.g., abs)
-[info] - replaceOn with mergeSchema adds new columns
-[info] - replaceOn with fewer source columns fills missing target columns with null
-[info] - replaceOn with mergeSchema referencing new columns in condition
-[info] - replaceOn null-safe equality matching between existing columns with NULL values and new columns with NULL values
-[info] - replaceOn with source from spark.table()
-[info] - replaceOn with source from spark.sql()
-[info] - replaceOn with targetAlias and source .as resolves ambiguous columns
-[info] - targetAlias resolves ambiguity with compound AND condition
-[info] - ambiguous: identical alias for target and source
-[info] - ambiguous: no source alias, bare 'id' on both sides
-[info] - replaceOn with unresolvable column errors
-[info] - replaceOn condition uses aliases for both sides but user forgot targetAlias option
-[info] - replaceOn condition uses aliases for both sides but user forgot source .as alias
-[info] - replaceOn condition uses aliases for both sides but user forgot both aliases
-[info] - ambiguous: compound condition, all columns overlap
-[info] - ambiguous: multiple overlapping columns, only one without alias
-[info] - same column name with different types fails schema merge
-[info] - replaceOn with different schemas, without mergeSchema fails
-[info] - replaceOn with wrong targetAlias errors on unresolved columns
-[info] - replaceOn targetAlias is case insensitive
-[info] - replaceOn with numeric targetAlias '22' resolves with backticks
-[info] - replaceOn with numeric targetAlias '22' without backticks fails on type extraction
-[info] - replaceOn with space containing targetAlias 'hello world' resolves with backticks
-[info] - replaceOn with space containing targetAlias without backticks fails to parse
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=none
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=all
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=auto
-[info] - replaceOn with non-deterministic source records materialization reason
-[info] - replaceOn disableSourceMaterializationNotAllowed errors when materializeSource set to none
-[info] - materialize source unpersist with 1 kill attempts succeeds
-[info] - materialize source unpersist with 2 kill attempts succeeds
-[info] - materialize source unpersist with 3 kill attempts succeeds
-[info] - materialize source unpersist with 4 kill attempts fails
-[info] - save - replaceOn with misaligned column positions between source and target
-[info] - apiOrigin is 'DFv1Save' for DataFrameWriter save()
-[info] - apiOrigin is recorded even when DFv1Save replaceOn fails
-[debug]     Produced 0 nested tasks and 52 events.
-[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite, sbt.ForkMain$SubclassFingerscan@8909f18, false, [SuiteSelector])
-[info] DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite:
-[info] - replaceOn with always-true condition replaces all rows
-[info] - replaceOn with always-false condition appends all rows
-[info] - basic replaceOn with single matching column
-[info] - replaceOn with multiple matching columns
-[info] - replaceOn with duplicate rows in source
-[info] - replaceOn with empty target table
-[info] - replaceOn with empty source
-[info] - replaceOn with filtered source
-[info] - replaceOn with PARTITIONED table
-[info] - replaceOn with CLUSTERED table
-[info] - replaceOn with NORMAL table
-[info] - replaceOn with NULL-safe equality condition
-[info] - replaceOn with condition referencing only target side
-[info] - replaceOn with condition referencing only source side
-[info] - replaceOn with IN predicate in condition
-[info] - replaceOn condition with function (e.g., abs)
-[info] - replaceOn with mergeSchema adds new columns
-[info] - replaceOn with fewer source columns fills missing target columns with null
-[info] - replaceOn with mergeSchema referencing new columns in condition
-[info] - replaceOn null-safe equality matching between existing columns with NULL values and new columns with NULL values
-[info] - replaceOn with source from spark.table()
-[info] - replaceOn with source from spark.sql()
-[info] - replaceOn with targetAlias and source .as resolves ambiguous columns
-[info] - targetAlias resolves ambiguity with compound AND condition
-[info] - ambiguous: identical alias for target and source
-[info] - ambiguous: no source alias, bare 'id' on both sides
-[info] - replaceOn with unresolvable column errors
-[info] - replaceOn condition uses aliases for both sides but user forgot targetAlias option
-[info] - replaceOn condition uses aliases for both sides but user forgot source .as alias
-[info] - replaceOn condition uses aliases for both sides but user forgot both aliases
-[info] - ambiguous: compound condition, all columns overlap
-[info] - ambiguous: multiple overlapping columns, only one without alias
-[info] - same column name with different types fails schema merge
-[info] - replaceOn with different schemas, without mergeSchema fails
-[info] - replaceOn with wrong targetAlias errors on unresolved columns
-[info] - replaceOn targetAlias is case insensitive
-[info] - replaceOn with numeric targetAlias '22' resolves with backticks
-[info] - replaceOn with numeric targetAlias '22' without backticks fails on type extraction
-[info] - replaceOn with space containing targetAlias 'hello world' resolves with backticks
-[info] - replaceOn with space containing targetAlias without backticks fails to parse
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=none
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=all
-[info] - replaceOn with non-Delta source records materialization reason, materializationMode=auto
-[info] - replaceOn with non-deterministic source records materialization reason
-[info] - replaceOn disableSourceMaterializationNotAllowed errors when materializeSource set to none
-[info] - materialize source unpersist with 1 kill attempts succeeds
-[info] - materialize source unpersist with 2 kill attempts succeeds
-[info] - materialize source unpersist with 3 kill attempts succeeds
-[info] - materialize source unpersist with 4 kill attempts fails
-[info] - saveAsTable: replaceOn with always-true condition replaces all
-[info] - saveAsTable: basic replaceOn with single matching column
-[debug]     Produced 0 nested tasks and 51 events.
-[info] Run completed in 6 minutes, 45 seconds.
+[info] Run completed in 6 minutes, 41 seconds.
 [info] Total number of tests run: 329
 [info] Suites: completed 6, aborted 0
 [info] Tests: succeeded 329, failed 0, canceled 0, ignored 7, pending 0

@@ -1,2 +1,8 @@
 [debug] Created transactional ClassFileManager with tempDir = /home/long.vu/delta/kernel/kernel-defaults/target/classes.bak
+[debug] About to delete class files:
+[debug] We backup class files:
+[debug] Created transactional ClassFileManager with tempDir = /home/long.vu/delta/kernel/kernel-defaults/target/classes.bak
+[debug] About to delete class files:
+[debug] We backup class files:
+[debug] Registering generated classes:
 [debug] Removing the temporary directory used for backing up class files: /home/long.vu/delta/kernel/kernel-defaults/target/classes.bak

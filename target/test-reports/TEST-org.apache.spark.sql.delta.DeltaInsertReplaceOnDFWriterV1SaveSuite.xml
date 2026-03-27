@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <testsuite 
-errors="0" failures="0" hostname="ip-10-91-24-247" name="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" tests="52" time="61.607" timestamp="2026-03-27T21:49:59">
+errors="0" failures="0" hostname="ip-10-91-24-247" name="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" tests="52" time="60.459" timestamp="2026-03-27T23:47:57">
   <properties>
     <property name="jline.esc.timeout" value="0"/>
     <property
@@ -32,7 +32,7 @@ errors="0" failures="0" hostname="ip-10-91-24-247" name="org.apache.spark.sql.de
     <property name="os.name" value="Linux"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
     <property
-    name="jnidispatch.path" value="/home/long.vu/.cache/JNA/temp/jna10655817156497131364.tmp"/>
+    name="jnidispatch.path" value="/home/long.vu/.cache/JNA/temp/jna7241633121976938638.tmp"/>
     <property
     name="java.library.path" value="/usr/local/cuda-12.8/lib64:/usr/local/nvidia/lib64:/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
     <property name="jdk.debug" value="release"/>
@@ -55,7 +55,7 @@ errors="0" failures="0" hostname="ip-10-91-24-247" name="org.apache.spark.sql.de
     <property name="java.vm.specification.version" value="17"/>
     <property name="sun.arch.data.model" value="64"/>
     <property
-    name="sun.java.command" value="build/sbt-launch-1.9.9.jar set every scalafmtCheck := {} set (kernelUnityCatalog / Compile / compile) := sbt.internal.inc.Analysis.empty set (kernelDefaults / Compile / compile) := sbt.internal.inc.Analysis.empty spark/testOnly org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1InsertIntoSuite org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveSuite org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveAsTableSuite org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite"/>
+    name="sun.java.command" value="build/sbt-launch-1.9.9.jar set every scalafmtCheck := {} set (kernelUnityCatalog / Compile / compile) := sbt.internal.inc.Analysis.empty set (kernelDefaults / Compile / compile) := sbt.internal.inc.Analysis.empty spark/testOnly org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1InsertIntoSuite org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveSuite org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveAsTableSuite"/>
     <property name="java.home" value="/usr/lib/jvm/java-17-openjdk-amd64"/>
     <property name="user.language" value="en"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
@@ -72,160 +72,160 @@ errors="0" failures="0" hostname="ip-10-91-24-247" name="org.apache.spark.sql.de
     <property name="sun.cpu.endian" value="little"/>
   </properties>
   <testcase 
-  name="replaceOn with always-true condition replaces all rows" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.736">
+  name="replaceOn with always-true condition replaces all rows" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.896">
 </testcase>
   <testcase 
-  name="replaceOn with always-false condition appends all rows" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.149">
+  name="replaceOn with always-false condition appends all rows" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.171">
 </testcase>
   <testcase 
-  name="basic replaceOn with single matching column" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.358">
+  name="basic replaceOn with single matching column" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.411">
 </testcase>
   <testcase 
-  name="replaceOn with multiple matching columns" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.363">
+  name="replaceOn with multiple matching columns" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.402">
 </testcase>
   <testcase 
-  name="replaceOn with duplicate rows in source" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.263">
+  name="replaceOn with duplicate rows in source" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.324">
 </testcase>
   <testcase 
-  name="replaceOn with empty target table" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.025">
+  name="replaceOn with empty target table" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.042">
 </testcase>
   <testcase 
-  name="replaceOn with empty source" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.738">
+  name="replaceOn with empty source" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.765">
 </testcase>
   <testcase 
-  name="replaceOn with filtered source" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.304">
+  name="replaceOn with filtered source" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.313">
 </testcase>
   <testcase 
-  name="replaceOn with PARTITIONED table" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.682">
+  name="replaceOn with PARTITIONED table" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.446">
 </testcase>
   <testcase 
-  name="replaceOn with CLUSTERED table" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.375">
+  name="replaceOn with CLUSTERED table" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.334">
 </testcase>
   <testcase 
-  name="replaceOn with NORMAL table" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.372">
+  name="replaceOn with NORMAL table" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.262">
 </testcase>
   <testcase 
-  name="replaceOn with NULL-safe equality condition" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.406">
+  name="replaceOn with NULL-safe equality condition" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.362">
 </testcase>
   <testcase 
-  name="replaceOn with condition referencing only target side" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.352">
+  name="replaceOn with condition referencing only target side" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.327">
 </testcase>
   <testcase 
-  name="replaceOn with condition referencing only source side" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.309">
+  name="replaceOn with condition referencing only source side" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.311">
 </testcase>
   <testcase 
-  name="replaceOn with IN predicate in condition" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.315">
+  name="replaceOn with IN predicate in condition" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.282">
 </testcase>
   <testcase 
-  name="replaceOn condition with function (e.g., abs)" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.367">
+  name="replaceOn condition with function (e.g., abs)" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.393">
 </testcase>
   <testcase 
-  name="replaceOn with mergeSchema adds new columns" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.427">
+  name="replaceOn with mergeSchema adds new columns" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.366">
 </testcase>
   <testcase 
-  name="replaceOn with fewer source columns fills missing target columns with null" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.376">
+  name="replaceOn with fewer source columns fills missing target columns with null" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.31">
 </testcase>
   <testcase 
   name="replaceOn with mergeSchema referencing new columns in condition" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.356">
 </testcase>
   <testcase 
-  name="replaceOn null-safe equality matching between existing columns with NULL values and new columns with NULL values" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.366">
+  name="replaceOn null-safe equality matching between existing columns with NULL values and new columns with NULL values" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.417">
 </testcase>
   <testcase 
-  name="replaceOn with source from spark.table()" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.689">
+  name="replaceOn with source from spark.table()" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.448">
 </testcase>
   <testcase 
-  name="replaceOn with source from spark.sql()" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.715">
+  name="replaceOn with source from spark.sql()" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.404">
 </testcase>
   <testcase 
-  name="replaceOn with targetAlias and source .as resolves ambiguous columns" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.305">
+  name="replaceOn with targetAlias and source .as resolves ambiguous columns" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.306">
 </testcase>
   <testcase 
-  name="targetAlias resolves ambiguity with compound AND condition" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.392">
+  name="targetAlias resolves ambiguity with compound AND condition" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.442">
 </testcase>
   <testcase 
-  name="ambiguous: identical alias for target and source" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.501">
+  name="ambiguous: identical alias for target and source" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.492">
 </testcase>
   <testcase 
-  name="ambiguous: no source alias, bare 'id' on both sides" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.498">
+  name="ambiguous: no source alias, bare 'id' on both sides" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.49">
 </testcase>
   <testcase 
-  name="replaceOn with unresolvable column errors" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.495">
+  name="replaceOn with unresolvable column errors" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.509">
 </testcase>
   <testcase 
-  name="replaceOn condition uses aliases for both sides but user forgot targetAlias option" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.502">
+  name="replaceOn condition uses aliases for both sides but user forgot targetAlias option" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.49">
 </testcase>
   <testcase 
-  name="replaceOn condition uses aliases for both sides but user forgot source .as alias" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.464">
+  name="replaceOn condition uses aliases for both sides but user forgot source .as alias" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.496">
 </testcase>
   <testcase 
-  name="replaceOn condition uses aliases for both sides but user forgot both aliases" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.479">
+  name="replaceOn condition uses aliases for both sides but user forgot both aliases" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.492">
 </testcase>
   <testcase 
-  name="ambiguous: compound condition, all columns overlap" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.502">
+  name="ambiguous: compound condition, all columns overlap" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.489">
 </testcase>
   <testcase 
-  name="ambiguous: multiple overlapping columns, only one without alias" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.534">
+  name="ambiguous: multiple overlapping columns, only one without alias" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.517">
 </testcase>
   <testcase 
-  name="same column name with different types fails schema merge" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.484">
+  name="same column name with different types fails schema merge" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.502">
 </testcase>
   <testcase 
-  name="replaceOn with different schemas, without mergeSchema fails" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.507">
+  name="replaceOn with different schemas, without mergeSchema fails" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.515">
 </testcase>
   <testcase 
-  name="replaceOn with wrong targetAlias errors on unresolved columns" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.469">
+  name="replaceOn with wrong targetAlias errors on unresolved columns" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.505">
 </testcase>
   <testcase 
-  name="replaceOn targetAlias is case insensitive" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.366">
+  name="replaceOn targetAlias is case insensitive" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.307">
 </testcase>
   <testcase 
-  name="replaceOn with numeric targetAlias '22' resolves with backticks" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.247">
+  name="replaceOn with numeric targetAlias '22' resolves with backticks" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.289">
 </testcase>
   <testcase 
-  name="replaceOn with numeric targetAlias '22' without backticks fails on type extraction" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.482">
+  name="replaceOn with numeric targetAlias '22' without backticks fails on type extraction" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.493">
 </testcase>
   <testcase 
-  name="replaceOn with space containing targetAlias 'hello world' resolves with backticks" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.245">
+  name="replaceOn with space containing targetAlias 'hello world' resolves with backticks" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.298">
 </testcase>
   <testcase 
-  name="replaceOn with space containing targetAlias without backticks fails to parse" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.466">
+  name="replaceOn with space containing targetAlias without backticks fails to parse" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.478">
 </testcase>
   <testcase 
-  name="replaceOn with non-Delta source records materialization reason, materializationMode=none" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.361">
+  name="replaceOn with non-Delta source records materialization reason, materializationMode=none" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.4">
 </testcase>
   <testcase 
-  name="replaceOn with non-Delta source records materialization reason, materializationMode=all" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.602">
+  name="replaceOn with non-Delta source records materialization reason, materializationMode=all" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.361">
 </testcase>
   <testcase 
-  name="replaceOn with non-Delta source records materialization reason, materializationMode=auto" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.614">
+  name="replaceOn with non-Delta source records materialization reason, materializationMode=auto" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.365">
 </testcase>
   <testcase 
-  name="replaceOn with non-deterministic source records materialization reason" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.749">
+  name="replaceOn with non-deterministic source records materialization reason" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.841">
 </testcase>
   <testcase 
-  name="replaceOn disableSourceMaterializationNotAllowed errors when materializeSource set to none" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="4.59">
+  name="replaceOn disableSourceMaterializationNotAllowed errors when materializeSource set to none" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="4.218">
 </testcase>
   <testcase 
-  name="materialize source unpersist with 1 kill attempts succeeds" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.241">
+  name="materialize source unpersist with 1 kill attempts succeeds" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.332">
 </testcase>
   <testcase 
-  name="materialize source unpersist with 2 kill attempts succeeds" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.295">
+  name="materialize source unpersist with 2 kill attempts succeeds" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.297">
 </testcase>
   <testcase 
-  name="materialize source unpersist with 3 kill attempts succeeds" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.364">
+  name="materialize source unpersist with 3 kill attempts succeeds" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.411">
 </testcase>
   <testcase 
-  name="materialize source unpersist with 4 kill attempts fails" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.752">
+  name="materialize source unpersist with 4 kill attempts fails" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.771">
 </testcase>
   <testcase 
-  name="save - replaceOn with misaligned column positions between source and target" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.374">
+  name="save - replaceOn with misaligned column positions between source and target" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.286">
 </testcase>
   <testcase 
-  name="apiOrigin is 'DFv1Save' for DataFrameWriter save()" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.115">
+  name="apiOrigin is 'DFv1Save' for DataFrameWriter save()" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="1.125">
 </testcase>
   <testcase 
-  name="apiOrigin is recorded even when DFv1Save replaceOn fails" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.47">
+  name="apiOrigin is recorded even when DFv1Save replaceOn fails" classname="org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite" time="0.505">
 </testcase>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

@@ -1,4 +1,0 @@
-[info] /home/long.vu/delta/spark/v2/src/main/java/io/delta/spark/internal/v2/catalog/SparkTable.java: Some input files use or override a deprecated API.
-[info] /home/long.vu/delta/spark/v2/src/main/java/io/delta/spark/internal/v2/catalog/SparkTable.java: Recompile with -Xlint:deprecation for details.
-[info] /home/long.vu/delta/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkMicroBatchStream.java: SparkMicroBatchStream.java uses unchecked or unsafe operations.
-[info] /home/long.vu/delta/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkMicroBatchStream.java: Recompile with -Xlint:unchecked for details.

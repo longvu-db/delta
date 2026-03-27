@@ -960,6 +960,18 @@
     ],
     "sqlState" : "22000"
   },
+  "DELTA_DFV2_CREATE_REPLACE_INCOMPATIBLE_REPLACE_ON_OR_USING" : {
+    "message" : [
+      "The replaceOn/replaceUsing option is not supported with DataFrameWriterV2 create/replace/createOrReplace. Use DataFrameWriterV1 save/insertInto/saveAsTable instead."
+    ],
+    "sqlState" : "42000"
+  },
+  "DELTA_DYNAMIC_PARTITION_OVERWRITE_INCOMPATIBLE_REPLACE_ON_OR_USING" : {
+    "message" : [
+      "Cannot use dynamic partition overwrite mode with replaceOn or replaceUsing."
+    ],
+    "sqlState" : "42613"
+  },
   "DELTA_DYNAMIC_PARTITION_OVERWRITE_DISABLED" : {
     "message" : [
       "Dynamic partition overwrite mode is specified by session config or write options, but it is disabled by `delta.dynamicPartitionOverwrite.enabled=false`."
@@ -1367,6 +1379,12 @@
       }
     },
     "sqlState" : "KD00E"
+  },
+  "DELTA_INCOMPATIBLE_DATAFRAME_OPTIONS" : {
+    "message" : [
+      "Cannot use '<firstDeltaOption>' and '<secondDeltaOption>' options at the same time."
+    ],
+    "sqlState" : "42613"
   },
   "DELTA_IDENTITY_COLUMNS_ALTER_COLUMN_NOT_SUPPORTED" : {
     "message" : [
@@ -2356,6 +2374,12 @@
   "DELTA_REPLACE_WHERE_IN_OVERWRITE" : {
     "message" : [
       "You can't use replaceWhere in conjunction with an overwrite by filter"
+    ],
+    "sqlState" : "42613"
+  },
+  "DELTA_OVERWRITE_BY_FILTER_INCOMPATIBLE_REPLACE_ON_OR_USING" : {
+    "message" : [
+      "Cannot use 'replaceWhere' with 'replaceOn' or 'replaceUsing' options."
     ],
     "sqlState" : "42613"
   },

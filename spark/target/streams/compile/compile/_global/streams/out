@@ -1,31 +1,10 @@
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:24:40: Unused import from deprecated object JavaConverters: Use `scala.jdk.CollectionConverters` instead
-[warn] import scala.collection.JavaConverters._
-[warn]                                        ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:28:45: Unused import
-[warn] import org.apache.spark.sql.delta.commands.{AlterTableDropFeatureDeltaCommand, DeltaGenerateCommand}
-[warn]                                             ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:39:17: Unused import
-[warn] import io.delta.exceptions
-[warn]                 ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:28:47: Unused import
-[warn] import org.apache.spark.sql.delta.constraints.Constraint
-[warn]                                               ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:29:59: Unused import
-[warn] import org.apache.spark.sql.delta.constraints.Constraints.Check
-[warn]                                                           ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:30:58: Unused import
-[warn] import org.apache.spark.sql.delta.constraints.Invariants.ArbitraryExpression
-[warn]                                                          ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:37:47: Unused import
-[warn] import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
-[warn]                                               ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:39:56: Unused import
-[warn] import org.apache.spark.sql.catalyst.expressions.{And, Attribute, EqualTo, Expression, Literal}
-[warn]                                                        ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:44:46: Unused import
-[warn] import org.apache.spark.sql.execution.metric.SQLMetric
-[warn]                                              ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:47:36: Unused import
-[warn] import org.apache.spark.sql.types.{StringType, StructType}
-[warn]                                    ^
-[warn] 10 warnings found
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/catalog/AbstractDeltaCatalog.scala:727:19: non-variable type argument org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty in type pattern Seq[org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty] (the underlying of Seq[org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty]) is unchecked since it is eliminated by erasure
+[warn]       case (t, s: Seq[RemoveProperty]) if t == classOf[RemoveProperty] =>
+[warn]                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/catalog/AbstractDeltaCatalog.scala:729:19: non-variable type argument org.apache.spark.sql.connector.catalog.TableChange.SetProperty in type pattern Seq[org.apache.spark.sql.connector.catalog.TableChange.SetProperty] (the underlying of Seq[org.apache.spark.sql.connector.catalog.TableChange.SetProperty]) is unchecked since it is eliminated by erasure
+[warn]       case (t, s: Seq[SetProperty]) if t == classOf[SetProperty] =>
+[warn]                   ^
+[warn] 30 deprecations (since 2.13.0)
+[warn] 1 deprecation (since 3.4.0)
+[warn] 31 deprecations in total; re-run with -deprecation for details
+[warn] 5 warnings found

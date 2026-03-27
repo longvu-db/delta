@@ -1,12 +1,8 @@
 #Successful Tests
-#Fri Mar 27 21:51:58 UTC 2026
-org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveSuite=1774648070231
-org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite=1774635308753
-org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite=1774628966592
-org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite=1774648318764
-org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1InsertIntoSuite=1774647999446
-org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite=1774648260867
-org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveAsTableSuite=1774648141164
-org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOnSuite=1774628886338
-org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedSuite=1774631174181
-org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite=1774648199258
+#Fri Mar 27 23:53:23 UTC 2026
+org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveSuite=1774655533860
+org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite=1774655397301
+org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1InsertIntoSuite=1774655465672
+org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite=1774655337887
+org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveAsTableSuite=1774655603219
+org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite=1774655277435
