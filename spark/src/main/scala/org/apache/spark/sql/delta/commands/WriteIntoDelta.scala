@@ -414,9 +414,15 @@ case class WriteIntoDelta(
       spark: SparkSession,
       txn: OptimisticTransaction,
       conditions: Seq[Expression]): Seq[Action] = {
-    val relation = LogicalRelation(
+    import org.apache.spark.sql.catalyst.plans.logical.SubqueryAlias
+    val baseRelation = LogicalRelation(
         txn.deltaLog.createRelation(snapshotToUseOpt = Some(txn.snapshot),
           catalogTableOpt = txn.catalogTable))
+    val relation = if (tableAliasOpt.isDefined) {
+      SubqueryAlias(tableAliasOpt.get, baseRelation)
+    } else {
+      baseRelation
+    }
     val processedCondition = conditions.reduceOption(And)
     val command = spark.sessionState.analyzer.execute(
       DeleteFromTable(relation, processedCondition.getOrElse(Literal.TrueLiteral)))
