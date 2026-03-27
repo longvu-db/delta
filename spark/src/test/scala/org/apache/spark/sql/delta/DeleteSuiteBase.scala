@@ -426,9 +426,413 @@ trait DeleteBaseTests extends DeleteBaseMixin {
       Row(1, 4) :: Row(1, 1) :: Row(0, 3) :: Nil)
   }
 
-  // NOTE: NOT IN subquery and IN/NOT IN with nulls tests require the notOrIsNull()
-  // transformation which uses DBR-specific APIs (SubExprUtils.isInPredicateNullFree,
-  // InSubquery 4-arg pattern). These are tested in DeleteSubqueryTestsEdge instead.
+  /**
+   * Helper to run subquery delete tests with both partitioned and non-partitioned tables.
+   */
+  protected def testWithPartitioning(name: String)(body: => Unit): Unit = {
+    Seq(true, false).foreach { isPartitioned =>
+      val partSpec = if (isPartitioned) "PARTITIONED BY (c)" else ""
+      test(name + s" isPartitioned=$isPartitioned") {
+        withTable("target") {
+          sql(s"CREATE TABLE target(c int, t1 string) USING delta $partSpec")
+          body
+        }
+      }
+    }
+  }
+
+  /**
+   * Helper to set up target/source tables, run DELETE, and check the result.
+   */
+  protected def checkDeleteResult(
+      target: Seq[(Any, String)],
+      source: Seq[(Any, String)] = Nil,
+      source2: Seq[(Any, String)] = Nil,
+      deleteWhere: String,
+      expected: Seq[(Any, String)]): Unit = {
+    withTempView("source", "source2") {
+      target
+        .map { case (c, t1) => (c.asInstanceOf[Integer], t1) }
+        .toDF("c", "t1")
+        .coalesce(1)
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .saveAsTable("target")
+      if (source.nonEmpty) {
+        source
+          .map { case (c, s1) => (c.asInstanceOf[Integer], s1) }
+          .toDF("c", "s1")
+          .createOrReplaceTempView("source")
+      }
+      if (source2.nonEmpty) {
+        source2
+          .map { case (c, s2) => (c.asInstanceOf[Integer], s2) }
+          .toDF("c", "s2")
+          .createOrReplaceTempView("source2")
+      }
+      executeDelete(target = "target t", where = deleteWhere)
+      checkAnswer(spark.table("target"), expected.map(t => Row.fromTuple(t)))
+    }
+  }
+
+  testWithPartitioning("in/notin subquery") {
+    // ==== In ====
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: Nil,
+      deleteWhere = "c IN (1, 2)",
+      expected = (3, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "c IN (SELECT c + 1 FROM source)",
+      expected = (1, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "b") :: (1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "c = 1 and t1 IN (SELECT 'random string' from source)",
+      expected = (1, "b") :: (1, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "b") :: (1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "c = 1 and t1 IN (SELECT s1 from source)",
+      expected = Nil)
+
+    // ==== Not In ====
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "c NOT IN (SELECT c + 1 FROM source)",
+      expected = (3, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (3, "c") :: Nil,
+      source = (1, "a") :: (2, "b") :: Nil,
+      deleteWhere = "c NOT IN (SELECT c FROM source where c > 1) and t1 >= 'b'",
+      expected = (1, "a") :: (2, "b") :: Nil)
+  }
+
+  testWithPartitioning("in/notin subquery with complex expressions") {
+    checkDeleteResult(
+      target = (-1, "a") :: (-2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: Nil,
+      deleteWhere = "abs(c) not in (select c from source)",
+      expected = (-1, "a") :: (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (-1, "a") :: (-2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "c") :: Nil,
+      deleteWhere = "abs(c) in (select c from source)",
+      expected = (-2, "b") :: (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (-1, "b") :: (null, "c") :: Nil,
+      deleteWhere = "c in (select abs(c) + 1 from source)",
+      expected = (1, "a") :: (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c - 1 in (select c from source)",
+      expected = (1, "a") :: (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: Nil,
+      deleteWhere = "c - 1 not in (select c from source)",
+      expected = (2, "b") :: (null, "c") :: Nil)
+  }
+
+  testWithPartitioning("in/notin subquery with nulls") {
+    // ==== In ====
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c in (select c from source) and t1 = 'b'",
+      expected = (1, "a") :: (2, "b") :: (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c in (select c from source)",
+      expected = (2, "b") :: (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c in (select c from source) or t1 = 'b'",
+      expected = (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c IN (1, 2, null)",
+      expected = (3, "a") :: (null, "b") :: Nil)
+
+    // only target has nulls
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: Nil,
+      deleteWhere = "c in (select c from source)",
+      expected = (2, "b") :: (null, "c") :: Nil)
+
+    // only source has nulls
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c in (select c from source)",
+      expected = (2, "b") :: Nil)
+
+    // ==== Not In ====
+    // the NotIn evaluates to either null or false; no-op
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c not in (select c from source) and t1 = 'b'",
+      expected = (1, "a") :: (2, "b") :: (null, "c") :: Nil)
+
+    // the NotIn evaluates to either null or false; no-op
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c not in (select c from source)",
+      expected = (1, "a") :: (2, "b") :: (null, "c") :: Nil)
+
+    // only target has nulls
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: Nil,
+      deleteWhere = "c not in (select c from source)",
+      expected = (1, "a") :: (null, "c") :: Nil)
+
+    // only source has nulls
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = "c not in (select c from source)",
+      expected = (1, "a") :: (2, "b") :: Nil)
+
+    // not-in empty subquery
+    checkDeleteResult(
+      target = (null, "a") :: (1, "b") :: Nil,
+      source = (1, "c") :: Nil,
+      deleteWhere = "c not in (select c from source where false)",
+      expected = Nil)
+
+    checkDeleteResult(
+      target = (1, null) :: (2, "b") :: Nil,
+      source = (3, "c") :: Nil,
+      deleteWhere = "t1 not in (select s1 from source where false)",
+      expected = Nil)
+
+    checkDeleteResult(
+      target = (null, "a") :: (1, "b") :: Nil,
+      source = (1, "c") :: Nil,
+      deleteWhere = "not (c not in (select c from source where false))",
+      expected = (null, "a") :: (1, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (1, null) :: (2, "b") :: Nil,
+      source = (3, "c") :: Nil,
+      deleteWhere = "not (t1 not in (select s1 from source where false))",
+      expected = (1, null) :: (2, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (null, "a") :: (1, "b") :: Nil,
+      source = (1, "c") :: Nil,
+      deleteWhere = "not (c not in (select c from source))",
+      expected = (null, "a") :: Nil)
+  }
+
+  testWithPartitioning("exists/notexists subquery") {
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "EXISTS (SELECT 1 FROM source WHERE t.c = source.c)",
+      expected = (3, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "NOT EXISTS (SELECT 1 FROM source WHERE t.c = source.c)",
+      expected = (1, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "a") :: Nil,
+      source = (null, "a") :: (1, "b") :: Nil,
+      deleteWhere = "EXISTS (SELECT * FROM source WHERE t.c = c)",
+      expected = (3, "a") :: (null, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "a") :: Nil,
+      source = (null, "a") :: (1, "b") :: Nil,
+      deleteWhere = "NOT EXISTS (SELECT c FROM source WHERE t.c = source.c)",
+      expected = (1, "b") :: Nil)
+
+    // <=>
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "a") :: Nil,
+      source = (null, "a") :: (1, "b") :: Nil,
+      deleteWhere = "EXISTS (SELECT c FROM source WHERE t.c <=> source.c)",
+      expected = (3, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "a") :: Nil,
+      source = (null, "a") :: (1, "b") :: Nil,
+      deleteWhere = "NOT EXISTS (SELECT c FROM source WHERE t.c <=> source.c)",
+      expected = (1, "b") :: (null, "a") :: Nil)
+  }
+
+  testWithPartitioning("uncorrelated scalar subquery") {
+    checkDeleteResult(
+      target = (3, "a") :: (-1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "c < (SELECT max(c) FROM source)",
+      expected = (3, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (-1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "c > (SELECT max(c) FROM source)",
+      expected = (-1, "b") :: Nil)
+  }
+
+  // NOTE: "with correlated scalar subquery" tests are in DeleteSubqueryTestsEdge only.
+  // OSS Spark has stricter validation for scalar subqueries with correlated GROUP BY
+  // that returns multiple columns.
+
+  testWithPartitioning("complex subquery") {
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (3, "c") :: (null, "d") :: Nil,
+      source = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source2 = (2, "b") :: (3, "c") :: (null, "c") :: Nil,
+      deleteWhere = """c in (select c from source)
+                      |AND
+                      |c in (select c from source2)""".stripMargin,
+      // only key 2 appears in both source and source2
+      expected = (1, "a") :: (3, "c") :: (null, "d") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      source2 = (2, "c") :: (null, "c") :: Nil,
+      deleteWhere = """c in (select c from source)
+                      |OR
+                      |c in (select c from source2)""".stripMargin,
+      // key 1 and 2 can be found in either source or source2; delete them
+      expected = (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      source2 = (2, "c") :: (null, "c") :: Nil,
+      deleteWhere = """c not in (select c from source)
+                      |AND c not in (select c from source2)""".stripMargin,
+      // not in with nulls evaluates to false or null; no-op
+      expected = (1, "a") :: (2, "b") :: (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (3, "c") :: Nil,
+      source = (1, "b") :: Nil,
+      source2 = (2, "c") :: Nil,
+      deleteWhere = """c not in (select c from source)
+                      |AND c not in (select c from source2)""".stripMargin,
+      expected = (1, "a") :: (2, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (3, "c") :: Nil,
+      source = (1, "b") :: Nil,
+      source2 = (2, "c") :: Nil,
+      deleteWhere = """c not in (select c from source)
+                      |AND c in (select c from source2)""".stripMargin,
+      expected = (1, "a") :: (3, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      source2 = (2, "c") :: (null, "c") :: Nil,
+      deleteWhere = """c in (select c from source) -- matches (1, "a")
+                      |OR exists (
+                      |  select c from source2 where c = t.c) -- matches (2, "b")""".stripMargin,
+      expected = (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: Nil,
+      source2 = (2, "c") :: (null, "c") :: Nil,
+      deleteWhere = """
+                      |not exists (
+                      |  select c from source2 where c = t.c) -- matches (1, "a"), (null, "c"),
+                      |AND
+                      |c not in (select c from source) -- matches (2, "b")""".stripMargin,
+      expected = (1, "a") :: (2, "b") :: (null, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = """c in (select c from source)
+                      |OR c is null""".stripMargin,
+      expected = (2, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (null, "c") :: Nil,
+      source = (1, "b") :: (null, "b") :: Nil,
+      deleteWhere = """c in (select c from source)
+                      |AND c is null""".stripMargin,
+      expected = (1, "a") :: (2, "b") :: (null, "c") :: Nil)
+  }
+
+  testWithPartitioning("subquery conditions unblocked by SPARK-25154") {
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (3, "c") :: Nil,
+      source = (1, "a") :: Nil,
+      source2 = (1, "a") :: (2, "b") :: Nil,
+      deleteWhere = """c in (select c from source)
+                      |OR not exists (select c from source2 where c = t.c)""".stripMargin,
+      expected = (2, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (3, "c") :: Nil,
+      source = (1, "a") :: (2, "b") :: Nil,
+      deleteWhere = """c not in (select c from source)
+                      |OR c == 2""".stripMargin,
+      expected = (1, "a") :: Nil)
+  }
+
+  // NOTE: "blocked queries" (multi-column IN) tests are in DeleteSubqueryTestsEdge only.
+  // OSS Spark handles multi-column IN predicates differently from DBR.
+
+  testWithPartitioning("nested subquery") {
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (3, "c") :: Nil,
+      source = (1, "a") :: (2, "b") :: Nil,
+      source2 = (1, "b") :: Nil,
+      deleteWhere = "c in (select c from source where c in (select c from source2) or c > 1)",
+      expected = (3, "c") :: Nil)
+
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: Nil,
+      source = (1, "a") :: Nil,
+      source2 = (1, "b") :: Nil,
+      deleteWhere =
+        "c > (select count(c) from source where c in (select c from source2) and c = 0)",
+      expected = Nil)
+  }
+
+  testWithPartitioning("nested subquery with intermediate-level correlation") {
+    // Inner subquery correlates with the intermediate subquery level (source), not the DML
+    // target. This is allowed because it's single-level correlation within the outer subquery.
+    checkDeleteResult(
+      target = (1, "a") :: (2, "b") :: (3, "c") :: Nil,
+      source = (1, "a") :: (2, "b") :: Nil,
+      source2 = (1, "b") :: (2, "b") :: Nil,
+      deleteWhere =
+        "c in (select c from source where c in (select c from source2 where source2.c = source.c))",
+      expected = (3, "c") :: Nil)
+  }
 
   test("schema pruning on data condition") {
     val input = Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value")

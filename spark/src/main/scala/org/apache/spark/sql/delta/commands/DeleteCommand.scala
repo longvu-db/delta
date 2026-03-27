@@ -35,7 +35,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.{Column, DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.catalyst.analysis.EliminateSubqueryAliases
 import org.apache.spark.sql.catalyst.catalog.CatalogTable
-import org.apache.spark.sql.catalyst.expressions.{And, Attribute, AttributeReference, EqualNullSafe, Expression, ExpressionSet, If, InSubquery, IsNotNull, ListQuery, Literal, Not, SubExprUtils, SubqueryExpression}
+import org.apache.spark.sql.catalyst.expressions.{And, Attribute, AttributeReference, EqualNullSafe, Expression, ExpressionSet, If, InSubquery, IsNotNull, ListQuery, Literal, Not, SubqueryExpression}
 import org.apache.spark.sql.catalyst.expressions.Literal.{FalseLiteral, TrueLiteral}
 import org.apache.spark.sql.catalyst.plans.QueryPlan
 import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, Filter, LogicalPlan, SupportsSubquery}
@@ -522,6 +522,17 @@ case class DeleteCommand(
    * @param target the child logical plan of value
    * @param list right-hand operand of In, e.g., value in (list)
    */
+  /**
+   * Checks whether the In predicate is null-free, i.e., neither the value nor the list
+   * can produce nulls. This is determined by checking if IsNotNull constraints for all
+   * relevant columns are implied by the plan constraints and join conditions.
+   */
+  private def isInPredicateNullFree(
+      values: Seq[Expression], l: ListQuery, target: LogicalPlan): Boolean = {
+    val outputNotNulls = ExpressionSet((l.plan.output ++ values).map(IsNotNull))
+    outputNotNulls.subsetOf(l.plan.constraints ++ l.children ++ target.constraints)
+  }
+
   private def makeNullFree(
       value: Expression, target: LogicalPlan, list: ListQuery): InSubquery = {
     val notNullForOuterPlan = ExpressionSet(Seq(IsNotNull(value)))
@@ -529,7 +540,7 @@ case class DeleteCommand(
     val newPlan = Filter(notNullsForSubquery.reduce(And), list.plan)
     val newListQuery =
       list.copy(joinCond = list.joinCond ++ notNullForOuterPlan).withNewPlan(newPlan)
-    assert(SubExprUtils.isInPredicateNullFree(Seq(value), newListQuery, target),
+    assert(isInPredicateNullFree(Seq(value), newListQuery, target),
       s"Unable to make the list query null-free: ${list.treeString}")
     InSubquery(Seq(value), newListQuery)
   }
@@ -580,16 +591,15 @@ case class DeleteCommand(
       //                - when value is not null, this expression is just makeNullFree(NotIn), which
       //                  is equivalent to the original NotIn, because we already know that neither
       //                  value or list is null.
-      case Not(InSubquery(Seq(value), list @ ListQuery(plan, _, _, numCols, _, _),
-      isDynamicPruning, _)) if
-        (!SubExprUtils.isInPredicateNullFree(Seq(value), list, target) && !isDynamicPruning) =>
-        val data = Dataset.ofRows(spark, plan)
+      case Not(InSubquery(Seq(value), list @ ListQuery(plan, _, _, numCols, _, _))) if
+        !isInPredicateNullFree(Seq(value), list, target) =>
+        val data = DataFrameUtils.ofRows(spark, plan)
         assert(numCols == 1, "The output of a ListQuery should have exactly 1 column.")
         import org.apache.spark.sql.delta.implicits._
         val (totalCount, nonNullCount) = recordDeltaOperation(
           deltaLog,
           s"delta.dml.$operation.checkNullsForNotIn") {
-          data.select(count("*"), count(Column(list.childOutputs.head)))
+          data.select(count(Column("*")), count(Column(list.childOutputs.head)))
             .as[(Long, Long)]
             .first()
         }
@@ -612,9 +622,8 @@ case class DeleteCommand(
       //          analyzer blocks expression with a In inside of a Not, except for NotIn.
       //          If this In is part of NotIn, it won't trigger this rule because this In would
       //          have been already turned null-free by Rule 1.
-      case InSubquery(Seq(value), list: ListQuery, isDynamicPruning, _)
-          if (!SubExprUtils.isInPredicateNullFree(Seq(value), list, target) &&
-            !isDynamicPruning) =>
+      case InSubquery(Seq(value), list: ListQuery)
+          if !isInPredicateNullFree(Seq(value), list, target) =>
         makeNullFree(value, target, list)
     }
     Not(EqualNullSafe(newCond, TrueLiteral))
