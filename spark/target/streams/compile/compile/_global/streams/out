@@ -1,0 +1,361 @@
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:48:35: Unused import
+[warn] import org.apache.spark.sql.delta._
+[warn]                                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:57:49: Unused import
+[warn] import org.apache.spark.sql.{AnalysisException, SparkSession}
+[warn]                                                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:62:58: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.ParserUtils.{checkDuplicateClauses, string, withOrigin}
+[warn]                                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:62:81: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.ParserUtils.{checkDuplicateClauses, string, withOrigin}
+[warn]                                                                                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:62:89: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.ParserUtils.{checkDuplicateClauses, string, withOrigin}
+[warn]                                                                                         ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:65:48: Unused import
+[warn] import org.apache.spark.sql.connector.catalog.{CatalogV2Util, TableCatalog}
+[warn]                                                ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:65:63: Unused import
+[warn] import org.apache.spark.sql.connector.catalog.{CatalogV2Util, TableCatalog}
+[warn]                                                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:66:36: Unused import
+[warn] import org.apache.spark.sql.errors.QueryParsingErrors
+[warn]                                    ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/sql/parser/DeltaSqlParser.scala:67:39: Unused import
+[warn] import org.apache.spark.sql.internal.{SQLConf, VariableSubstitution}
+[warn]                                       ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/DeltaMergeBuilder.scala:22:60: Unused import
+[warn] import org.apache.spark.sql.delta.ClassicColumnConversions._
+[warn]                                                            ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/DeltaMergeBuilder.scala:23:36: Unused import
+[warn] import org.apache.spark.sql.delta.{DeltaAnalysisException, PostHocResolveUpCast, PreprocessTableMerge, ResolveDeltaMergeInto}
+[warn]                                    ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/DeltaMergeBuilder.scala:32:38: Unused import
+[warn] import org.apache.spark.sql.catalyst.ExtendedAnalysisException
+[warn]                                      ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/DeltaOptimizeBuilder.scala:27:29: Unused import
+[warn] import org.apache.spark.sql.AnalysisException
+[warn]                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/DeltaOptimizeBuilder.scala:31:45: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.ParseException
+[warn]                                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/execution/DeltaTableOperations.scala:22:60: Unused import
+[warn] import org.apache.spark.sql.delta.ClassicColumnConversions._
+[warn]                                                            ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/execution/DeltaTableOperations.scala:27:95: Unused import
+[warn] import org.apache.spark.sql.delta.commands.{DeltaGenerateCommand, DescribeDeltaDetailCommand, VacuumCommand}
+[warn]                                                                                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/execution/DeltaTableOperations.scala:29:50: Unused import
+[warn] import org.apache.spark.sql.util.ScalaExtensions._
+[warn]                                                  ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/execution/VacuumTableCommand.scala:24:43: Unused import
+[warn] import org.apache.spark.sql.delta.catalog.DeltaTableV2
+[warn]                                           ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/execution/VacuumTableCommand.scala:25:49: Unused import
+[warn] import org.apache.spark.sql.delta.{DeltaErrors, DeltaLog, DeltaTableIdentifier, DeltaTableUtils, UnresolvedDeltaPathOrIdentifier}
+[warn]                                                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/execution/VacuumTableCommand.scala:25:81: Unused import
+[warn] import org.apache.spark.sql.delta.{DeltaErrors, DeltaLog, DeltaTableIdentifier, DeltaTableUtils, UnresolvedDeltaPathOrIdentifier}
+[warn]                                                                                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/execution/VacuumTableCommand.scala:28:58: Unused import
+[warn] import org.apache.spark.sql.delta.commands.VacuumCommand.getDeltaTable
+[warn]                                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/io/delta/tables/execution/VacuumTableCommand.scala:29:48: Unused import
+[warn] import org.apache.spark.sql.execution.command.{LeafRunnableCommand, RunnableCommand}
+[warn]                                                ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/catalyst/plans/logical/DeltaUpdateTable.scala:21:29: Unused import
+[warn] import org.apache.spark.sql.AnalysisException
+[warn]                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/CheckpointProvider.scala:34:29: Unused import
+[warn] import org.apache.spark.sql.Dataset
+[warn]                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checkpoints.scala:23:38: Unused import
+[warn] import scala.math.Ordering.Implicits._
+[warn]                                      ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checkpoints.scala:24:19: Unused import
+[warn] import scala.util.Try
+[warn]                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checkpoints.scala:29:95: Unused import
+[warn] import org.apache.spark.sql.delta.actions.{Action, CheckpointMetadata, Metadata, SidecarFile, SingleAction}
+[warn]                                                                                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checkpoints.scala:34:88: Unused import
+[warn] import org.apache.spark.sql.delta.util.{DeltaFileOperations, DeltaLogGroupingIterator, FileNames}
+[warn]                                                                                        ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checkpoints.scala:38:50: Unused import
+[warn] import org.apache.spark.sql.util.ScalaExtensions._
+[warn]                                                  ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checksum.scala:21:18: Unused import
+[warn] import java.util.TimeZone
+[warn]                  ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checksum.scala:26:33: Unused import
+[warn] import scala.collection.mutable.ArrayBuffer
+[warn]                                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checksum.scala:45:25: Unused import
+[warn] import org.apache.spark.SparkEnv
+[warn]                         ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/Checksum.scala:48:31: Unused import
+[warn] import org.apache.spark.util.{SerializableConfiguration, Utils}
+[warn]                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/ClassicColumnConversions.scala:22:38: Unused import
+[warn] import org.apache.spark.sql.classic.{SparkSession => SparkSessionImpl}
+[warn]                                      ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/CommittedTransaction.scala:21:52: Unused import
+[warn] import org.apache.spark.sql.delta.actions.{Action, AddFile, CommitInfo}
+[warn]                                                    ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/CommittedTransaction.scala:21:61: Unused import
+[warn] import org.apache.spark.sql.delta.actions.{Action, AddFile, CommitInfo}
+[warn]                                                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/ConflictChecker.scala:24:52: Unused import
+[warn] import org.apache.spark.sql.delta.DeltaOperations.{OP_SET_TBLPROPERTIES, ROW_TRACKING_BACKFILL_OPERATION_NAME, ROW_TRACKING_UNBACKFILL_OPERATION_NAME}
+[warn]                                                    ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/ConflictChecker.scala:40:78: Unused import
+[warn] import org.apache.spark.sql.catalyst.expressions.{Expression, ExpressionSet, Or}
+[warn]                                                                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DataFrameUtils.scala:18:30: Unused import
+[warn] import org.apache.spark.sql.{Column, DataFrame, Encoders, SparkSession}
+[warn]                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DefaultRowCommitVersion.scala:20:50: Unused import
+[warn] import org.apache.spark.sql.util.ScalaExtensions._
+[warn]                                                  ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:21:20: Unused import
+[warn] import scala.util.{Failure, Success, Try}
+[warn]                    ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:21:29: Unused import
+[warn] import scala.util.{Failure, Success, Try}
+[warn]                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:36:48: Unused import
+[warn] import org.apache.spark.sql.delta.constraints.{AddConstraint, DropConstraint}
+[warn]                                                ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:36:63: Unused import
+[warn] import org.apache.spark.sql.delta.constraints.{AddConstraint, DropConstraint}
+[warn]                                                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:38:42: Unused import
+[warn] import org.apache.spark.sql.delta.files.{TahoeFileIndex, TahoeLogFileIndex}
+[warn]                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:38:58: Unused import
+[warn] import org.apache.spark.sql.delta.files.{TahoeFileIndex, TahoeLogFileIndex}
+[warn]                                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:47:30: Unused import
+[warn] import org.apache.spark.sql.{AnalysisException, Dataset, SaveMode, SparkSession}
+[warn]                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:47:49: Unused import
+[warn] import org.apache.spark.sql.{AnalysisException, Dataset, SaveMode, SparkSession}
+[warn]                                                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:53:45: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.CatalystSqlParser
+[warn]                                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:54:45: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.ParseException
+[warn]                                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:61:58: Unused import
+[warn] import org.apache.spark.sql.catalyst.types.DataTypeUtils.toAttribute
+[warn]                                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaColumnMapping.scala:35:44: Unused import
+[warn] import org.apache.spark.sql.catalyst.util.{CaseInsensitiveMap, QuotingUtils}
+[warn]                                            ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaConfig.scala:23:62: Unused import
+[warn] import org.apache.spark.sql.delta.actions.{Action, Metadata, Protocol, TableFeatureProtocolUtils}
+[warn]                                                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaConfig.scala:27:66: Unused import
+[warn] import org.apache.spark.sql.delta.stats.{DataSkippingReaderConf, StatisticsCollection}
+[warn]                                                                  ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaConfig.scala:34:30: Unused import
+[warn] import org.apache.spark.util.Utils
+[warn]                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:24:40: Unused import from deprecated object JavaConverters: Use `scala.jdk.CollectionConverters` instead
+[warn] import scala.collection.JavaConverters._
+[warn]                                        ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:28:45: Unused import
+[warn] import org.apache.spark.sql.delta.commands.{AlterTableDropFeatureDeltaCommand, DeltaGenerateCommand}
+[warn]                                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:39:17: Unused import
+[warn] import io.delta.exceptions
+[warn]                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaFileProviderUtils.scala:19:43: Unused import
+[warn] import org.apache.spark.sql.delta.actions.Action
+[warn]                                           ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaHistoryManager.scala:25:26: Unused import
+[warn] import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService, Future}
+[warn]                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaHistoryManager.scala:25:44: Unused import
+[warn] import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService, Future}
+[warn]                                            ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaHistoryManager.scala:25:77: Unused import
+[warn] import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService, Future}
+[warn]                                                                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaHistoryManager.scala:36:50: Unused import
+[warn] import org.apache.spark.sql.util.ScalaExtensions._
+[warn]                                                  ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaLog.scala:27:19: Unused import
+[warn] import scala.util.Try
+[warn]                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaLog.scala:50:59: Unused import
+[warn] import org.apache.spark.sql.catalyst.catalog.{BucketSpec, CatalogStatistics, CatalogTable}
+[warn]                                                           ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaLog.scala:59:34: Unused import
+[warn] import org.apache.spark.sql.util.CaseInsensitiveStringMap
+[warn]                                  ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaLog.scala:94:52: Unused import
+[warn]   import org.apache.spark.sql.delta.util.FileNames._
+[warn]                                                    ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaLogFileIndex.scala:29:46: Unused import
+[warn] import org.apache.spark.sql.types.{LongType, StructField, StructType}
+[warn]                                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaOptions.scala:27:49: Unused import
+[warn] import org.apache.spark.sql.delta.DeltaOptions.{DATA_CHANGE_OPTION, IS_DATAFRAME_WRITER_V1_SAVE_AS_TABLE_OVERWRITE, MERGE_SCHEMA_OPTION, OVERWRITE_SCHEMA_OPTION, PARTITION_OVERWRITE_MODE_OPTION}
+[warn]                                                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaOptions.scala:27:69: Unused import
+[warn] import org.apache.spark.sql.delta.DeltaOptions.{DATA_CHANGE_OPTION, IS_DATAFRAME_WRITER_V1_SAVE_AS_TABLE_OVERWRITE, MERGE_SCHEMA_OPTION, OVERWRITE_SCHEMA_OPTION, PARTITION_OVERWRITE_MODE_OPTION}
+[warn]                                                                     ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaOptions.scala:27:117: Unused import
+[warn] import org.apache.spark.sql.delta.DeltaOptions.{DATA_CHANGE_OPTION, IS_DATAFRAME_WRITER_V1_SAVE_AS_TABLE_OVERWRITE, MERGE_SCHEMA_OPTION, OVERWRITE_SCHEMA_OPTION, PARTITION_OVERWRITE_MODE_OPTION}
+[warn]                                                                                                                     ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaOptions.scala:27:138: Unused import
+[warn] import org.apache.spark.sql.delta.DeltaOptions.{DATA_CHANGE_OPTION, IS_DATAFRAME_WRITER_V1_SAVE_AS_TABLE_OVERWRITE, MERGE_SCHEMA_OPTION, OVERWRITE_SCHEMA_OPTION, PARTITION_OVERWRITE_MODE_OPTION}
+[warn]                                                                                                                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaOptions.scala:27:163: Unused import
+[warn] import org.apache.spark.sql.delta.DeltaOptions.{DATA_CHANGE_OPTION, IS_DATAFRAME_WRITER_V1_SAVE_AS_TABLE_OVERWRITE, MERGE_SCHEMA_OPTION, OVERWRITE_SCHEMA_OPTION, PARTITION_OVERWRITE_MODE_OPTION}
+[warn]                                                                                                                                                                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaParquetFileFormat.scala:25:64: Unused import
+[warn] import org.apache.spark.sql.delta.commands.DeletionVectorUtils.deletionVectorsReadable
+[warn]                                                                ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaParquetFileFormat.scala:40:50: Unused import
+[warn] import org.apache.spark.sql.catalyst.expressions.FileSourceConstantMetadataStructField
+[warn]                                                  ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaParquetFileFormat.scala:47:73: Unused import
+[warn] import org.apache.spark.sql.types.{ByteType, LongType, MetadataBuilder, StringType, StructField, StructType}
+[warn]                                                                         ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaSharedExceptions.scala:21:29: Unused import
+[warn] import org.antlr.v4.runtime.ParserRuleContext
+[warn]                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaSharedExceptions.scala:24:46: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.{DeltaParseException, ParseException, ParseExceptionShims, ParserUtils}
+[warn]                                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaSharedExceptions.scala:24:67: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.{DeltaParseException, ParseException, ParseExceptionShims, ParserUtils}
+[warn]                                                                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaSharedExceptions.scala:24:83: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.{DeltaParseException, ParseException, ParseExceptionShims, ParserUtils}
+[warn]                                                                                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaSharedExceptions.scala:24:104: Unused import
+[warn] import org.apache.spark.sql.catalyst.parser.{DeltaParseException, ParseException, ParseExceptionShims, ParserUtils}
+[warn]                                                                                                        ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaTable.scala:30:35: Unused import
+[warn] import org.apache.spark.internal.{Logging, MDC}
+[warn]                                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaTableValueFunctions.scala:21:25: Unused import
+[warn] import java.util.{Date, Locale}
+[warn]                         ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaTableValueFunctions.scala:33:90: Unused import
+[warn] import org.apache.spark.sql.catalyst.expressions.{Attribute, Expression, ExpressionInfo, Literal, StringLiteral}
+[warn]                                                                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaTableValueFunctions.scala:34:53: Unused import
+[warn] import org.apache.spark.sql.catalyst.plans.logical.{LeafNode, LogicalPlan, UnaryNode}
+[warn]                                                     ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaTableValueFunctions.scala:35:47: Unused import
+[warn] import org.apache.spark.sql.connector.catalog.V1Table
+[warn]                                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaTableValueFunctions.scala:37:55: Unused import
+[warn] import org.apache.spark.sql.execution.datasources.v2.{DataSourceV2Relation, DataSourceV2RelationShim}
+[warn]                                                       ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaThrowableHelper.scala:27:42: Unused import
+[warn] import org.apache.spark.{SparkException, SparkThrowable}
+[warn]                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaUnsupportedOperationsCheck.scala:29:46: Unused import
+[warn] import org.apache.spark.sql.catalyst.catalog.CatalogTableType
+[warn]                                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaUnsupportedOperationsCheck.scala:32:55: Unused import
+[warn] import org.apache.spark.sql.execution.datasources.v2.{DataSourceV2Relation, DataSourceV2RelationShim}
+[warn]                                                       ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/GenerateIdentityValues.scala:25:51: Unused import
+[warn] import org.apache.spark.sql.catalyst.expressions.{Expression, LeafExpression, Nondeterministic}
+[warn]                                                   ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/GeneratedColumn.scala:25:42: Unused import
+[warn] import org.apache.spark.sql.delta.files.{TahoeBatchFileIndex, TahoeFileIndex}
+[warn]                                          ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/GeneratedColumn.scala:25:63: Unused import
+[warn] import org.apache.spark.sql.delta.files.{TahoeBatchFileIndex, TahoeFileIndex}
+[warn]                                                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/GeneratedColumn.scala:27:54: Unused import
+[warn] import org.apache.spark.sql.delta.schema.SchemaUtils.quoteIdentifier
+[warn]                                                      ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/GeneratedColumn.scala:32:57: Unused import
+[warn] import org.apache.spark.sql.{AnalysisException, Column, Dataset, SparkSession}
+[warn]                                                         ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/GeneratedColumn.scala:42:52: Unused import
+[warn] import org.apache.spark.sql.execution.datasources.{HadoopFsRelation, LogicalRelation}
+[warn]                                                    ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/IcebergCompat.scala:19:48: Unused import
+[warn] import org.apache.spark.sql.delta.DeltaConfigs._
+[warn]                                                ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/IdentityColumn.scala:25:43: Unused import
+[warn] import org.apache.spark.sql.delta.sources.DeltaSQLConf
+[warn]                                           ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/IdentityColumn.scala:31:49: Unused import
+[warn] import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession}
+[warn]                                                 ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/LastCheckpointInfo.scala:25:54: Unused import
+[warn] import com.fasterxml.jackson.annotation.{JsonIgnore, JsonIgnoreProperties, JsonPropertyOrder}
+[warn]                                                      ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:485:36: value assignNewExprIDsBeforeUnion is not a member of object org.apache.spark.sql.delta.commands.DMLUtils
+[error]           tableData.union(DMLUtils.assignNewExprIDsBeforeUnion(spark, cdcData))
+[error]                                    ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:532:25: value isInPredicateNullFree is not a member of object org.apache.spark.sql.catalyst.expressions.SubExprUtils
+[error]     assert(SubExprUtils.isInPredicateNullFree(Seq(value), newListQuery, target),
+[error]                         ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:583:26: wrong number of arguments for pattern org.apache.spark.sql.catalyst.expressions.InSubquery(values: Seq[org.apache.spark.sql.catalyst.expressions.Expression], query: org.apache.spark.sql.catalyst.expressions.ListQuery)
+[error]       case Not(InSubquery(Seq(value), list @ ListQuery(plan, _, _, numCols, _, _),
+[error]                          ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:585:24: value isInPredicateNullFree is not a member of object org.apache.spark.sql.catalyst.expressions.SubExprUtils
+[error]         (!SubExprUtils.isInPredicateNullFree(Seq(value), list, target) && !isDynamicPruning) =>
+[error]                        ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:586:20: not found: value Dataset
+[error]         val data = Dataset.ofRows(spark, plan)
+[error]                    ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:596:24: value > is not a member of Any
+[error]         if (totalCount > nonNullCount) {
+[error]                        ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:615:22: wrong number of arguments for pattern org.apache.spark.sql.catalyst.expressions.InSubquery(values: Seq[org.apache.spark.sql.catalyst.expressions.Expression], query: org.apache.spark.sql.catalyst.expressions.ListQuery)
+[error]       case InSubquery(Seq(value), list: ListQuery, isDynamicPruning, _)
+[error]                      ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala:616:29: value isInPredicateNullFree is not a member of object org.apache.spark.sql.catalyst.expressions.SubExprUtils
+[error]           if (!SubExprUtils.isInPredicateNullFree(Seq(value), list, target) &&
+[error]                             ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:21:52: object RequiresDMLPermissions is not a member of package org.apache.spark.sql.catalyst.plans.logical
+[error] import org.apache.spark.sql.catalyst.plans.logical.RequiresDMLPermissions
+[error]                                                    ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:22:23: object sql is not a member of package com.databricks
+[error] import com.databricks.sql.managedcatalog.{
+[error]                       ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:29:35: object TimerUtils is not a member of package org.apache.spark.sql.delta
+[error] import org.apache.spark.sql.delta.TimerUtils.measureMs
+[error]                                   ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:35:35: object QueryTag is not a member of package org.apache.spark.sql.util
+[error] import org.apache.spark.sql.util.{QueryTag, QueryTagger}
+[error]                                   ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:35:45: object QueryTagger is not a member of package org.apache.spark.sql.util
+[error] import org.apache.spark.sql.util.{QueryTag, QueryTagger}
+[error]                                             ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:43:53: object InsertReplaceCriteria is not a member of package org.apache.spark.sql.catalyst.plans.logical
+[error] import org.apache.spark.sql.catalyst.plans.logical.{InsertReplaceCriteria, InsertReplaceOn, InsertReplaceUsing, LogicalPlan, Project}
+[error]                                                     ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:43:76: object InsertReplaceOn is not a member of package org.apache.spark.sql.catalyst.plans.logical
+[error] import org.apache.spark.sql.catalyst.plans.logical.{InsertReplaceCriteria, InsertReplaceOn, InsertReplaceUsing, LogicalPlan, Project}
+[error]                                                                            ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:43:93: object InsertReplaceUsing is not a member of package org.apache.spark.sql.catalyst.plans.logical
+[error] import org.apache.spark.sql.catalyst.plans.logical.{InsertReplaceCriteria, InsertReplaceOn, InsertReplaceUsing, LogicalPlan, Project}
+[error]                                                                                             ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:122:28: type mismatch;
+[error]  found   : Option[org.apache.spark.sql.catalyst.catalog.ClusterBySpec]
+[error]  required: Option[org.apache.spark.sql.delta.skipping.clustering.temp.ClusterBySpec]
+[error]         txn, sparkSession, clusterBySpecOpt, isTableReplace)
+[error]                            ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:143:21: unknown parameter name: tableAliasOpt
+[error]       tableAliasOpt = replaceOnOrUsingTableAliasOpt,
+[error]                     ^
+[error] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeltaInsertReplaceOnOrUsingCommand.scala:144:34: unknown parameter name: isInsertReplaceUsingByName
+[error]       isInsertReplaceUsingByName = byName && insertReplaceCriteria.isInstanceOf[InsertReplaceUsing])
+[error]                                  ^
+[warn] 100 warnings found
+[error] 19 errors found

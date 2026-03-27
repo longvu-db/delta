@@ -1,0 +1,54 @@
+package org.apache.spark.sql.delta.coordinatedcommits;
+public  class CoordinatedCommitsPropertyReplaceTableSuite extends org.apache.spark.sql.QueryTest implements org.apache.spark.sql.delta.coordinatedcommits.CoordinatedCommitsPropertyReplaceTableSuiteBase {
+  public   CoordinatedCommitsPropertyReplaceTableSuite ()  { throw new RuntimeException(); }
+  public  org.apache.spark.sql.delta.DeltaTestUtilsBase.ExpectedResult$ ExpectedResult ()  { throw new RuntimeException(); }
+  public  org.scalatest.concurrent.AbstractPatienceConfiguration.PatienceConfig$ PatienceConfig ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> allNulls ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.rdd.RDD<org.apache.spark.sql.test.SQLTestData.ArrayData> arrayData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> binaryData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.rdd.RDD<org.apache.spark.sql.test.SQLTestData.IntervalData> calendarIntervalData ()  { throw new RuntimeException(); }
+  protected  java.lang.String cc1 ()  { throw new RuntimeException(); }
+  protected  java.lang.String cc2 ()  { throw new RuntimeException(); }
+  protected  java.lang.String command ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> complexData ()  { throw new RuntimeException(); }
+  protected  java.lang.String coordinatorConfDefaultKey ()  { throw new RuntimeException(); }
+  protected  java.lang.String coordinatorConfKey ()  { throw new RuntimeException(); }
+  protected  java.lang.String coordinatorNameDefaultKey ()  { throw new RuntimeException(); }
+  protected  java.lang.String coordinatorNameKey ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> courseSales ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> decimalData ()  { throw new RuntimeException(); }
+  protected  scala.collection.immutable.Map<java.lang.String, java.lang.String> defaultCommitsCoordinatorConf ()  { throw new RuntimeException(); }
+  protected  java.lang.String defaultCommitsCoordinatorName ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> emptyTestData ()  { throw new RuntimeException(); }
+  protected  boolean enableAutoThreadAudit ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> intervalData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> largeAndSmallInts ()  { throw new RuntimeException(); }
+  protected  scala.collection.mutable.Map<java.lang.String, java.lang.Object> locRefCount ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> lowerCaseData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> lowerCaseDataWithDuplicates ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.rdd.RDD<org.apache.spark.sql.test.SQLTestData.MapData> mapData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> negativeData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> nullInts ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> nullStrings ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.rdd.RDD<org.apache.spark.sql.test.SQLTestData.StringData> nullableRepeatedData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> person ()  { throw new RuntimeException(); }
+  protected  java.lang.String randomCoordinatorConf ()  { throw new RuntimeException(); }
+  protected  java.lang.String randomTableConf ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.rdd.RDD<org.apache.spark.sql.test.SQLTestData.StringData> repeatedData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> salary ()  { throw new RuntimeException(); }
+  protected  java.lang.String source ()  { throw new RuntimeException(); }
+  protected  scala.Function1<java.lang.String, org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row>> sql ()  { throw new RuntimeException(); }
+  protected  java.lang.String tableConfDefaultKey ()  { throw new RuntimeException(); }
+  protected  java.lang.String tableConfKey ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> tableName ()  { throw new RuntimeException(); }
+  protected  java.lang.String target ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> testData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> testData2 ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> testData3 ()  { throw new RuntimeException(); }
+  public  void testImpl (scala.collection.immutable.Seq<scala.Tuple2<java.lang.String, java.lang.String>> commandConfs, scala.collection.immutable.Seq<scala.Tuple2<java.lang.String, java.lang.String>> defaultConfs, scala.collection.immutable.Seq<scala.Tuple2<java.lang.String, java.lang.String>> targetConfs, scala.collection.immutable.Seq<scala.Tuple2<java.lang.String, java.lang.String>> sourceConfs, scala.Option<java.lang.String> expectedCoordinator)  { throw new RuntimeException(); }
+  public  org.apache.spark.sql.test.SQLTestUtilsBase.testImplicits$ testImplicits ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> trainingSales ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.rdd.RDD<java.lang.String> unparsedStrings ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.sql.classic.Dataset<org.apache.spark.sql.Row> upperCaseData ()  { throw new RuntimeException(); }
+  protected  org.apache.spark.rdd.RDD<org.apache.spark.sql.test.SQLTestData.IntField> withEmptyParts ()  { throw new RuntimeException(); }
+}

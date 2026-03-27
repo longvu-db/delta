@@ -1,0 +1,6 @@
+package org.apache.spark.sql.delta;
+public  interface MergeIntoSuiteBaseMiscTests extends org.apache.spark.sql.delta.MergeIntoSuiteBaseMixin {
+  public  void testMatchedOnlyOptimization (java.lang.String name, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Object, java.lang.Object>> source, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Object, java.lang.Object>> target, java.lang.String mergeOn, scala.collection.immutable.Seq<org.apache.spark.sql.delta.MergeHelpers.MergeClause> mergeClauses, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Object, java.lang.Object>> result)  ;
+  public  void testNullCaseMatchedOnly (java.lang.String name, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> source, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> target, java.lang.String mergeOn, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> result)  ;
+  public  void testStar (java.lang.String name, scala.collection.immutable.Seq<java.lang.String> source, scala.collection.immutable.Seq<java.lang.String> target, scala.collection.immutable.Seq<org.apache.spark.sql.delta.MergeHelpers.MergeClause> mergeClauses, scala.collection.immutable.Seq<java.lang.String> result, scala.collection.immutable.Seq<java.lang.String> errorStrs)  ;
+}

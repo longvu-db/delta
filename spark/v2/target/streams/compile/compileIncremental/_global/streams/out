@@ -1,0 +1,67 @@
+[debug] [zinc] IncrementalCompile -----------
+[debug] IncrementalCompile.incrementalCompile
+[debug] previous = Stamps for: 44 products, 30 sources, 16 libraries
+[debug] current source = Set(${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/unitycatalog/UCTableInfo.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/unitycatalog/UCManagedTableSnapshotManager.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/StatsUtils.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/catalog/SparkTable.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/unitycatalog/UCUtils.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/ExpressionUtils.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkMicroBatchStream.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/IndexedFile.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/PartitionUtils.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/ProtocolMetadataAdapterV2.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/CloseableIterator.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/deletionvector/ColumnVectorWithFilter.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/RowTrackingUtils.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkScanBuilder.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/StreamingHelper.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/ScalaUtils.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/deletionvector/DeletionVectorReadFunction.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkBatch.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkScan.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/PathBasedSnapshotManager.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/SerializableKernelRowWrapper.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/DeltaSnapshotManager.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/DeltaInputPartition.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/exception/VersionNotFoundException.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/SchemaUtils.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkReaderFactory.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkPartitionReader.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/DeltaParquetFileFormatV2.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/SnapshotManagerFactory.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/deletionvector/DeletionVectorSchemaContext.java)
+[debug] Invalidating '${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes/io/delta/kernel/defaults/engine/DefaultEngine.class' because ${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes/io/delta/kernel/defaults/engine/DefaultEngine.class (farm(c2de1ca15c341574)) != ${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes (absent)
+[debug] Invalidating '${BASE}/kernel/unitycatalog/target/classes/io/delta/kernel/unitycatalog/UCCatalogManagedClient.class' because ${BASE}/kernel/unitycatalog/target/classes/io/delta/kernel/unitycatalog/UCCatalogManagedClient.class (farm(1329d45730ae80fd)) != ${BASE}/kernel/unitycatalog/target/classes (absent)
+[debug] Invalidating '${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes/io/delta/kernel/defaults/internal/json/JsonUtils.class' because ${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes/io/delta/kernel/defaults/internal/json/JsonUtils.class (farm(8e91bc04809c7f30)) != ${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes (absent)
+[debug] > initialChanges = InitialChanges(Changes(added = Set(), removed = Set(), changed = Set(), unmodified = ...),Set(),Set(${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes/io/delta/kernel/defaults/internal/json/JsonUtils.class, ${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes/io/delta/kernel/defaults/engine/DefaultEngine.class, ${BASE}/kernel/unitycatalog/target/classes/io/delta/kernel/unitycatalog/UCCatalogManagedClient.class),API Changes: Set(NamesChange(org.apache.spark.sql.delta.sources.DeltaSQLConf,ModifiedNames(changes = UsedName(REPLACE_USING_OPTION_IN_DATAFRAME_WRITER_ENABLED,[Default]), UsedName(REPLACE_ON_OPTION_IN_DATAFRAME_WRITER_ENABLED,[Default]), UsedName(INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE,[Default]))), NamesChange(org.apache.spark.sql.delta.DeltaOptions,ModifiedNames(changes = UsedName(isInsertAtomicReplaceOp,[Default]), UsedName(REPLACE_USING_OPTION,[Default]), UsedName(replaceOn,[Default]), UsedName(replaceUsing,[Default]), UsedName(targetAlias,[Default]), UsedName(REPLACE_ON_OPTION,[Default]), UsedName(isReplaceOnOrUsingDefined,[Default]), UsedName(isInsertPartialOverwriteOp,[Default]), UsedName(REPLACE_USING_INTERNAL_TABLE_ALIAS,[Default]), UsedName(parsedReplaceUsingColsList,[Default]), UsedName(TARGET_ALIAS_OPTION,[Default])))))
+[debug] The org.apache.spark.sql.delta.sources.DeltaSQLConf has the following regular definitions changed:
+[debug] 	UsedName(REPLACE_USING_OPTION_IN_DATAFRAME_WRITER_ENABLED,[Default]), UsedName(REPLACE_ON_OPTION_IN_DATAFRAME_WRITER_ENABLED,[Default]), UsedName(INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE,[Default]).
+[debug] All member reference dependencies will be considered within this context.
+[debug] Files invalidated by inheriting from (external) org.apache.spark.sql.delta.sources.DeltaSQLConf: Set()
+[debug] Now invalidating by inheritance (internally).
+[debug] Getting direct dependencies of all classes transitively invalidated by inheritance.
+[debug] Getting classes that directly depend on (external) org.apache.spark.sql.delta.sources.DeltaSQLConf.
+[debug] Name hashing optimization doesn't apply to non-Scala dependency: io.delta.spark.internal.v2.read.SparkMicroBatchStream
+[debug] The org.apache.spark.sql.delta.DeltaOptions has the following regular definitions changed:
+[debug] 	UsedName(isInsertAtomicReplaceOp,[Default]), UsedName(REPLACE_USING_OPTION,[Default]), UsedName(replaceOn,[Default]), UsedName(replaceUsing,[Default]), UsedName(targetAlias,[Default]), UsedName(REPLACE_ON_OPTION,[Default]), UsedName(isReplaceOnOrUsingDefined,[Default]), UsedName(isInsertPartialOverwriteOp,[Default]), UsedName(REPLACE_USING_INTERNAL_TABLE_ALIAS,[Default]), UsedName(parsedReplaceUsingColsList,[Default]), UsedName(TARGET_ALIAS_OPTION,[Default]).
+[debug] All member reference dependencies will be considered within this context.
+[debug] Files invalidated by inheriting from (external) org.apache.spark.sql.delta.DeltaOptions: Set()
+[debug] Now invalidating by inheritance (internally).
+[debug] Getting direct dependencies of all classes transitively invalidated by inheritance.
+[debug] Getting classes that directly depend on (external) org.apache.spark.sql.delta.DeltaOptions.
+[debug] Name hashing optimization doesn't apply to non-Scala dependency: io.delta.spark.internal.v2.read.SparkScan
+[debug] Name hashing optimization doesn't apply to non-Scala dependency: io.delta.spark.internal.v2.read.SparkMicroBatchStream
+[debug] 
+[debug] Initial source changes:
+[debug] 	removed: Set()
+[debug] 	added: Set()
+[debug] 	modified: Set()
+[debug] Invalidated products: Set()
+[debug] External API changes: API Changes: Set(NamesChange(org.apache.spark.sql.delta.sources.DeltaSQLConf,ModifiedNames(changes = UsedName(REPLACE_USING_OPTION_IN_DATAFRAME_WRITER_ENABLED,[Default]), UsedName(REPLACE_ON_OPTION_IN_DATAFRAME_WRITER_ENABLED,[Default]), UsedName(INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE,[Default]))), NamesChange(org.apache.spark.sql.delta.DeltaOptions,ModifiedNames(changes = UsedName(isInsertAtomicReplaceOp,[Default]), UsedName(REPLACE_USING_OPTION,[Default]), UsedName(replaceOn,[Default]), UsedName(replaceUsing,[Default]), UsedName(targetAlias,[Default]), UsedName(REPLACE_ON_OPTION,[Default]), UsedName(isReplaceOnOrUsingDefined,[Default]), UsedName(isInsertPartialOverwriteOp,[Default]), UsedName(REPLACE_USING_INTERNAL_TABLE_ALIAS,[Default]), UsedName(parsedReplaceUsingColsList,[Default]), UsedName(TARGET_ALIAS_OPTION,[Default]))))
+[debug] Modified binary dependencies: Set(${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes/io/delta/kernel/defaults/internal/json/JsonUtils.class, ${BASE}/kernel/kernel-defaults/target/scala-2.13/kernel-defaults-classes/io/delta/kernel/defaults/engine/DefaultEngine.class, ${BASE}/kernel/unitycatalog/target/classes/io/delta/kernel/unitycatalog/UCCatalogManagedClient.class)
+[debug] Initial directly invalidated classes: Set()
+[debug] Sources indirectly invalidated by:
+[debug] 	product: Set()
+[debug] 	binary dep: Set(${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/unitycatalog/UCManagedTableSnapshotManager.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/catalog/SparkTable.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkMicroBatchStream.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkScan.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/PathBasedSnapshotManager.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/SerializableKernelRowWrapper.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/SnapshotManagerFactory.java)
+[debug] 	external source: Set(io.delta.spark.internal.v2.read.SparkMicroBatchStream, io.delta.spark.internal.v2.read.SparkScan)
+[debug] All initially invalidated classes: Set(io.delta.spark.internal.v2.read.SparkMicroBatchStream, io.delta.spark.internal.v2.read.SparkScan)
+[debug] All initially invalidated sources:Set(${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/unitycatalog/UCManagedTableSnapshotManager.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/catalog/SparkTable.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkMicroBatchStream.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/read/SparkScan.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/PathBasedSnapshotManager.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/utils/SerializableKernelRowWrapper.java, ${BASE}/spark/v2/src/main/java/io/delta/spark/internal/v2/snapshot/SnapshotManagerFactory.java)
+[debug] Initial set of included nodes: io.delta.spark.internal.v2.read.SparkMicroBatchStream.InitialSnapshotCache, io.delta.spark.internal.v2.read.SparkMicroBatchStream, io.delta.spark.internal.v2.read.SparkScan, io.delta.spark.internal.v2.read.SparkScan.RuntimePredicate
+[debug] compilation cycle 1
+[info] compiling 7 Java sources to /home/long.vu/delta/spark/v2/target/scala-2.13/classes ...
+[debug] Attempting to call com.sun.tools.javac.api.JavacTool@401bc6c0 directly...
+[debug] Java compilation took 0.850014487 s
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.read.SparkMicroBatchStream$1
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.snapshot.unitycatalog.UCManagedTableSnapshotManager
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.read.SparkScan$1
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.snapshot.SnapshotManagerFactory
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.read.SparkMicroBatchStream$InitialSnapshotCache
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.read.SparkScan$2
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.read.SparkMicroBatchStream
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.read.SparkScan$RuntimePredicate
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.read.SparkScan
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.snapshot.PathBasedSnapshotManager
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.catalog.SparkTable
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.catalog.SparkTable$SchemaProvider
+[debug] [zinc] classfile.Parser parsing io.delta.spark.internal.v2.utils.SerializableKernelRowWrapper
+[debug] Java analysis took 0.113056011 s
+[debug] Java compilation + analysis took 0.965756901 s
+[info] done compiling
+[debug] New invalidations:
+[debug] Initial set of included nodes: 
+[debug] Previously invalidated, but (transitively) depend on new invalidations:
+[debug] Final step, transitive dependencies:
+[debug] 	Set()
+[debug] No classes were invalidated.

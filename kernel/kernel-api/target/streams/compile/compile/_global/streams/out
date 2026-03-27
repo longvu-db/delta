@@ -1,0 +1,2 @@
+[info] /home/long.vu/delta/kernel/kernel-api/src/main/java/io/delta/kernel/types/FieldMetadata.java: Some input files use unchecked or unsafe operations.
+[info] /home/long.vu/delta/kernel/kernel-api/src/main/java/io/delta/kernel/types/FieldMetadata.java: Recompile with -Xlint:unchecked for details.

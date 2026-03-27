@@ -1,0 +1,6 @@
+package org.apache.spark.sql.delta;
+public  interface MergeIntoBasicTests extends org.apache.spark.sql.delta.MergeIntoSuiteBaseMixin {
+  public  void testLocalPredicates (java.lang.String name, scala.collection.immutable.Seq<scala.Tuple3<java.lang.String, java.lang.String, java.lang.String>> target, scala.collection.immutable.Seq<scala.Tuple2<java.lang.String, java.lang.String>> source, java.lang.String condition, scala.collection.immutable.Seq<scala.Tuple3<java.lang.String, java.lang.String, java.lang.String>> expectedResults, int numFilesPerPartition)  ;
+  public  void testNullCase (java.lang.String name, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> target, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> source, java.lang.String condition, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> expectedResults)  ;
+  public  void testNullCaseInsertOnly (java.lang.String name, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> target, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> source, java.lang.String condition, scala.collection.immutable.Seq<scala.Tuple2<java.lang.Integer, java.lang.Integer>> expectedResults, scala.Option<java.lang.String> insertCondition)  ;
+}

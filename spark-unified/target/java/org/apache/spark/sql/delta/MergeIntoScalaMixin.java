@@ -1,0 +1,5 @@
+package org.apache.spark.sql.delta;
+public  interface MergeIntoScalaMixin extends org.apache.spark.sql.delta.MergeIntoSuiteBaseMixin, org.apache.spark.sql.delta.MergeIntoScalaTestUtils, org.apache.spark.sql.delta.test.DeltaSQLCommandTest, org.apache.spark.sql.delta.DeltaDMLTestUtilsPathBased, org.apache.spark.sql.delta.DeltaTestUtilsForTempViews, org.apache.spark.sql.delta.test.DeltaExcludedTestMixin {
+  public  scala.collection.immutable.Map<java.lang.String, java.lang.String> mappedErrorClasses ()  ;
+  public  void testNestedDataSupport (java.lang.String name, java.lang.String namePrefix, java.lang.String source, java.lang.String target, scala.collection.immutable.Seq<java.lang.String> update, java.lang.String insert, org.apache.spark.sql.types.StructType targetSchema, org.apache.spark.sql.types.StructType sourceSchema, java.lang.String result, scala.collection.immutable.Seq<java.lang.String> errorStrs, scala.collection.immutable.Seq<scala.Tuple2<java.lang.String, java.lang.String>> confs)  ;
+}

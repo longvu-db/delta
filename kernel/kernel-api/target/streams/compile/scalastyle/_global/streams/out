@@ -1,0 +1,8 @@
+[info] scalastyle using config /home/long.vu/delta/scalastyle-config.xml
+[debug] Starting scalastyle
+[info] scalastyle Processed 0 file(s)
+[info] scalastyle Found 0 errors
+[info] scalastyle Found 0 warnings
+[info] scalastyle Found 0 infos
+[info] scalastyle Finished in 1 ms
+[success] created output: /home/long.vu/delta/kernel/kernel-api/target

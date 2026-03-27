@@ -1,0 +1,4 @@
+package org.apache.spark.sql.delta;
+public  interface CheckpointProtectionTestUtilsMixin extends org.apache.spark.sql.delta.test.DeltaSQLCommandTest {
+  public  void testRequireCheckpointProtectionBeforeVersion (int createNumCommitsOutsideRetentionPeriod, int createNumCommitsWithinRetentionPeriod, scala.collection.immutable.Set<java.lang.Object> createCheckpoints, int requireCheckpointProtectionBeforeVersion, scala.Option<org.apache.spark.sql.delta.TableFeature> additionalFeatureToEnable, org.apache.spark.sql.delta.TableFeature unsupportedFeature, scala.Option<java.lang.Object> unsupportedFeatureStartVersion, scala.Option<java.lang.Object> unsupportedFeatureEndVersion, scala.Option<java.lang.Object> incompleteCRCVersion, scala.Option<java.lang.Object> missingCRCVersion, scala.collection.immutable.Seq<java.lang.Object> expectedCommitsAfterCleanup, scala.collection.immutable.Set<java.lang.Object> expectedCheckpointsAfterCleanup)  ;
+}

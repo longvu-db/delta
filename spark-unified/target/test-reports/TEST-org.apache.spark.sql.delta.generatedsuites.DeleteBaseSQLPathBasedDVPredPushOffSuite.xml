@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuite hostname="ip-10-91-24-247" name="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" tests="40" errors="0" failures="0" skipped="3" time="79.932" timestamp="2026-03-27T16:29:26">
+          <properties>
+      <property name="java.specification.version" value="17"/><property name="sun.jnu.encoding" value="UTF-8"/><property name="sun.arch.data.model" value="64"/><property name="java.vendor.url" value="https://ubuntu.com/"/><property name="sbt.override.build.repos" value="true"/><property name="sun.boot.library.path" value="/usr/lib/jvm/java-17-openjdk-amd64/lib"/><property name="sun.java.command" value="build/sbt-launch-1.9.9.jar spark/testOnly org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedCDCOnSuite org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOnSuite org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite"/><property name="jdk.debug" value="release"/><property name="java.specification.vendor" value="Oracle Corporation"/><property name="java.version.date" value="2025-04-15"/><property name="java.home" value="/usr/lib/jvm/java-17-openjdk-amd64"/><property name="file.separator" value="/"/><property name="java.vm.compressedOopsMode" value="Zero based"/><property name="line.separator" value="
+"/><property name="java.vm.specification.vendor" value="Oracle Corporation"/><property name="java.specification.name" value="Java Platform API Specification"/><property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/><property name="java.runtime.version" value="17.0.15+6-Ubuntu-0ubuntu120.04"/><property name="user.name" value="long.vu"/><property name="log4j.ignoreTCL" value="true"/><property name="file.encoding" value="UTF-8"/><property name="jnidispatch.path" value="/home/long.vu/.cache/JNA/temp/jna3806100697647373362.tmp"/><property name="jna.loaded" value="true"/><property name="java.io.tmpdir" value="/tmp"/><property name="java.version" value="17.0.15"/><property name="java.vm.specification.name" value="Java Virtual Machine Specification"/><property name="native.encoding" value="UTF-8"/><property name="java.library.path" value="/usr/local/cuda-12.8/lib64:/usr/local/nvidia/lib64:/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/><property name="java.vendor" value="Ubuntu"/><property name="java.specification.maintenance.version" value="1"/><property name="sun.io.unicode.encoding" value="UnicodeLittle"/><property name="java.class.path" value="build/sbt-launch-1.9.9.jar"/><property name="java.vm.vendor" value="Ubuntu"/><property name="jline.shutdownhook" value="false"/><property name="user.timezone" value="Etc/UTC"/><property name="java.vm.specification.version" value="17"/><property name="os.name" value="Linux"/><property name="sbt.repository.config" value="/home/long.vu/delta/build/sbt-config/repositories"/><property name="sun.java.launcher" value="SUN_STANDARD"/><property name="sun.cpu.endian" value="little"/><property name="user.home" value="/home/long.vu"/><property name="user.language" value="en"/><property name="sbt.ipcsocket.tmpdir" value="/run/user/1000/.sbt388b57e8/ipcsocket"/><property name="swoval.tmpdir" value="/run/user/1000/.sbt388b57e8/swoval"/><property name="jline.esc.timeout" value="0"/><property name="path.separator" value=":"/><property name="os.version" value="5.4.0-1154-aws-fips"/><property name="jna.nosys" value="true"/><property name="java.runtime.name" value="OpenJDK Runtime Environment"/><property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/><property name="jna.platform.library.path" value="/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu:/usr/lib64:/lib64:/usr/lib:/lib:/lib32:/usr/local/cuda/targets/x86_64-linux/lib:/usr/lib/x86_64-linux-gnu/libfakeroot"/><property name="java.vendor.url.bug" value="https://bugs.launchpad.net/ubuntu/+source/openjdk-17"/><property name="user.dir" value="/home/long.vu/delta"/><property name="os.arch" value="amd64"/><property name="java.util.logging.manager" value="wvlet.log.AirframeLogManager"/><property name="java.vm.info" value="mixed mode, sharing"/><property name="java.vm.version" value="17.0.15+6-Ubuntu-0ubuntu120.04"/><property name="java.class.version" value="61.0"/>
+    </properties>
+          <testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="basic case - Partition=true" time="1.621">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="basic case - Partition=false" time="1.229">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="basic case - delete from a Delta table - Partition=true" time="3.54">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="basic case - delete from a Delta table - Partition=false" time="4.212">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="basic key columns - Partition=true" time="2.367">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="basic key columns - Partition=false" time="2.925">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="where key columns - Partition=true" time="2.695">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="where key columns - Partition=false" time="3.505">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="where data columns - Partition=true" time="3.13">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="where data columns - Partition=false" time="3.558">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="where data columns and partition columns" time="3.599">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="data and partition columns - Partition=true Skipping=true" time="3.492">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="data and partition columns - Partition=false Skipping=true" time="4.201">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="data and partition columns - Partition=true Skipping=false" time="-0.001">
+                      <skipped/>
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="data and partition columns - Partition=false Skipping=false" time="-0.001">
+                      <skipped/>
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="Negative case - non-Delta target" time="0.088">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="Negative case - non-deterministic condition" time="0.495">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="Negative case - DELETE the child directory" time="0.643">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="delete cached table by name" time="1.64">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="delete cached table" time="1.395">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="condition having current_date - Partition=true" time="1.894">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="condition having current_date - Partition=false" time="2.319">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="condition having current_timestamp - Partition by Timestamp" time="1.838">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="foldable condition - Partition=true" time="2.258">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="foldable condition - Partition=false" time="2.138">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="SC-12232: should not delete the rows where condition evaluates to null" time="3.359">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="SC-12232: delete rows with null values using isNull" time="1.673">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="SC-12232: delete rows with null values using EqualNullSafe" time="1.645">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="delete with scalar subquery" time="1.837">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="delete with correlated EXISTS subquery" time="1.644">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="delete with correlated NOT EXISTS subquery" time="1.621">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="delete with IN subquery" time="1.736">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="schema pruning on data condition" time="1.724">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="nested schema pruning on data condition" time="-0.001">
+                      <skipped/>
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="Window functions in delete - expect exception: true" time="0.876">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="Aggregate functions in delete - expect exception: true" time="0.891">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="Generate functions in delete - expect exception: false" time="1.436">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="Generate functions in delete - expect exception: true" time="1.194">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="Variant type" time="1.695">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.generatedsuites.DeleteBaseSQLPathBasedDVPredPushOffSuite" name="delete on partitioned table with special chars" time="3.822">
+                      
+                    </testcase>
+          <system-out><![CDATA[]]></system-out>
+          <system-err><![CDATA[]]></system-err>
+        </testsuite>

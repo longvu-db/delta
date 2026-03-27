@@ -1,0 +1,5 @@
+[debug] Copy resource mappings: 
+[debug] 	(/home/long.vu/delta/spark/src/main/resources/NOTICE.txt,/home/long.vu/delta/spark/target/scala-2.13/classes/NOTICE.txt)
+[debug] 	(/home/long.vu/delta/spark/src/main/resources/error/delta-error-classes.json,/home/long.vu/delta/spark/target/scala-2.13/classes/error/delta-error-classes.json)
+[debug] 	(/home/long.vu/delta/spark/src/main/resources/META-INF/services/org.apache.spark.sql.sources.DataSourceRegister,/home/long.vu/delta/spark/target/scala-2.13/classes/META-INF/services/org.apache.spark.sql.sources.DataSourceRegister)
+[debug] 	(/home/long.vu/delta/spark/src/main/resources/org/apache/spark/SparkLayout.json,/home/long.vu/delta/spark/target/scala-2.13/classes/org/apache/spark/SparkLayout.json)

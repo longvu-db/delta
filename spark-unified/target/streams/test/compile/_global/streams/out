@@ -1,0 +1,15 @@
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/CustomCatalogSuite.scala:23:97: Unused import
+[warn] import org.apache.spark.sql.delta.test.{DeltaSQLCommandTest, DummyCatalog, DummySessionCatalog, DummySessionCatalogInner}
+[warn]                                                                                                 ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/CustomCatalogSuite.scala:24:29: Unused import
+[warn] import org.apache.hadoop.fs.Path
+[warn]                             ^
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/DeleteSuiteBase.scala:22:42: Unused import
+[warn] import org.apache.spark.{SparkThrowable, SparkUnsupportedOperationException}
+[warn]                                          ^
+[warn] 1 deprecation (since 2.13.0); re-run with -deprecation for details
+[warn] four warnings found
+[warn] /home/long.vu/delta/spark/src/test/scala/org/apache/spark/sql/delta/generatedsuites/DeleteSuitesDeleteBaseTests.scala:33:41: Unused import
+[warn] import org.apache.spark.sql.delta.rowid._
+[warn]                                         ^
+[warn] one warning found

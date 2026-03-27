@@ -18,29 +18,20 @@ package org.apache.spark.sql.delta.commands
 
 import scala.util.control.NonFatal
 
-import org.apache.spark.sql.catalyst.plans.logical.RequiresDMLPermissions
-import com.databricks.sql.managedcatalog.{
-  DeleteFromTableWriteIntent,
-  InsertTableWriteIntent,
-  ModifyTableWriteIntent,
-  TableWriteIntent
-}
 import org.apache.spark.sql.delta.{DataFrameUtils, DeltaLog, DeltaOptions, DeltaRelation, OptimisticTransaction}
-import org.apache.spark.sql.delta.TimerUtils.measureMs
 import org.apache.spark.sql.delta.actions.Action
 import org.apache.spark.sql.delta.catalog.DeltaTableV2
 import org.apache.spark.sql.delta.commands.DMLUtils.TaggedCommitData
 import org.apache.spark.sql.delta.commands.InsertReplaceOnOrUsingAPIOrigin.InsertReplaceOnOrUsingAPIOrigin
 import org.apache.spark.sql.delta.sources.DeltaSQLConf
-import org.apache.spark.sql.util.{QueryTag, QueryTagger}
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import org.apache.commons.lang3.StringUtils
 
 import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
-import org.apache.spark.sql.catalyst.catalog.ClusterBySpec
+import org.apache.spark.sql.delta.skipping.clustering.temp.ClusterBySpec
 import org.apache.spark.sql.catalyst.expressions.{Alias, And, Attribute, EqualTo, Expression}
-import org.apache.spark.sql.catalyst.plans.logical.{InsertReplaceCriteria, InsertReplaceOn, InsertReplaceUsing, LogicalPlan, Project}
+import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, Project}
 import org.apache.spark.sql.catalyst.util.CaseInsensitiveMap
 import org.apache.spark.sql.execution.command.LeafRunnableCommand
 import org.apache.spark.sql.execution.metric.SQLMetric

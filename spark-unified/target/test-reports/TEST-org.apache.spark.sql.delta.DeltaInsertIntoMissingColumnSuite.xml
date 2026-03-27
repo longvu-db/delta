@@ -1,0 +1,332 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuite hostname="ip-10-91-24-247" name="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" tests="161" errors="0" failures="0" skipped="0" time="233.027" timestamp="2026-03-27T18:15:08">
+          <properties>
+      <property name="java.specification.version" value="17"/><property name="sun.jnu.encoding" value="UTF-8"/><property name="sun.arch.data.model" value="64"/><property name="java.vendor.url" value="https://ubuntu.com/"/><property name="sbt.override.build.repos" value="true"/><property name="sun.boot.library.path" value="/usr/lib/jvm/java-17-openjdk-amd64/lib"/><property name="sun.java.command" value="build/sbt-launch-1.9.9.jar spark/testOnly org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite"/><property name="jdk.debug" value="release"/><property name="java.specification.vendor" value="Oracle Corporation"/><property name="java.version.date" value="2025-04-15"/><property name="java.home" value="/usr/lib/jvm/java-17-openjdk-amd64"/><property name="file.separator" value="/"/><property name="java.vm.compressedOopsMode" value="Zero based"/><property name="line.separator" value="
+"/><property name="java.vm.specification.vendor" value="Oracle Corporation"/><property name="java.specification.name" value="Java Platform API Specification"/><property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/><property name="java.runtime.version" value="17.0.15+6-Ubuntu-0ubuntu120.04"/><property name="user.name" value="long.vu"/><property name="log4j.ignoreTCL" value="true"/><property name="file.encoding" value="UTF-8"/><property name="jnidispatch.path" value="/home/long.vu/.cache/JNA/temp/jna9285166019060029135.tmp"/><property name="jna.loaded" value="true"/><property name="java.io.tmpdir" value="/tmp"/><property name="java.version" value="17.0.15"/><property name="java.vm.specification.name" value="Java Virtual Machine Specification"/><property name="native.encoding" value="UTF-8"/><property name="java.library.path" value="/usr/local/cuda-12.8/lib64:/usr/local/nvidia/lib64:/usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/><property name="java.vendor" value="Ubuntu"/><property name="java.specification.maintenance.version" value="1"/><property name="sun.io.unicode.encoding" value="UnicodeLittle"/><property name="java.class.path" value="build/sbt-launch-1.9.9.jar"/><property name="java.vm.vendor" value="Ubuntu"/><property name="jline.shutdownhook" value="false"/><property name="user.timezone" value="Etc/UTC"/><property name="java.vm.specification.version" value="17"/><property name="os.name" value="Linux"/><property name="sbt.repository.config" value="/home/long.vu/delta/build/sbt-config/repositories"/><property name="sun.java.launcher" value="SUN_STANDARD"/><property name="sun.cpu.endian" value="little"/><property name="user.home" value="/home/long.vu"/><property name="user.language" value="en"/><property name="sbt.ipcsocket.tmpdir" value="/run/user/1000/.sbt388b57e8/ipcsocket"/><property name="swoval.tmpdir" value="/run/user/1000/.sbt388b57e8/swoval"/><property name="jline.esc.timeout" value="0"/><property name="path.separator" value=":"/><property name="os.version" value="5.4.0-1154-aws-fips"/><property name="jna.nosys" value="true"/><property name="java.runtime.name" value="OpenJDK Runtime Environment"/><property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/><property name="jna.platform.library.path" value="/usr/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu:/usr/lib64:/lib64:/usr/lib:/lib:/lib32:/usr/local/cuda/targets/x86_64-linux/lib:/usr/lib/x86_64-linux-gnu/libfakeroot"/><property name="java.vendor.url.bug" value="https://bugs.launchpad.net/ubuntu/+source/openjdk-17"/><property name="user.dir" value="/home/long.vu/delta"/><property name="os.arch" value="amd64"/><property name="java.util.logging.manager" value="wvlet.log.AirframeLogManager"/><property name="java.vm.info" value="mixed mode, sharing"/><property name="java.vm.version" value="17.0.15+6-Ubuntu-0ubuntu120.04"/><property name="java.class.version" value="61.0"/>
+    </properties>
+          <testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="all test cases are implemented" time="0.013">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwritePartitions() - insert with missing top-level column, schemaEvolution=true" time="9.179">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) (columns) - insert with missing top-level column, schemaEvolution=true" time="2.613">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="Streaming toTable() - insert with missing top-level column, schemaEvolution=true" time="3.571">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Append - insert with missing top-level column, schemaEvolution=true" time="2.288">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Append - insert with missing top-level column, schemaEvolution=true" time="2.112">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE (columns) - Overwrite - insert with missing top-level column, schemaEvolution=true" time="2.005">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Overwrite - insert with missing top-level column, schemaEvolution=true" time="2.0">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Overwrite - insert with missing top-level column, schemaEvolution=true" time="1.988">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO (columns) - Append - insert with missing top-level column, schemaEvolution=true" time="1.86">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO BY NAME - Append - insert with missing top-level column, schemaEvolution=true" time="1.942">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 append() - insert with missing top-level column, schemaEvolution=true" time="1.849">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwrite() - insert with missing top-level column, schemaEvolution=true" time="2.139">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE BY NAME - Overwrite - insert with missing top-level column, schemaEvolution=true" time="1.91">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwrite() - insert with missing nested field, schemaEvolution=true" time="2.071">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwritePartitions() - insert with missing nested field, schemaEvolution=true" time="2.009">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="Streaming toTable() - insert with missing nested field, schemaEvolution=true" time="2.604">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Append - insert with missing nested field, schemaEvolution=true" time="2.142">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Append - insert with missing nested field, schemaEvolution=true" time="1.766">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Overwrite - insert with missing nested field, schemaEvolution=true" time="1.816">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Overwrite - insert with missing nested field, schemaEvolution=true" time="1.946">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 append() - insert with missing nested field, schemaEvolution=true" time="1.777">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE BY NAME - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true" time="2.042">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) (columns) - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.947">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="Streaming toTable() - insert with implicit cast and missing top-level column,schemaEvolution=true" time="2.642">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE (columns) - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true" time="2.042">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO (columns) - Append - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.899">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO BY NAME - Append - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.806">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwrite() - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.068">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwritePartitions() - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.048">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Append - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.046">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Append - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.057">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.095">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.059">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 append() - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.051">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwrite() - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.086">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwritePartitions() - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.075">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Append - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.056">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Append - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.028">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.07">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.092">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 append() - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.132">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="Streaming toTable() - insert with implicit cast and missing nested field,schemaEvolution=true" time="2.507">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Overwrite - insert with missing top-level column, schemaEvolution=true" time="1.402">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO - insert with missing top-level column, schemaEvolution=true" time="1.126">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO REPLACE WHERE - insert with missing top-level column, schemaEvolution=true" time="1.036">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE - insert with missing top-level column, schemaEvolution=true" time="1.021">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Append - insert with missing top-level column, schemaEvolution=true" time="1.018">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - dynamic partition overwrite - insert with missing top-level column, schemaEvolution=true" time="1.069">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) - insert with missing top-level column, schemaEvolution=true" time="1.123">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.094">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.03">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO REPLACE WHERE - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.023">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.113">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Append - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.085">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - dynamic partition overwrite - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.011">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) - insert with implicit cast and missing top-level column,schemaEvolution=true" time="1.014">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE BY NAME - Overwrite - insert with missing nested field, schemaEvolution=true" time="1.084">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Overwrite - insert with missing nested field, schemaEvolution=true" time="1.105">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) (columns) - insert with missing nested field, schemaEvolution=true" time="1.061">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO (columns) - Append - insert with missing nested field, schemaEvolution=true" time="0.997">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO BY NAME - Append - insert with missing nested field, schemaEvolution=true" time="1.015">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO REPLACE WHERE - insert with missing nested field, schemaEvolution=true" time="1.054">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO - insert with missing nested field, schemaEvolution=true" time="1.083">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE (columns) - Overwrite - insert with missing nested field, schemaEvolution=true" time="1.031">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE - insert with missing nested field, schemaEvolution=true" time="1.019">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Append - insert with missing nested field, schemaEvolution=true" time="1.044">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - dynamic partition overwrite - insert with missing nested field, schemaEvolution=true" time="1.04">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) - insert with missing nested field, schemaEvolution=true" time="1.033">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE BY NAME - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.019">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.004">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) (columns) - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.031">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO (columns) - Append - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.086">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO BY NAME - Append - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.025">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO REPLACE WHERE - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.133">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.006">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE (columns) - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.034">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.159">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Append - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.009">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - dynamic partition overwrite - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.031">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) - insert with implicit cast and missing nested field,schemaEvolution=true" time="1.038">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwritePartitions() - insert with missing top-level column, schemaEvolution=false" time="1.9">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) (columns) - insert with missing top-level column, schemaEvolution=false" time="1.851">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="Streaming toTable() - insert with missing top-level column, schemaEvolution=false" time="2.494">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Append - insert with missing top-level column, schemaEvolution=false" time="2.091">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Append - insert with missing top-level column, schemaEvolution=false" time="1.731">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE (columns) - Overwrite - insert with missing top-level column, schemaEvolution=false" time="1.898">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Overwrite - insert with missing top-level column, schemaEvolution=false" time="1.732">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Overwrite - insert with missing top-level column, schemaEvolution=false" time="1.764">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO (columns) - Append - insert with missing top-level column, schemaEvolution=false" time="1.909">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO BY NAME - Append - insert with missing top-level column, schemaEvolution=false" time="1.688">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 append() - insert with missing top-level column, schemaEvolution=false" time="1.875">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwrite() - insert with missing top-level column, schemaEvolution=false" time="1.892">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE BY NAME - Overwrite - insert with missing top-level column, schemaEvolution=false" time="1.828">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwrite() - insert with missing nested field, schemaEvolution=false" time="2.072">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwritePartitions() - insert with missing nested field, schemaEvolution=false" time="2.304">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="Streaming toTable() - insert with missing nested field, schemaEvolution=false" time="3.235">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Append - insert with missing nested field, schemaEvolution=false" time="2.118">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Append - insert with missing nested field, schemaEvolution=false" time="1.723">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Overwrite - insert with missing nested field, schemaEvolution=false" time="2.563">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Overwrite - insert with missing nested field, schemaEvolution=false" time="1.814">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 append() - insert with missing nested field, schemaEvolution=false" time="1.755">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE BY NAME - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.777">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) (columns) - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.811">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="Streaming toTable() - insert with implicit cast and missing top-level column,schemaEvolution=false" time="2.45">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE (columns) - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false" time="2.105">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO (columns) - Append - insert with implicit cast and missing top-level column,schemaEvolution=false" time="2.318">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO BY NAME - Append - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.681">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwrite() - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.116">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwritePartitions() - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.155">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Append - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.058">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Append - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.104">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.075">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.156">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 append() - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.178">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwrite() - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.158">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 overwritePartitions() - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.029">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Append - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.02">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Append - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.064">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 save() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.021">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 saveAsTable() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false" time="0.99">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv2 append() - insert with implicit cast and missing nested field,schemaEvolution=false" time="0.977">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="Streaming toTable() - insert with implicit cast and missing nested field,schemaEvolution=false" time="2.489">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Overwrite - insert with missing top-level column, schemaEvolution=false" time="1.119">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO - insert with missing top-level column, schemaEvolution=false" time="0.97">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO REPLACE WHERE - insert with missing top-level column, schemaEvolution=false" time="0.968">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE - insert with missing top-level column, schemaEvolution=false" time="1.015">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Append - insert with missing top-level column, schemaEvolution=false" time="1.077">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - dynamic partition overwrite - insert with missing top-level column, schemaEvolution=false" time="0.976">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) - insert with missing top-level column, schemaEvolution=false" time="0.975">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.032">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.016">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO REPLACE WHERE - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.017">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE - insert with implicit cast and missing top-level column,schemaEvolution=false" time="0.972">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Append - insert with implicit cast and missing top-level column,schemaEvolution=false" time="0.972">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - dynamic partition overwrite - insert with implicit cast and missing top-level column,schemaEvolution=false" time="0.979">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) - insert with implicit cast and missing top-level column,schemaEvolution=false" time="1.037">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE BY NAME - Overwrite - insert with missing nested field, schemaEvolution=false" time="1.038">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Overwrite - insert with missing nested field, schemaEvolution=false" time="0.999">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) (columns) - insert with missing nested field, schemaEvolution=false" time="1.003">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO (columns) - Append - insert with missing nested field, schemaEvolution=false" time="1.005">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO BY NAME - Append - insert with missing nested field, schemaEvolution=false" time="1.077">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO REPLACE WHERE - insert with missing nested field, schemaEvolution=false" time="1.011">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO - insert with missing nested field, schemaEvolution=false" time="1.006">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE (columns) - Overwrite - insert with missing nested field, schemaEvolution=false" time="1.019">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE - insert with missing nested field, schemaEvolution=false" time="1.027">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Append - insert with missing nested field, schemaEvolution=false" time="1.094">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - dynamic partition overwrite - insert with missing nested field, schemaEvolution=false" time="1.021">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) - insert with missing nested field, schemaEvolution=false" time="1.011">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE BY NAME - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.058">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.041">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) (columns) - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.096">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO (columns) - Append - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.015">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO BY NAME - Append - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.009">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO REPLACE WHERE - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.054">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT INTO - insert with implicit cast and missing nested field,schemaEvolution=false" time="0.987">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE (columns) - Overwrite - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.066">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.056">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - Append - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.166">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="DFv1 insertInto() - dynamic partition overwrite - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.115">
+                      
+                    </testcase><testcase classname="org.apache.spark.sql.delta.DeltaInsertIntoMissingColumnSuite" name="INSERT OVERWRITE PARTITION (partition) - insert with implicit cast and missing nested field,schemaEvolution=false" time="1.205">
+                      
+                    </testcase>
+          <system-out><![CDATA[]]></system-out>
+          <system-err><![CDATA[]]></system-err>
+        </testsuite>

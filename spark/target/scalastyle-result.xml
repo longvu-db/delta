@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0">
+ <file name="/home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/DeleteCommand.scala">
+  <error column="22" line="592" source="org.scalastyle.file.RegexChecker" severity="error" message="
+      'count(String)' returns 'TypedColumn' and touches ScalaReflection which is inefficient in concurrent queries.
+      In most cases, you don't need a 'TypedColumn' and you should use 'count(new Column(&quot;...&quot;))' instead.
+      If you must use it, wrap the code block with
+      // scalastyle:off countstring
+      count(&quot;foo&quot;)
+      // scalastyle:on countstring
+    "/>
+ </file>
+</checkstyle>

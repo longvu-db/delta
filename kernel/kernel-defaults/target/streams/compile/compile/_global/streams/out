@@ -1,0 +1,2 @@
+[info] /home/long.vu/delta/kernel/kernel-defaults/src/main/java/io/delta/kernel/defaults/internal/parquet/ParquetFileReader.java: Some input files use or override a deprecated API.
+[info] /home/long.vu/delta/kernel/kernel-defaults/src/main/java/io/delta/kernel/defaults/internal/parquet/ParquetFileReader.java: Recompile with -Xlint:deprecation for details.
