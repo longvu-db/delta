@@ -16,6 +16,7 @@
 
 package org.apache.spark.sql.delta.commands
 
+import org.apache.spark.sql.delta.DeltaUnsupportedOperationException
 import org.apache.spark.sql.delta.commands.merge.MergeIntoMaterializeSource
 import org.apache.spark.sql.delta.sources.DeltaSQLConf
 
@@ -31,6 +32,12 @@ trait InsertReplaceOnMaterializeSource extends MergeIntoMaterializeSource {
 
   override protected def getMaterializeSourceMode(spark: SparkSession): String =
     spark.conf.get(DeltaSQLConf.INSERT_REPLACE_ON_OR_USING_MATERIALIZE_SOURCE)
+
+  override protected def throwDisableSourceMaterializationNotAllowedException(): Unit =
+    throw new DeltaUnsupportedOperationException(
+      errorClass =
+        "DELTA_DISABLE_SOURCE_MATERIALIZATION_IN_INSERT_REPLACE_ON_OR_USING_NOT_ALLOWED",
+      messageParameters = Array.empty)
 }
 
 object InsertReplaceOnOrUsingMaterializeSourceError {

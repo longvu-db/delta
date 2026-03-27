@@ -1,3 +1,12 @@
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:24:40: Unused import from deprecated object JavaConverters: Use `scala.jdk.CollectionConverters` instead
+[warn] import scala.collection.JavaConverters._
+[warn]                                        ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:28:45: Unused import
+[warn] import org.apache.spark.sql.delta.commands.{AlterTableDropFeatureDeltaCommand, DeltaGenerateCommand}
+[warn]                                             ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaErrors.scala:39:17: Unused import
+[warn] import io.delta.exceptions
+[warn]                 ^
 [warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:28:47: Unused import
 [warn] import org.apache.spark.sql.delta.constraints.Constraint
 [warn]                                               ^
@@ -19,4 +28,4 @@
 [warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:47:36: Unused import
 [warn] import org.apache.spark.sql.types.{StringType, StructType}
 [warn]                                    ^
-[warn] 7 warnings found
+[warn] 10 warnings found

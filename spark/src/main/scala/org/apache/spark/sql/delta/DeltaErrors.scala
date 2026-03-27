@@ -3965,6 +3965,43 @@ trait DeltaErrorsBase
       errorClass = "DELTA_CANNOT_RESOLVE_SOURCE_COLUMN",
       messageParameters = Array(s"${UnresolvedAttribute(columnPath).name}"))
   }
+
+  def insertReplaceOnAmbiguousColumnsInCond(columnNames: Seq[String]): Throwable = {
+    new DeltaAnalysisException(
+      errorClass = "DELTA_INSERT_REPLACE_ON_AMBIGUOUS_COLUMNS_IN_CONDITION",
+      messageParameters = Array(columnNames.map(toSQLId).mkString(", "))
+    )
+  }
+
+  def insertReplaceOnUnresolvedColumnsInCond(columnNames: Seq[String]): Throwable = {
+    new DeltaAnalysisException(
+      errorClass = "DELTA_INSERT_REPLACE_ON_UNRESOLVED_COLUMNS_IN_CONDITION",
+      messageParameters = Array(columnNames.map(toSQLId).mkString(", "))
+    )
+  }
+
+  def unresolvedInsertReplaceUsingColumnsError(
+      colName: String,
+      relationType: String,
+      suggestion: String): AnalysisException = {
+    new DeltaAnalysisException(
+      errorClass = "UNRESOLVED_INSERT_REPLACE_USING_COLUMN",
+      messageParameters = Array(toSQLId(colName), relationType, suggestion))
+  }
+
+  def insertReplaceUsingMisalignedColumns(
+      misalignedCols: Seq[String]): AnalysisException = {
+    new DeltaAnalysisException(
+      errorClass = "INSERT_REPLACE_USING_DISALLOW_MISALIGNED_COLUMNS",
+      messageParameters = Array(misalignedCols.map(toSQLId).mkString(", ")))
+  }
+
+  def replaceOnOrUsingNonExistentTableException(): Throwable = {
+    new DeltaAnalysisException(
+      errorClass = "DELTA_REPLACE_ON_OR_USING_NON_EXISTENT_TABLE",
+      messageParameters = Array.empty
+    )
+  }
 }
 
 object DeltaErrors extends DeltaErrorsBase

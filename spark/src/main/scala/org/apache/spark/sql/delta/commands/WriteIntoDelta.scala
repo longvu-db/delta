@@ -243,6 +243,11 @@ case class WriteIntoDelta(
       }
     }
 
+    // Validate replaceOn/Using requires existing table
+    if (options.isReplaceOnOrUsingDefined && txn.readVersion < 0) {
+      throw DeltaErrors.pathNotExistsException(deltaLog.dataPath.toString)
+    }
+
     // Build the replaceOn/Using EXISTS condition if applicable
     val replaceOnOrUsingExprOpt = if (options.isReplaceOnOrUsingDefined &&
         mode == SaveMode.Overwrite && txn.readVersion >= 0) {
@@ -486,6 +491,25 @@ case class WriteIntoDelta(
       val parsed = parsePredicates(sparkSession, options.replaceOn.get)
       val attrs = parsed.flatMap(_.references)
         .map(_.asInstanceOf[UnresolvedAttribute])
+
+      // Validate columns
+      val ambiguousColumnsInCond = scala.collection.mutable.ArrayBuffer[String]()
+      val unresolvedColumnsInCond = scala.collection.mutable.ArrayBuffer[String]()
+      attrs.foreach { replaceOnAttr =>
+        val isInTable = checkCol(tableRelation, replaceOnAttr.nameParts)
+        val isInQuery = checkCol(originalQuery, replaceOnAttr.nameParts)
+        if (isInTable && isInQuery) ambiguousColumnsInCond += replaceOnAttr.sql
+        if (!isInTable && !isInQuery) unresolvedColumnsInCond += replaceOnAttr.sql
+      }
+      if (ambiguousColumnsInCond.nonEmpty) {
+        throw DeltaErrors.insertReplaceOnAmbiguousColumnsInCond(
+          ambiguousColumnsInCond.distinct.toSeq)
+      }
+      if (unresolvedColumnsInCond.nonEmpty) {
+        throw DeltaErrors.insertReplaceOnUnresolvedColumnsInCond(
+          unresolvedColumnsInCond.distinct.toSeq)
+      }
+
       val tblAttrs = attrs.filter(a =>
         checkCol(tableRelation, a.nameParts)).distinct
       // Resolve references in parsed expressions against
@@ -501,13 +525,59 @@ case class WriteIntoDelta(
       (tblAttrs, resolved)
     } else {
       val cols = options.parsedReplaceUsingColsList.get
+      val resolver = sparkSession.sessionState.conf.resolver
+
+      // Validate each replaceUsing column exists in both table and query
+      cols.foreach { c =>
+        val isInTable = checkCol(
+          tableRelation, Seq(effectiveTableAliasOpt.get, c))
+        val isInQuery = originalQuery.output.exists(a =>
+          resolver(a.name, c))
+
+        if (!isInTable) {
+          throw DeltaErrors.unresolvedInsertReplaceUsingColumnsError(
+            colName = c,
+            relationType = "table",
+            suggestion = tableRelation.schema.fieldNames
+              .sorted.mkString(", "))
+        }
+        if (!isInQuery) {
+          throw DeltaErrors.unresolvedInsertReplaceUsingColumnsError(
+            colName = c,
+            relationType = "query",
+            suggestion = originalQuery.schema.fieldNames
+              .sorted.mkString(", "))
+        }
+      }
+
+      // Check for misaligned columns when conf is enabled
+      // and not by-name (insertInto is by position)
+      val disallowMisaligned = sparkSession.conf.getOption(
+        "spark.sql.insertIntoReplaceUsing" +
+          ".disallowMisalignedColumns.enabled")
+        .exists(_.toBoolean)
+      if (disallowMisaligned && !isInsertReplaceUsingByName) {
+        val tableSchema = tableRelation.schema
+        val querySchema = originalQuery.schema
+        val misaligned = cols.filter { c =>
+          val tableIdx = tableSchema.fieldNames.indexWhere(
+            n => resolver(n, c))
+          val queryIdx = querySchema.fieldNames.indexWhere(
+            n => resolver(n, c))
+          tableIdx >= 0 && queryIdx >= 0 && tableIdx != queryIdx
+        }
+        if (misaligned.nonEmpty) {
+          throw DeltaErrors.insertReplaceUsingMisalignedColumns(
+            misaligned)
+        }
+      }
+
       val tblAttrs = cols.map(c =>
         UnresolvedAttribute(
           Seq(effectiveTableAliasOpt.get, c))).distinct
       val resolved = cols.map { c =>
         val queryAttr = originalQuery.output.find(a =>
-          sparkSession.sessionState.analyzer.resolver(
-            a.name, c)).get
+          resolver(a.name, c)).get
         EqualTo(
           UnresolvedAttribute(
             Seq(effectiveTableAliasOpt.get, c)),

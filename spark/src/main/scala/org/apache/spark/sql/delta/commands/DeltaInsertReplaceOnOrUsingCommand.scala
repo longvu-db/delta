@@ -61,6 +61,7 @@ case class DeltaInsertReplaceOnOrUsingCommand(
   override def run(sparkSession: SparkSession): Seq[Row] = {
     withMaterializeRetryAndStats(sparkSession) { preparedWriteCmd =>
       val runResult = preparedWriteCmd.run(sparkSession)
+      recordWriteStats(preparedWriteCmd, writeMetrics = Map.empty)
       runResult
     }
   }
@@ -111,6 +112,7 @@ case class DeltaInsertReplaceOnOrUsingCommand(
     withMaterializeRetryAndStats(sparkSession) { preparedWriteCmd =>
       val commitData = preparedWriteCmd.writeAndReturnCommitData(
         txn, sparkSession, clusterBySpecOpt, isTableReplace)
+      recordWriteStats(preparedWriteCmd, writeMetrics = Map.empty)
       commitData
     }
   }

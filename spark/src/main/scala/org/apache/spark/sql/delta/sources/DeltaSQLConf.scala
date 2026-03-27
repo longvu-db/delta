@@ -1192,6 +1192,17 @@ trait DeltaSQLConfBase extends DeltaSQLConfUtils {
       .intConf
       .createWithDefault(4)
 
+  val MERGE_DISABLE_SOURCE_MATERIALIZATION_NOT_ALLOWED =
+    buildConf("merge.disableSourceMaterializationNotAllowed")
+      .internal()
+      .doc(
+        """When enabled, it errors out if the config 'merge.materializeSource' is set to 'none'.
+          | This prevents potential data corruption that can occur when source materialization is
+          | disabled. Be careful when disabling this safety mechanism.
+          |""".stripMargin)
+      .booleanConf
+      .createWithDefault(false)
+
   val DELTA_LAST_COMMIT_VERSION_IN_SESSION =
     buildConf("lastCommitVersionInSession")
       .doc("The version of the last commit made in the SparkSession for any table.")
