@@ -27,7 +27,7 @@ import org.apache.spark.sql.delta.DataFrameUtils
 import org.apache.spark.sql.delta.skipping.clustering.{ClusteredTableUtils, ClusteringColumnInfo}
 import org.apache.spark.sql.delta.skipping.clustering.temp.ClusterBySpec
 import org.apache.spark.sql.delta._
-import org.apache.spark.sql.delta.commands.WriteIntoDelta
+import org.apache.spark.sql.delta.commands.{DeltaInsertReplaceOnOrUsingCommand, InsertReplaceOnOrUsingAPIOrigin, WriteIntoDelta}
 import org.apache.spark.sql.delta.commands.cdc.CDCReader
 import org.apache.spark.sql.delta.metering.DeltaLogging
 import org.apache.spark.sql.delta.sources.{DeltaDataSource, DeltaSourceUtils}
@@ -620,14 +620,26 @@ private class WriteIntoDeltaBuilder(
             )
           }
           // TODO: Get the config from WriteIntoDelta's txn.
-          WriteIntoDelta(
+          val deltaOptions = new DeltaOptions(
+            options.toMap, session.sessionState.conf)
+          val writeCmd = WriteIntoDelta(
             table.deltaLog,
             if (forceOverwrite) SaveMode.Overwrite else SaveMode.Append,
-            new DeltaOptions(options.toMap, session.sessionState.conf),
+            deltaOptions,
             Nil,
             table.deltaLog.unsafeVolatileSnapshot.metadata.configuration,
             data,
-            table.catalogTable).run(session)
+            table.catalogTable)
+          val finalCmd = if (deltaOptions.isReplaceOnOrUsingDefined) {
+            DeltaInsertReplaceOnOrUsingCommand.createCmdForSaveAndSaveAsTable(
+              deltaTable = table,
+              data = data,
+              writeCmd = writeCmd,
+              apiOrigin = InsertReplaceOnOrUsingAPIOrigin.DFv1InsertInto)
+          } else {
+            writeCmd
+          }
+          finalCmd.run(session)
 
           // TODO: Push this to Apache Spark
           // Re-cache all cached plans(including this relation itself, if it's cached) that refer

@@ -3766,6 +3766,8 @@
 [debug] 	  /home/long.vu/delta/spark/target/scala-2.13/classes/org/apache/spark/sql/delta/commands/VacuumCommand$FileNameAndSize$.class
 [debug] 	org/apache/spark/sql/delta/commands/VacuumCommandImpl$ValidFilesConfig$.class
 [debug] 	  /home/long.vu/delta/spark/target/scala-2.13/classes/org/apache/spark/sql/delta/commands/VacuumCommandImpl$ValidFilesConfig$.class
+[debug] 	org/apache/spark/sql/delta/commands/WriteIntoDelta$$anonfun$$nestedInanonfun$getReplaceOnOrUsingExprOpt$4$1.class
+[debug] 	  /home/long.vu/delta/spark/target/scala-2.13/classes/org/apache/spark/sql/delta/commands/WriteIntoDelta$$anonfun$$nestedInanonfun$getReplaceOnOrUsingExprOpt$4$1.class
 [debug] 	org/apache/spark/sql/delta/commands/AlterTableUnsetPropertiesDeltaCommand$.class
 [debug] 	  /home/long.vu/delta/spark/target/scala-2.13/classes/org/apache/spark/sql/delta/commands/AlterTableUnsetPropertiesDeltaCommand$.class
 [debug] 	org/apache/spark/sql/delta/commands/DeleteMetric.class

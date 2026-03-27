@@ -1,35 +1,22 @@
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:21:20: Unused import
-[warn] import scala.util.{Failure, Success, Try}
-[warn]                    ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:21:29: Unused import
-[warn] import scala.util.{Failure, Success, Try}
-[warn]                             ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:36:48: Unused import
-[warn] import org.apache.spark.sql.delta.constraints.{AddConstraint, DropConstraint}
-[warn]                                                ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:36:63: Unused import
-[warn] import org.apache.spark.sql.delta.constraints.{AddConstraint, DropConstraint}
-[warn]                                                               ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:38:42: Unused import
-[warn] import org.apache.spark.sql.delta.files.{TahoeFileIndex, TahoeLogFileIndex}
-[warn]                                          ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:38:58: Unused import
-[warn] import org.apache.spark.sql.delta.files.{TahoeFileIndex, TahoeLogFileIndex}
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:28:47: Unused import
+[warn] import org.apache.spark.sql.delta.constraints.Constraint
+[warn]                                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:29:59: Unused import
+[warn] import org.apache.spark.sql.delta.constraints.Constraints.Check
+[warn]                                                           ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:30:58: Unused import
+[warn] import org.apache.spark.sql.delta.constraints.Invariants.ArbitraryExpression
 [warn]                                                          ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:47:30: Unused import
-[warn] import org.apache.spark.sql.{AnalysisException, Dataset, SaveMode, SparkSession}
-[warn]                              ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:47:49: Unused import
-[warn] import org.apache.spark.sql.{AnalysisException, Dataset, SaveMode, SparkSession}
-[warn]                                                 ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:53:45: Unused import
-[warn] import org.apache.spark.sql.catalyst.parser.CatalystSqlParser
-[warn]                                             ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:54:45: Unused import
-[warn] import org.apache.spark.sql.catalyst.parser.ParseException
-[warn]                                             ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/DeltaAnalysis.scala:61:58: Unused import
-[warn] import org.apache.spark.sql.catalyst.types.DataTypeUtils.toAttribute
-[warn]                                                          ^
-[warn] 6 deprecations (since 2.13.0); re-run with -deprecation for details
-[warn] 12 warnings found
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:37:47: Unused import
+[warn] import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
+[warn]                                               ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:39:56: Unused import
+[warn] import org.apache.spark.sql.catalyst.expressions.{And, Attribute, EqualTo, Expression, Literal}
+[warn]                                                        ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:44:46: Unused import
+[warn] import org.apache.spark.sql.execution.metric.SQLMetric
+[warn]                                              ^
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/commands/WriteIntoDelta.scala:47:36: Unused import
+[warn] import org.apache.spark.sql.types.{StringType, StructType}
+[warn]                                    ^
+[warn] 7 warnings found

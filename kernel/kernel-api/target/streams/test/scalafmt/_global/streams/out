@@ -1,0 +1,4 @@
+[debug] scalafmt: Adding repositories [https://repo1.maven.org/maven2/]
+[debug] scalafmt: Adding credentials [@ossrh-staging-api.central.sonatype.com]
+[error] org.scalafmt.sbt.ScalafmtSbtReporter$ScalafmtSbtError: scalafmt: [v3.8.6] failed to download [/home/long.vu/delta/.scalafmt.conf]
+[error] (kernelApi / Test / scalafmt) org.scalafmt.sbt.ScalafmtSbtReporter$ScalafmtSbtError: scalafmt: [v3.8.6] failed to download [/home/long.vu/delta/.scalafmt.conf]
