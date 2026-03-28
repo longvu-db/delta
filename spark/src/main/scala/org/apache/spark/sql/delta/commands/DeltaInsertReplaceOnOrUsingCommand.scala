@@ -122,36 +122,43 @@ case class DeltaInsertReplaceOnOrUsingCommand(
       materializedDf: DataFrame,
       insertReplaceCriteria: InsertReplaceCriteria): WriteIntoDelta = {
 
-    val replaceOnOrUsingTableAliasOpt = getTableAliasFromReplaceCriteria(insertReplaceCriteria)
+    val tableAliasOption: Map[String, String] =
+      insertReplaceCriteria match {
+      case InsertReplaceOn(_, aliasOpt) =>
+        aliasOpt.map(
+          DeltaOptions.TARGET_ALIAS_OPTION -> _).toMap
+      case _: InsertReplaceUsing =>
+        Map(DeltaOptions.TARGET_ALIAS_OPTION ->
+          DeltaOptions.REPLACE_USING_INTERNAL_TABLE_ALIAS)
+      case other =>
+        throw new IllegalStateException(
+          s"Unexpected InsertReplaceCriteria: $other")
+    }
 
     val deltaOptions = new DeltaOptions(
       CaseInsensitiveMap[String](
-        writeCmd.options.options),
+        writeCmd.options.options ++ tableAliasOption),
       sparkSession.sessionState.conf
     )
 
     writeCmd.copy(
       options = deltaOptions,
       data = materializedDf,
-      tableAliasOpt = replaceOnOrUsingTableAliasOpt,
-      isInsertReplaceUsingByName = byName && insertReplaceCriteria.isInstanceOf[InsertReplaceUsing])
+      isInsertReplaceUsingByName =
+        byName && insertReplaceCriteria
+          .isInstanceOf[InsertReplaceUsing])
   }
 
-  /**
-   * For REPLACE USING, an internal table alias is required to ensure certain attributes
-   * resolve to the target table, not the query, when we construct the EXISTS condition.
-   * Without it, column resolution incorrectly references all the attributes to the nearest
-   * possible relation, which is the query.
-   * See [[WriteIntoDeltaEdge.getReplaceOnOrUsingExprOpt]].
-   */
   private def getTableAliasFromReplaceCriteria(
-      insertReplaceCriteria: InsertReplaceCriteria): Option[String] = {
+      insertReplaceCriteria: InsertReplaceCriteria
+  ): Option[String] = {
     insertReplaceCriteria match {
-      case InsertReplaceOn(_, tableAliasOpt) => tableAliasOpt
+      case InsertReplaceOn(_, aliasOpt) => aliasOpt
       case _: InsertReplaceUsing =>
         Some(DeltaOptions.REPLACE_USING_INTERNAL_TABLE_ALIAS)
-      case other => throw new IllegalStateException(
-        s"Unexpected InsertReplaceCriteria: $other")
+      case other =>
+        throw new IllegalStateException(
+          s"Unexpected InsertReplaceCriteria: $other")
     }
   }
 

@@ -87,7 +87,6 @@ case class WriteIntoDelta(
     override val data: DataFrame,
     val catalogTableOpt: Option[CatalogTable] = None,
     schemaInCatalog: Option[StructType] = None,
-    tableAliasOpt: Option[String] = None,
     isInsertReplaceUsingByName: Boolean = false
     )
   extends LeafRunnableCommand
@@ -459,8 +458,8 @@ case class WriteIntoDelta(
     val baseRelation = LogicalRelation(
         txn.deltaLog.createRelation(snapshotToUseOpt = Some(txn.snapshot),
           catalogTableOpt = txn.catalogTable))
-    val relation = if (tableAliasOpt.isDefined) {
-      SubqueryAlias(tableAliasOpt.get, baseRelation)
+    val relation = if (options.targetAlias.isDefined) {
+      SubqueryAlias(options.targetAlias.get, baseRelation)
     } else {
       baseRelation
     }
@@ -495,10 +494,10 @@ case class WriteIntoDelta(
     }
 
     val effectiveTableAliasOpt = if (
-        options.replaceUsing.isDefined && tableAliasOpt.isEmpty) {
+        options.replaceUsing.isDefined && options.targetAlias.isEmpty) {
       Some(DeltaOptions.REPLACE_USING_INTERNAL_TABLE_ALIAS)
     } else {
-      tableAliasOpt
+      options.targetAlias
     }
 
     val baseRelation = txn.deltaLog.createRelation(
