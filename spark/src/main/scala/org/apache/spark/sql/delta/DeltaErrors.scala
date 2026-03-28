@@ -3542,8 +3542,8 @@ trait DeltaErrorsBase
       messageParameters = Array(
         UniversalFormat.ICEBERG_FORMAT,
         "Requires IcebergCompat to be explicitly enabled in order for Universal Format (Iceberg) " +
-        "to be enabled on an existing table. Supported versions are IcebergCompatV1 and " +
-        "IcebergCompatV2."
+        "to be enabled on an existing table. To enable IcebergCompatV2, set the table property " +
+        "'delta.enableIcebergCompatV2' = 'true'."
       )
     )
   }
@@ -3964,6 +3964,70 @@ trait DeltaErrorsBase
     new DeltaIllegalArgumentException(
       errorClass = "DELTA_CANNOT_RESOLVE_SOURCE_COLUMN",
       messageParameters = Array(s"${UnresolvedAttribute(columnPath).name}"))
+  }
+
+  def insertReplaceOnAmbiguousColumnsInCond(columnNames: Seq[String]): Throwable = {
+    new DeltaAnalysisException(
+      errorClass = "DELTA_INSERT_REPLACE_ON_AMBIGUOUS_COLUMNS_IN_CONDITION",
+      messageParameters = Array(columnNames.map(toSQLId).mkString(", "))
+    )
+  }
+
+  def insertReplaceOnUnresolvedColumnsInCond(columnNames: Seq[String]): Throwable = {
+    new DeltaAnalysisException(
+      errorClass = "DELTA_INSERT_REPLACE_ON_UNRESOLVED_COLUMNS_IN_CONDITION",
+      messageParameters = Array(columnNames.map(toSQLId).mkString(", "))
+    )
+  }
+
+  def unresolvedInsertReplaceUsingColumnsError(
+      colName: String,
+      relationType: String,
+      suggestion: String): AnalysisException = {
+    new DeltaAnalysisException(
+      errorClass = "UNRESOLVED_INSERT_REPLACE_USING_COLUMN",
+      messageParameters = Array(toSQLId(colName), relationType, suggestion))
+  }
+
+  def insertReplaceUsingMisalignedColumns(
+      misalignedCols: Seq[String]): AnalysisException = {
+    new DeltaAnalysisException(
+      errorClass = "INSERT_REPLACE_USING_DISALLOW_MISALIGNED_COLUMNS",
+      messageParameters = Array(misalignedCols.map(toSQLId).mkString(", ")))
+  }
+
+  def incompatibleDataFrameOptions(
+      option1: String, option2: String): Throwable = {
+    new DeltaIllegalArgumentException(
+      errorClass = "DELTA_INCOMPATIBLE_DATAFRAME_OPTIONS",
+      messageParameters = Array(option1, option2))
+  }
+
+  def overwriteByFilterIncompatibleReplaceOnOrUsingError(): Throwable = {
+    new DeltaIllegalArgumentException(
+      errorClass = "DELTA_OVERWRITE_BY_FILTER_INCOMPATIBLE_REPLACE_ON_OR_USING",
+      messageParameters = Array.empty)
+  }
+
+  def dynamicPartitionOverwriteIncompatibleReplaceOnOrUsingError(): Throwable = {
+    new DeltaIllegalArgumentException(
+      errorClass =
+        "DELTA_DYNAMIC_PARTITION_OVERWRITE_INCOMPATIBLE_REPLACE_ON_OR_USING",
+      messageParameters = Array.empty)
+  }
+
+  def dfv2CreateReplaceIncompatibleReplaceOnOrUsing(): Throwable = {
+    new DeltaAnalysisException(
+      errorClass =
+        "DELTA_DFV2_CREATE_REPLACE_INCOMPATIBLE_REPLACE_ON_OR_USING",
+      messageParameters = Array.empty)
+  }
+
+  def replaceOnOrUsingNonExistentTableException(): Throwable = {
+    new DeltaAnalysisException(
+      errorClass = "DELTA_REPLACE_ON_OR_USING_NON_EXISTENT_TABLE",
+      messageParameters = Array.empty
+    )
   }
 }
 

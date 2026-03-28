@@ -140,3 +140,6 @@ kernel/kernel-benchmarks/benchmark_report.json
 spark/unitycatalog/etc/
 .scala-build/
 
+build/sbt-launch-1.9.9.jar
+build/sbt-launch-1.9.9.jar.part
+target/

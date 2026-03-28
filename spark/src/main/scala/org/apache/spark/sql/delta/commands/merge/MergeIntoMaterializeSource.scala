@@ -19,7 +19,7 @@ package org.apache.spark.sql.delta.commands.merge
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
-import org.apache.spark.sql.delta.{DataFrameUtils, DeltaErrors, DeltaLog}
+import org.apache.spark.sql.delta.{DataFrameUtils, DeltaErrors, DeltaLog, DeltaUnsupportedOperationException}
 import org.apache.spark.sql.delta.logging.DeltaLogKeys
 import org.apache.spark.sql.delta.metering.DeltaLogging
 import org.apache.spark.sql.delta.sources.DeltaSQLConf
@@ -80,6 +80,11 @@ trait MergeIntoMaterializeSource extends DeltaLogging with DeltaSparkPlanUtils {
 
   protected def getMaterializeSourceMode(spark: SparkSession): String =
     spark.conf.get(DeltaSQLConf.MERGE_MATERIALIZE_SOURCE)
+
+  protected def throwDisableSourceMaterializationNotAllowedException(): Unit =
+    throw new DeltaUnsupportedOperationException(
+      errorClass = "DELTA_DISABLE_SOURCE_MATERIALIZATION_IN_MERGE_NOT_ALLOWED",
+      messageParameters = Array.empty)
 
   /**
    * Prepared Dataframe with source data.
@@ -268,6 +273,12 @@ trait MergeIntoMaterializeSource extends DeltaLogging with DeltaSparkPlanUtils {
     spark: SparkSession, source: LogicalPlan, isInsertOnly: Boolean
   ): (Boolean, MergeIntoMaterializeSourceReason.MergeIntoMaterializeSourceReason) = {
     val materializeType = getMaterializeSourceMode(spark)
+    val disableSourceMaterializationNotAllowed =
+      spark.conf.get(DeltaSQLConf.MERGE_DISABLE_SOURCE_MATERIALIZATION_NOT_ALLOWED)
+    if (disableSourceMaterializationNotAllowed && materializeType ==
+      DeltaSQLConf.MergeMaterializeSource.NONE) {
+      throwDisableSourceMaterializationNotAllowedException()
+    }
     val forceMaterializationWithUnreadableFiles =
       spark.conf.get(DeltaSQLConf.MERGE_FORCE_SOURCE_MATERIALIZATION_WITH_UNREADABLE_FILES)
     import DeltaSQLConf.MergeMaterializeSource._

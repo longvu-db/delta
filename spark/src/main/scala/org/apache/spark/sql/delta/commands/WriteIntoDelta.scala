@@ -36,7 +36,7 @@ import org.apache.spark.sql.delta.sources.DeltaSQLConf
 import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 import org.apache.spark.sql.catalyst.catalog.CatalogTable
-import org.apache.spark.sql.catalyst.expressions.{And, Attribute, Expression, Literal}
+import org.apache.spark.sql.catalyst.expressions.{And, Attribute, EqualTo, Expression, Literal}
 import org.apache.spark.sql.catalyst.plans.logical.DeleteFromTable
 import org.apache.spark.sql.catalyst.util.{CaseInsensitiveMap, CharVarcharUtils}
 import org.apache.spark.sql.execution.command.LeafRunnableCommand
@@ -86,7 +86,9 @@ case class WriteIntoDelta(
     override val configuration: Map[String, String],
     override val data: DataFrame,
     val catalogTableOpt: Option[CatalogTable] = None,
-    schemaInCatalog: Option[StructType] = None
+    schemaInCatalog: Option[StructType] = None,
+    tableAliasOpt: Option[String] = None,
+    isInsertReplaceUsingByName: Boolean = false
     )
   extends LeafRunnableCommand
   with ImplicitMetadataOperation
@@ -96,6 +98,37 @@ case class WriteIntoDelta(
   override protected val canMergeSchema: Boolean = options.canMergeSchema
 
   private def isOverwriteOperation: Boolean = mode == SaveMode.Overwrite
+
+  private def validateReplaceOnOrUsingOptionCombinations(
+      sparkSession: SparkSession): Unit = {
+    if (options.replaceOn.isDefined && options.replaceUsing.isDefined) {
+      throw DeltaErrors.incompatibleDataFrameOptions(
+        DeltaOptions.REPLACE_ON_OPTION,
+        DeltaOptions.REPLACE_USING_OPTION)
+    }
+    val replaceOnOrUsingOption = if (options.replaceOn.isDefined) {
+      DeltaOptions.REPLACE_ON_OPTION
+    } else {
+      DeltaOptions.REPLACE_USING_OPTION
+    }
+    if (options.replaceWhere.isDefined) {
+      throw DeltaErrors
+        .overwriteByFilterIncompatibleReplaceOnOrUsingError()
+    }
+    if (options.partitionOverwriteModeInOptions) {
+      throw DeltaErrors
+        .dynamicPartitionOverwriteIncompatibleReplaceOnOrUsingError()
+    }
+    if (options.canOverwriteSchema && isOverwriteOperation) {
+      throw DeltaErrors.incompatibleDataFrameOptions(
+        DeltaOptions.OVERWRITE_SCHEMA_OPTION,
+        replaceOnOrUsingOption)
+    }
+    if (options.rearrangeOnly) {
+      throw DeltaErrors.incompatibleDataFrameOptions(
+        DeltaOptions.DATA_CHANGE_OPTION, replaceOnOrUsingOption)
+    }
+  }
 
   override protected val canOverwriteSchema: Boolean =
     options.canOverwriteSchema && isOverwriteOperation && options.replaceWhere.isEmpty
@@ -141,9 +174,15 @@ case class WriteIntoDelta(
         DeltaLog.assertRemovable(txn.snapshot)
       }
     }
+    // Validate replaceOn/Using option combinations
+    if (options.isReplaceOnOrUsingDefined) {
+      validateReplaceOnOrUsingOptionCombinations(sparkSession)
+    }
+
     val isReplaceWhere = mode == SaveMode.Overwrite && options.replaceWhere.nonEmpty
     val finalClusterBySpecOpt =
-      if (mode == SaveMode.Append || isReplaceWhere) {
+      if (mode == SaveMode.Append || isReplaceWhere ||
+          options.isReplaceOnOrUsingDefined) {
         clusterBySpecOpt.foreach { clusterBySpec =>
           ClusteredTableUtils.validateClusteringColumnsInSnapshot(txn.snapshot, clusterBySpec)
         }
@@ -182,7 +221,8 @@ case class WriteIntoDelta(
     val newDomainMetadata = getNewDomainMetadata(
       txn,
       canUpdateMetadata,
-      isReplacingTable = isOverwriteOperation && options.replaceWhere.isEmpty,
+      isReplacingTable = isOverwriteOperation && options.replaceWhere.isEmpty &&
+        !options.isReplaceOnOrUsingDefined,
       finalClusterBySpecOpt
     )
 
@@ -239,13 +279,31 @@ case class WriteIntoDelta(
       }
     }
 
+    // Validate replaceOn/Using requires existing table
+    if (options.isReplaceOnOrUsingDefined && txn.readVersion < 0) {
+      throw DeltaErrors.pathNotExistsException(deltaLog.dataPath.toString)
+    }
+
+    // Build the replaceOn/Using EXISTS condition if applicable
+    val replaceOnOrUsingExprOpt = if (options.isReplaceOnOrUsingDefined &&
+        mode == SaveMode.Overwrite && txn.readVersion >= 0) {
+      containsDataFilters = true
+      Some(Seq(getReplaceOnOrUsingExprOpt(sparkSession, txn)))
+    } else {
+      None
+    }
+
     if (txn.readVersion < 0) {
       // Initialize the log path
       deltaLog.createLogDirectoriesIfNotExists()
     }
 
-    val (newFiles, addFiles, deletedFiles) = (mode, replaceWhere) match {
-      case (SaveMode.Overwrite, Some(predicates)) if !replaceWhereOnDataColsEnabled =>
+    val atomicReplaceExprsOpt = replaceOnOrUsingExprOpt.orElse(replaceWhere)
+
+    val (newFiles, addFiles, deletedFiles) = (mode, atomicReplaceExprsOpt) match {
+      case (SaveMode.Overwrite, Some(predicates))
+          if !replaceWhereOnDataColsEnabled &&
+            !options.isReplaceOnOrUsingDefined =>
         // fall back to match on partition cols only when replaceArbitrary is disabled.
         val newFiles = txn.writeFiles(data, Some(options))
         val addFiles = newFiles.collect { case a: AddFile => a }
@@ -263,7 +321,11 @@ case class WriteIntoDelta(
         }
         (newFiles, addFiles, txn.filterFiles(predicates).map(_.remove))
       case (SaveMode.Overwrite, Some(conditions)) if txn.snapshot.version >= 0 =>
-        val constraints = extractConstraints(sparkSession, conditions)
+        val constraints = if (options.isReplaceOnOrUsingDefined) {
+          Seq.empty
+        } else {
+          extractConstraints(sparkSession, conditions)
+        }
 
         val removedFileActions = removeFiles(sparkSession, txn, conditions)
         val cdcExistsInRemoveOp = removedFileActions.exists(_.isInstanceOf[AddCDCFile])
@@ -320,7 +382,8 @@ case class WriteIntoDelta(
             data
           }
         val newFiles = try txn.writeFiles(dataToWrite, Some(options), constraints) catch {
-          case e: InvariantViolationException =>
+          case e: InvariantViolationException
+              if options.replaceWhere.isDefined =>
             throw DeltaErrors.replaceWhereMismatchException(
               options.replaceWhere.get,
               e)
@@ -392,9 +455,15 @@ case class WriteIntoDelta(
       spark: SparkSession,
       txn: OptimisticTransaction,
       conditions: Seq[Expression]): Seq[Action] = {
-    val relation = LogicalRelation(
+    import org.apache.spark.sql.catalyst.plans.logical.SubqueryAlias
+    val baseRelation = LogicalRelation(
         txn.deltaLog.createRelation(snapshotToUseOpt = Some(txn.snapshot),
           catalogTableOpt = txn.catalogTable))
+    val relation = if (tableAliasOpt.isDefined) {
+      SubqueryAlias(tableAliasOpt.get, baseRelation)
+    } else {
+      baseRelation
+    }
     val processedCondition = conditions.reduceOption(And)
     val command = spark.sessionState.analyzer.execute(
       DeleteFromTable(relation, processedCondition.getOrElse(Literal.TrueLiteral)))
@@ -411,4 +480,155 @@ case class WriteIntoDelta(
 
   override def withNewWriterConfiguration(updatedConfiguration: Map[String, String])
     : WriteIntoDeltaLike = this.copy(configuration = updatedConfiguration)
+
+  /**
+   * Constructs an EXISTS subquery for replaceOn/replaceUsing.
+   * Identifies rows in the target to delete based on matching source rows.
+   */
+  private def getReplaceOnOrUsingExprOpt(
+      sparkSession: SparkSession,
+      txn: OptimisticTransaction): Expression = {
+    import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
+    import org.apache.spark.sql.catalyst.expressions.{Alias, Exists}
+    import org.apache.spark.sql.catalyst.plans.logical.{
+      Filter, LogicalPlan, Project, SubqueryAlias
+    }
+
+    val effectiveTableAliasOpt = if (
+        options.replaceUsing.isDefined && tableAliasOpt.isEmpty) {
+      Some(DeltaOptions.REPLACE_USING_INTERNAL_TABLE_ALIAS)
+    } else {
+      tableAliasOpt
+    }
+
+    val baseRelation = txn.deltaLog.createRelation(
+      snapshotToUseOpt = Some(txn.snapshot),
+      catalogTableOpt = txn.catalogTable)
+    val tableRelation0 = txn.catalogTable match {
+      case Some(ct) => LogicalRelation(baseRelation, ct)
+      case None => LogicalRelation(baseRelation, isStreaming = false)
+    }
+    val tableRelation = if (effectiveTableAliasOpt.isDefined) {
+      SubqueryAlias(effectiveTableAliasOpt.get, tableRelation0)
+    } else {
+      tableRelation0
+    }
+
+    val originalQuery = data.queryExecution.analyzed match {
+      case Project(_, child) => child
+      case plan => plan
+    }
+
+    def checkCol(rel: LogicalPlan, parts: Seq[String]): Boolean =
+      rel.resolve(parts, sparkSession.sessionState.conf.resolver)
+        .isDefined
+
+    val (outerAttrs, conds) = if (options.replaceOn.isDefined) {
+      val parsed = parsePredicates(sparkSession, options.replaceOn.get)
+      val attrs = parsed.flatMap(_.references)
+        .map(_.asInstanceOf[UnresolvedAttribute])
+
+      // Validate columns
+      val ambiguousColumnsInCond = scala.collection.mutable.ArrayBuffer[String]()
+      val unresolvedColumnsInCond = scala.collection.mutable.ArrayBuffer[String]()
+      attrs.foreach { replaceOnAttr =>
+        val isInTable = checkCol(tableRelation, replaceOnAttr.nameParts)
+        val isInQuery = checkCol(originalQuery, replaceOnAttr.nameParts)
+        if (isInTable && isInQuery) ambiguousColumnsInCond += replaceOnAttr.sql
+        if (!isInTable && !isInQuery) unresolvedColumnsInCond += replaceOnAttr.sql
+      }
+      if (ambiguousColumnsInCond.nonEmpty) {
+        throw DeltaErrors.insertReplaceOnAmbiguousColumnsInCond(
+          ambiguousColumnsInCond.distinct.toSeq)
+      }
+      if (unresolvedColumnsInCond.nonEmpty) {
+        throw DeltaErrors.insertReplaceOnUnresolvedColumnsInCond(
+          unresolvedColumnsInCond.distinct.toSeq)
+      }
+
+      val tblAttrs = attrs.filter(a =>
+        checkCol(tableRelation, a.nameParts)).distinct
+      // Resolve references in parsed expressions against
+      // the original query plan.
+      val resolver = sparkSession.sessionState.conf.resolver
+      val resolved = parsed.map { expr =>
+        expr.transformUp {
+          case u: UnresolvedAttribute =>
+            originalQuery.resolve(
+              u.nameParts, resolver).getOrElse(u)
+        }
+      }
+      (tblAttrs, resolved)
+    } else {
+      val cols = options.parsedReplaceUsingColsList.get
+      val resolver = sparkSession.sessionState.conf.resolver
+
+      // Validate each replaceUsing column exists in both table and query
+      cols.foreach { c =>
+        val isInTable = checkCol(
+          tableRelation, Seq(effectiveTableAliasOpt.get, c))
+        val isInQuery = originalQuery.output.exists(a =>
+          resolver(a.name, c))
+
+        if (!isInTable) {
+          throw DeltaErrors.unresolvedInsertReplaceUsingColumnsError(
+            colName = c,
+            relationType = "table",
+            suggestion = tableRelation.schema.fieldNames
+              .sorted.mkString(", "))
+        }
+        if (!isInQuery) {
+          throw DeltaErrors.unresolvedInsertReplaceUsingColumnsError(
+            colName = c,
+            relationType = "query",
+            suggestion = originalQuery.schema.fieldNames
+              .sorted.mkString(", "))
+        }
+      }
+
+      // Check for misaligned columns when conf is enabled
+      // and not by-name (insertInto is by position)
+      val disallowMisaligned = sparkSession.conf.getOption(
+        "spark.sql.insertIntoReplaceUsing" +
+          ".disallowMisalignedColumns.enabled")
+        .exists(_.toBoolean)
+      if (disallowMisaligned && !isInsertReplaceUsingByName) {
+        val tableSchema = tableRelation.schema
+        val querySchema = originalQuery.schema
+        val misaligned = cols.filter { c =>
+          val tableIdx = tableSchema.fieldNames.indexWhere(
+            n => resolver(n, c))
+          val queryIdx = querySchema.fieldNames.indexWhere(
+            n => resolver(n, c))
+          tableIdx >= 0 && queryIdx >= 0 && tableIdx != queryIdx
+        }
+        if (misaligned.nonEmpty) {
+          throw DeltaErrors.insertReplaceUsingMisalignedColumns(
+            misaligned)
+        }
+      }
+
+      val tblAttrs = cols.map(c =>
+        UnresolvedAttribute(
+          Seq(effectiveTableAliasOpt.get, c))).distinct
+      val resolved = cols.map { c =>
+        val queryAttr = originalQuery.output.find(a =>
+          resolver(a.name, c)).get
+        EqualTo(
+          UnresolvedAttribute(
+            Seq(effectiveTableAliasOpt.get, c)),
+          queryAttr)
+      }
+      (tblAttrs, resolved)
+    }
+
+    Exists(
+      plan = Project(
+        projectList = Seq(
+          Alias(Literal(1), "__dummy_name_for_a_constant")()),
+        child = Filter(
+          condition = conds.reduce(And),
+          child = originalQuery)),
+      outerAttrs = outerAttrs)
+  }
 }

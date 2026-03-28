@@ -380,40 +380,55 @@ trait DeleteBaseTests extends DeleteBaseMixin {
       Row("c", "v") :: Row("d", "vv") :: Nil)
   }
 
-  test("do not support subquery test") {
+  test("delete with scalar subquery") {
     append(Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value"))
     Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("c", "d").createOrReplaceTempView("source")
 
-    // basic subquery
-    val e0 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "key < (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e0.contains("Subqueries are not supported"))
-
-    // subquery with EXISTS
-    val e1 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "EXISTS (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e1.contains("Subqueries are not supported"))
-
-    // subquery with NOT EXISTS
-    val e2 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "NOT EXISTS (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e2.contains("Subqueries are not supported"))
-
-    // subquery with IN
-    val e3 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "key IN (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e3.contains("Subqueries are not supported"))
-
-    // subquery with NOT IN
-    val e4 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "key NOT IN (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e4.contains("Subqueries are not supported"))
+    executeDelete(target = tableSQLIdentifier, "key < (SELECT max(c) FROM source)")
+    checkAnswer(
+      readDeltaTableByIdentifier(tableSQLIdentifier),
+      Row(2, 2) :: Nil)
   }
+
+  test("delete with correlated EXISTS subquery") {
+    append(Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value"))
+    // source c values: 2, 1. DELETE removes rows where key matches any source.c
+    Seq((2, 2), (1, 4)).toDF("c", "d").createOrReplaceTempView("source")
+
+    executeDelete(
+      target = tableSQLIdentifier,
+      s"EXISTS (SELECT 1 FROM source WHERE ${tableSQLIdentifier}.key = source.c)")
+    checkAnswer(
+      readDeltaTableByIdentifier(tableSQLIdentifier),
+      Row(0, 3) :: Nil)
+  }
+
+  test("delete with correlated NOT EXISTS subquery") {
+    append(Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value"))
+    // source c values: 2, 1. Deletes rows where key does NOT match any source.c (key=0)
+    Seq((2, 2), (1, 4)).toDF("c", "d").createOrReplaceTempView("source")
+
+    executeDelete(
+      target = tableSQLIdentifier,
+      s"NOT EXISTS (SELECT 1 FROM source WHERE ${tableSQLIdentifier}.key = source.c)")
+    checkAnswer(
+      readDeltaTableByIdentifier(tableSQLIdentifier),
+      Row(2, 2) :: Row(1, 4) :: Row(1, 1) :: Nil)
+  }
+
+  test("delete with IN subquery") {
+    append(Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value"))
+    Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("c", "d").createOrReplaceTempView("source")
+
+    executeDelete(target = tableSQLIdentifier, "key IN (SELECT c FROM source WHERE c > 1)")
+    checkAnswer(
+      readDeltaTableByIdentifier(tableSQLIdentifier),
+      Row(1, 4) :: Row(1, 1) :: Row(0, 3) :: Nil)
+  }
+
+  // NOTE: NOT IN subquery and IN/NOT IN with nulls tests require the notOrIsNull()
+  // transformation which uses DBR-specific APIs (SubExprUtils.isInPredicateNullFree,
+  // InSubquery 4-arg pattern). These are tested in DeleteSubqueryTestsEdge instead.
 
   test("schema pruning on data condition") {
     val input = Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value")
@@ -477,12 +492,8 @@ trait DeleteBaseTests extends DeleteBaseMixin {
 
         val expectedErrorRegex = "(?s).*(?i)unsupported.*(?i).*Invalid expressions.*"
 
-        var catchException = true
-
-        var errorRegex = if (functionType.equals("Generate")) {
-          ".*Subqueries are not supported in the DELETE.*"
-        } else customErrorRegex.getOrElse(expectedErrorRegex)
-
+        var catchException = expectException
+        var errorRegex = customErrorRegex.getOrElse(expectedErrorRegex)
 
         if (catchException) {
           val dataBeforeException = spark.read.format("delta").table("deltaTable").collect()

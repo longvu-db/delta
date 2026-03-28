@@ -892,6 +892,18 @@
     ],
     "sqlState" : "XXKDS"
   },
+  "DELTA_DISABLE_SOURCE_MATERIALIZATION_IN_INSERT_REPLACE_ON_OR_USING_NOT_ALLOWED" : {
+    "message" : [
+      "Disabling source materialization in INSERT REPLACE ON/USING by setting 'spark.databricks.delta.insertReplaceOnOrUsing.materializeSource' to 'none' is not allowed."
+    ],
+    "sqlState" : "0AKDC"
+  },
+  "DELTA_DISABLE_SOURCE_MATERIALIZATION_IN_MERGE_NOT_ALLOWED" : {
+    "message" : [
+      "Disabling source materialization in MERGE by setting 'spark.databricks.delta.merge.materializeSource' to 'none' is not allowed."
+    ],
+    "sqlState" : "0AKDC"
+  },
   "DELTA_DOMAIN_METADATA_NOT_SUPPORTED" : {
     "message" : [
       "Detected DomainMetadata action(s) for domains <domainNames>, but DomainMetadataTableFeature is not enabled."
@@ -947,6 +959,18 @@
       "Could not deserialize the deleted record counts histogram during table integrity verification."
     ],
     "sqlState" : "22000"
+  },
+  "DELTA_DFV2_CREATE_REPLACE_INCOMPATIBLE_REPLACE_ON_OR_USING" : {
+    "message" : [
+      "The replaceOn/replaceUsing option is not supported with DataFrameWriterV2 create/replace/createOrReplace. Use DataFrameWriterV1 save/insertInto/saveAsTable instead."
+    ],
+    "sqlState" : "42000"
+  },
+  "DELTA_DYNAMIC_PARTITION_OVERWRITE_INCOMPATIBLE_REPLACE_ON_OR_USING" : {
+    "message" : [
+      "Cannot use dynamic partition overwrite mode with replaceOn or replaceUsing."
+    ],
+    "sqlState" : "42613"
   },
   "DELTA_DYNAMIC_PARTITION_OVERWRITE_DISABLED" : {
     "message" : [
@@ -1356,6 +1380,12 @@
     },
     "sqlState" : "KD00E"
   },
+  "DELTA_INCOMPATIBLE_DATAFRAME_OPTIONS" : {
+    "message" : [
+      "Cannot use '<firstDeltaOption>' and '<secondDeltaOption>' options at the same time."
+    ],
+    "sqlState" : "42613"
+  },
   "DELTA_IDENTITY_COLUMNS_ALTER_COLUMN_NOT_SUPPORTED" : {
     "message" : [
       "ALTER TABLE ALTER COLUMN is not supported for IDENTITY columns."
@@ -1488,6 +1518,24 @@
   "DELTA_INSERT_COLUMN_MISMATCH" : {
     "message" : [
       "Column <columnName> is not specified in INSERT"
+    ],
+    "sqlState" : "42802"
+  },
+  "DELTA_INSERT_REPLACE_ON_AMBIGUOUS_COLUMNS_IN_CONDITION" : {
+    "message" : [
+      "Column(s) <columnNames> are ambiguous in the condition of INSERT REPLACE ON. Consider specifying an alias for these columns."
+    ],
+    "sqlState" : "42702"
+  },
+  "DELTA_INSERT_REPLACE_ON_UNRESOLVED_COLUMNS_IN_CONDITION" : {
+    "message" : [
+      "Column(s) <columnNames> cannot be resolved in the condition of INSERT REPLACE ON."
+    ],
+    "sqlState" : "42703"
+  },
+  "INSERT_REPLACE_USING_DISALLOW_MISALIGNED_COLUMNS" : {
+    "message" : [
+      "INSERT REPLACE USING has misaligned columns: <misalignedReplaceUsingCols>. The replaceUsing columns must be at the same ordinal position in both the table and the source query."
     ],
     "sqlState" : "42802"
   },
@@ -2329,6 +2377,18 @@
     ],
     "sqlState" : "42613"
   },
+  "DELTA_OVERWRITE_BY_FILTER_INCOMPATIBLE_REPLACE_ON_OR_USING" : {
+    "message" : [
+      "Cannot use 'replaceWhere' with 'replaceOn' or 'replaceUsing' options."
+    ],
+    "sqlState" : "42613"
+  },
+  "DELTA_REPLACE_ON_OR_USING_NON_EXISTENT_TABLE" : {
+    "message" : [
+      "Cannot use replaceOn or replaceUsing on a table that does not exist."
+    ],
+    "sqlState" : "42K03"
+  },
   "DELTA_REPLACE_WHERE_MISMATCH" : {
     "message" : [
       "Written data does not conform to partial table overwrite condition or constraint '<replaceWhere>'.",
@@ -2351,8 +2411,13 @@
   "DELTA_ROW_ID_ASSIGNMENT_WITHOUT_STATS" : {
     "message" : [
       "Cannot assign row IDs without row count statistics.",
-      "Collect statistics for the table by running the ANALYZE TABLE command:",
-      "ANALYZE TABLE tableName COMPUTE DELTA STATISTICS"
+      "Collect statistics for the table by running the following code and retry:",
+      "import org.apache.spark.sql.catalyst.TableIdentifier",
+      "import org.apache.spark.sql.delta.DeltaLog",
+      "import org.apache.spark.sql.delta.stats.StatisticsCollection",
+      "",
+      "val log = DeltaLog.forTable(spark, TableIdentifier(table_name))",
+      "StatisticsCollection.recompute(spark, log)"
     ],
     "sqlState" : "22000"
   },
@@ -3434,6 +3499,12 @@
     "message" : [
       "<optionalPrefixMessage>Updating nested fields is only supported for StructType."
     ]
+  },
+  "UNRESOLVED_INSERT_REPLACE_USING_COLUMN" : {
+    "message" : [
+      "Column <colName> cannot be resolved in <relationType>. Did you mean one of the following? [<suggestion>]."
+    ],
+    "sqlState" : "42703"
   },
   "_LEGACY_ERROR_TEMP_DELTA_0010" : {
     "message" : [

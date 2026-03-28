@@ -35,14 +35,15 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.{Column, DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.catalyst.analysis.EliminateSubqueryAliases
 import org.apache.spark.sql.catalyst.catalog.CatalogTable
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference, EqualNullSafe, Expression, If, Literal, Not}
-import org.apache.spark.sql.catalyst.expressions.Literal.TrueLiteral
+import org.apache.spark.sql.catalyst.expressions.{And, Attribute, AttributeReference, EqualNullSafe, Expression, ExpressionSet, If, InSubquery, IsNotNull, ListQuery, Literal, Not, SubqueryExpression}
+import org.apache.spark.sql.catalyst.expressions.Literal.{FalseLiteral, TrueLiteral}
 import org.apache.spark.sql.catalyst.plans.QueryPlan
-import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, LogicalPlan}
+import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, Filter, LogicalPlan, SupportsSubquery}
 import org.apache.spark.sql.delta.DeltaOperations.Operation
 import org.apache.spark.sql.execution.command.LeafRunnableCommand
 import org.apache.spark.sql.execution.metric.SQLMetric
 import org.apache.spark.sql.execution.metric.SQLMetrics.{createMetric, createTimingMetric}
+import org.apache.spark.sql.functions.count
 import org.apache.spark.sql.functions.input_file_name
 import org.apache.spark.sql.types.LongType
 
@@ -113,7 +114,8 @@ case class DeleteCommand(
     catalogTable: Option[CatalogTable],
     target: LogicalPlan,
     condition: Option[Expression])
-  extends LeafRunnableCommand with DeltaCommand with DeleteCommandMetrics {
+  extends LeafRunnableCommand with DeltaCommand with DeleteCommandMetrics
+  with SupportsSubquery {
 
   override def innerChildren: Seq[QueryPlan[_]] = Seq(target)
 
@@ -346,8 +348,21 @@ case class DeleteCommand(
               val targetDF = RowTracking.preserveRowTrackingColumns(
                 dfWithoutRowTrackingColumns = DataFrameUtils.ofRows(sparkSession, newTarget),
                 snapshot = txn.snapshot)
-              val filterCond = Not(EqualNullSafe(cond, Literal.TrueLiteral))
-              val rewrittenActions = rewriteFiles(txn, targetDF, filterCond, filesToRewrite.length)
+              // For subqueries, use Not(cond) so the optimizer can correctly handle
+              // correlated subqueries (EXISTS/NOT EXISTS) by rewriting them into
+              // LeftSemi/LeftAnti joins. Not(EqualNullSafe(cond, true)) wrapping prevents
+              // the optimizer from recognizing the subquery patterns.
+              // For non-subquery conditions, use Not(EqualNullSafe(cond, true)) to correctly
+              // handle NULL values (keep rows where cond is NULL).
+              val condHasSubquery = SubqueryExpression.hasSubquery(cond)
+              val filterCond = if (condHasSubquery) {
+                notOrIsNull(sparkSession, cond, target, deltaLog, "delete")
+              } else {
+                Not(EqualNullSafe(cond, Literal.TrueLiteral))
+              }
+              val rewrittenActions = rewriteFiles(
+                sparkSession, txn, targetDF, filterCond, cond,
+                condHasSubquery, filesToRewrite.length)
               val (changeFiles, rewrittenFiles) = rewrittenActions
                 .partition(_.isInstanceOf[AddCDCFile])
               numAddedFiles = rewrittenFiles.size
@@ -443,9 +458,12 @@ case class DeleteCommand(
    * Returns the list of [[AddFile]]s and [[AddCDCFile]]s that have been re-written.
    */
   private def rewriteFiles(
+      spark: SparkSession,
       txn: OptimisticTransaction,
       baseData: DataFrame,
       filterCondition: Expression,
+      originalCondition: Expression,
+      conditionHasSubquery: Boolean,
       numFilesToRewrite: Long): Seq[FileAction] = {
     val shouldWriteCdc = DeltaConfigs.CHANGE_DATA_FEED.fromMetaData(txn.metadata)
 
@@ -454,27 +472,161 @@ case class DeleteCommand(
 
     withStatusCode(
       "DELTA", rewritingFilesMsg(numFilesToRewrite)) {
+      val filterCol = Column(filterCondition)
       val dfToWrite = if (shouldWriteCdc) {
         import org.apache.spark.sql.delta.commands.cdc.CDCReader._
-        // The logic here ends up being surprisingly elegant, with all source rows ending up in
-        // the output. Recall that we flipped the user-provided delete condition earlier, before the
-        // call to `rewriteFiles`. All rows which match this latest `filterCondition` are retained
-        // as table data, while all rows which don't match are removed from the rewritten table data
-        // but do get included in the output as CDC events.
-        baseData
-          .filter(Column(incrTouchedCountExpr))
-          .withColumn(
-            CDC_TYPE_COLUMN_NAME,
-            Column(If(filterCondition, CDC_TYPE_NOT_CDC, CDC_TYPE_DELETE))
-          )
+        if (conditionHasSubquery) {
+          // Subqueries can't be evaluated inside IF statements, so we have to do a union.
+          val tableData = baseData.filter(Column(incrTouchedCountExpr)).filter(filterCol)
+            .withColumn(CDC_TYPE_COLUMN_NAME, Column(CDC_TYPE_NOT_CDC))
+          val cdcCondition = Column(originalCondition)
+          val cdcData = baseData.filter(cdcCondition)
+            .withColumn(CDC_TYPE_COLUMN_NAME, Column(CDC_TYPE_DELETE))
+          tableData.union(cdcData)
+        } else {
+          // The logic here ends up being surprisingly elegant, with all source rows ending up in
+          // the output. Recall that we flipped the user-provided delete condition earlier, before
+          // the call to `rewriteFiles`. All rows which match this latest `filterCondition` are
+          // retained as table data, while all rows which don't match are removed from the
+          // rewritten table data but do get included in the output as CDC events.
+          baseData
+            .filter(Column(incrTouchedCountExpr))
+            .withColumn(
+              CDC_TYPE_COLUMN_NAME,
+              Column(If(filterCondition, CDC_TYPE_NOT_CDC, CDC_TYPE_DELETE))
+            )
+        }
       } else {
         baseData
           .filter(Column(incrTouchedCountExpr))
-          .filter(Column(filterCondition))
+          .filter(filterCol)
       }
 
       txn.writeFiles(dfToWrite)
     }
+  }
+
+  /**
+   * Make the given In predicate null-free by adding IsNotNull filters on both operands of the In
+   * predicate, namely, value and list.
+   *
+   * Two points to note:
+   *
+   * 1. The semantics of In is changed after being turned null-free. Specifically,
+   *    all the null results produced by the original In predicate will now become false.
+   *
+   * 2. If we know that neither value or list can have nulls, then it still produces the
+   *    same result after being turned null-free.
+   *
+   * @param value left-hand operand of In, e.g., value in (list)
+   * @param target the child logical plan of value
+   * @param list right-hand operand of In, e.g., value in (list)
+   */
+  /**
+   * Checks whether the In predicate is null-free, i.e., neither the value nor the list
+   * can produce nulls. This is determined by checking if IsNotNull constraints for all
+   * relevant columns are implied by the plan constraints and join conditions.
+   */
+  private def isInPredicateNullFree(
+      values: Seq[Expression], l: ListQuery, target: LogicalPlan): Boolean = {
+    val outputNotNulls = ExpressionSet((l.plan.output ++ values).map(IsNotNull))
+    outputNotNulls.subsetOf(l.plan.constraints ++ l.children ++ target.constraints)
+  }
+
+  private def makeNullFree(
+      value: Expression, target: LogicalPlan, list: ListQuery): InSubquery = {
+    val notNullForOuterPlan = ExpressionSet(Seq(IsNotNull(value)))
+    val notNullsForSubquery = list.childOutputs.flatMap(_.references.toIterator).map(IsNotNull)
+    val newPlan = Filter(notNullsForSubquery.reduce(And), list.plan)
+    val newListQuery =
+      list.copy(joinCond = list.joinCond ++ notNullForOuterPlan).withNewPlan(newPlan)
+    assert(isInPredicateNullFree(Seq(value), newListQuery, target),
+      s"Unable to make the list query null-free: ${list.treeString}")
+    InSubquery(Seq(value), newListQuery)
+  }
+
+  /**
+   * Return an condition expression that is equivalent to `Not(condition) or IsNull(condition)`.
+   *
+   * Internally, this can be expressed with `Not(EqualNullSafe(condition, TrueLiteral))` which
+   * automatically eliminates the common subexpression. However, subqueries require a slight
+   * preprocessing.
+   *
+   * Given a condition C, we are not allowed to evaluate Not(EqualNullSafe(C, True)) when C contains
+   * In/NotIn subquery predicates because SparkSql doesn't have native null-aware joins. But we can
+   * do so when we know that the the output of In predicates doesn't have nulls, i.e., null-free.
+   * So we transform the condition from C to C' using two transformation rules so that:
+   * - All In predicates in C' are null-free, and
+   * - EqualNullSafe(C', True) === EqualNullSafe(C, True)
+   * Finally we return Not(EqualNullSafe(C', True)).
+   *
+   * Note that this method can be expensive when the condition has a NotIn as Rule 1 involves
+   * actual data processing.
+   *
+   * @param spark spark session
+   * @param condition the input condition
+   * @param target the target logical plan
+   * @param deltaLog the target deltalog for metrics-logging purposes
+   * @param operation the operation name for metrics-logging purposes
+   */
+  private def notOrIsNull(
+      spark: SparkSession,
+      condition: Expression,
+      target: LogicalPlan,
+      deltaLog: DeltaLog,
+      operation: String): Expression = {
+    // The downward direction is important, because Rule 1 needs to be applied before Rule 2.
+    val newCond = condition transformDown {
+      // Rule 1 - If condition has a NotIn predicate, we evaluate the ListQuery and see if
+      //          it contains any nulls
+      //            - if it does, then this NotIn expression can only be evaluated into
+      //              null or false, both of which will become false after applying
+      //              EqualNullSafe(condition, True), so we just turn it into a false.
+      //            - if it doesn't, then we check if the ListQuery result is empty. If it is empty,
+      //              we return True, as an empty NOT IN subquery always returns True.
+      //           -  otherwise the only case that can make NotIn evaluate to null is when value
+      //              is null. As null will become false after EqualNullSafe(condition, True), we
+      //              safely turn this NotIn into And(IsNotNull(value), makeNullFree(NotIn)).
+      //                - when value is null, this expression is just false.
+      //                - when value is not null, this expression is just makeNullFree(NotIn), which
+      //                  is equivalent to the original NotIn, because we already know that neither
+      //                  value or list is null.
+      case Not(InSubquery(Seq(value), list @ ListQuery(plan, _, _, numCols, _, _))) if
+        !isInPredicateNullFree(Seq(value), list, target) =>
+        val data = DataFrameUtils.ofRows(spark, plan)
+        assert(numCols == 1, "The output of a ListQuery should have exactly 1 column.")
+        import org.apache.spark.sql.delta.implicits._
+        val (totalCount, nonNullCount) = recordDeltaOperation(
+          deltaLog,
+          s"delta.dml.$operation.checkNullsForNotIn") {
+          data.select(count(Column("*")), count(Column(list.childOutputs.head)))
+            .as[(Long, Long)]
+            .first()
+        }
+        if (totalCount > nonNullCount) {
+          // ListQuery contains null, safe to convert it to false
+          FalseLiteral
+        } else {
+          if (totalCount == 0) {
+            // Special handling because of SC-126559. Nothing is considered to be part of an empty
+            // ListQuery result and that is negated to True.
+            TrueLiteral
+          } else {
+            val nullFreeIn = makeNullFree(value, target, list)
+            And(Not(nullFreeIn), IsNotNull(value))
+          }
+        }
+      // Rule 2 - If the condition has a In predicate, this rule makes it null-free. This
+      //          effectively turns all the null results of In into false. This is OK as long as
+      //          there is at most one Not outside of this In predicate. Right now Spark SQL
+      //          analyzer blocks expression with a In inside of a Not, except for NotIn.
+      //          If this In is part of NotIn, it won't trigger this rule because this In would
+      //          have been already turned null-free by Rule 1.
+      case InSubquery(Seq(value), list: ListQuery)
+          if !isInPredicateNullFree(Seq(value), list, target) =>
+        makeNullFree(value, target, list)
+    }
+    Not(EqualNullSafe(newCond, TrueLiteral))
   }
 
   def shouldWritePersistentDeletionVectors(

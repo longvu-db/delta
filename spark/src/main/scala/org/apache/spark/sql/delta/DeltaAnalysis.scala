@@ -251,10 +251,7 @@ class DeltaAnalysis(session: SparkSession)
           protocol
       }
       val newDeltaCatalog = new DeltaCatalogV1()
-      val existingTableOpt = newDeltaCatalog.getExistingTableIfExists(
-        catalogTableTarget.identifier,
-        identOpt = None,
-        operation = TableCreationModes.Create)
+      val existingTableOpt = newDeltaCatalog.getExistingTableIfExists(catalogTableTarget.identifier)
       val newTable = newDeltaCatalog
         .verifyTableAndSolidify(
           catalogTableTarget,
@@ -269,8 +266,48 @@ class DeltaAnalysis(session: SparkSession)
         protocol = protocolAfterFilteringCatalogOwnedFromSource,
         tableByPath = isTableByPath)
 
+    // df.insertInto() with replaceOn/replaceUsing options
+    case o @ OverwriteDelta(r, d) if !o.isByName &&
+        hasReplaceOnOrUsingOption(o.writeOptions) =>
+      val deltaTableV2 = d
+      val tableRelation = r
+      val needsAdjustment = needsSchemaAdjustmentByOrdinal(
+        deltaTable = deltaTableV2,
+        query = o.query,
+        schema = tableRelation.schema,
+        writeOptions = o.writeOptions)
+      val projectedQuery = if (needsAdjustment) {
+        resolveQueryColumnsByOrdinal(
+          query = o.query,
+          targetAttrs = tableRelation.output,
+          deltaTable = deltaTableV2,
+          writeOptions = o.writeOptions)
+      } else {
+        DeltaInsertReplaceOnOrUsingCommand.addOrdinalAliasProjection(
+          queryToAlias = o.query, aliasAttrs = tableRelation.output)
+      }
+      val deltaOptions = new DeltaOptions(
+        CaseInsensitiveMap(deltaTableV2.options ++ o.writeOptions),
+        session.sessionState.conf)
+      val writeCmd = WriteIntoDelta(
+        deltaLog = deltaTableV2.deltaLog,
+        mode = SaveMode.Overwrite,
+        options = deltaOptions,
+        partitionColumns = Nil,
+        configuration = Map.empty,
+        data = DataFrameUtils.ofRows(session, projectedQuery),
+        catalogTableOpt = deltaTableV2.catalogTable)
+      DeltaInsertReplaceOnOrUsingCommand(
+        deltaTable = deltaTableV2,
+        query = projectedQuery,
+        writeCmd = writeCmd,
+        insertReplaceCriteriaOpt = None,
+        byName = false,
+        apiOrigin = InsertReplaceOnOrUsingAPIOrigin.DFv1InsertInto)
+
     // INSERT OVERWRITE by ordinal and df.insertInto()
     case o @ OverwriteDelta(r, d) if !o.isByName &&
+        !hasReplaceOnOrUsingOption(o.writeOptions) &&
         needsSchemaAdjustmentByOrdinal(d, o.query, r.schema, o.writeOptions) =>
       val projection = resolveQueryColumnsByOrdinal(o.query, r.output, d, o.writeOptions)
       if (projection != o.query) {
@@ -1080,6 +1117,13 @@ class DeltaAnalysis(session: SparkSession)
     }
   }
 
+  /** Check if the write options contain replaceOn or replaceUsing. */
+  private def hasReplaceOnOrUsingOption(writeOptions: Map[String, String]): Boolean = {
+    val opts = CaseInsensitiveMap(writeOptions)
+    opts.contains(DeltaOptions.REPLACE_ON_OPTION) ||
+      opts.contains(DeltaOptions.REPLACE_USING_OPTION)
+  }
+
   /**
    * With Delta, we ACCEPT_ANY_SCHEMA, meaning that Spark doesn't automatically adjust the schema
    * of INSERT INTO. This allows us to perform better schema enforcement/evolution. Since Spark
@@ -1586,3 +1630,4 @@ case class DeltaDynamicPartitionOverwriteCommand(
     ).run(sparkSession)
   }
 }
+

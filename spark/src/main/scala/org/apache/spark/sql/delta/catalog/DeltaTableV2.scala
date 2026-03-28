@@ -27,7 +27,7 @@ import org.apache.spark.sql.delta.DataFrameUtils
 import org.apache.spark.sql.delta.skipping.clustering.{ClusteredTableUtils, ClusteringColumnInfo}
 import org.apache.spark.sql.delta.skipping.clustering.temp.ClusterBySpec
 import org.apache.spark.sql.delta._
-import org.apache.spark.sql.delta.commands.WriteIntoDelta
+import org.apache.spark.sql.delta.commands.{DeltaInsertReplaceOnOrUsingCommand, InsertReplaceOnOrUsingAPIOrigin, WriteIntoDelta}
 import org.apache.spark.sql.delta.commands.cdc.CDCReader
 import org.apache.spark.sql.delta.metering.DeltaLogging
 import org.apache.spark.sql.delta.sources.{DeltaDataSource, DeltaSourceUtils}
@@ -242,9 +242,7 @@ class DeltaTableV2 private(
         base.put(TableCatalog.PROP_OWNER, table.owner)
       }
       v1Table.storage.properties.foreach { case (key, value) =>
-        if (!DeltaTableV2.HIDDEN_STORAGE_PROPERTY_PREFIXES.exists(key.startsWith)) {
-          base.put(TableCatalog.OPTION_PREFIX + key, value)
-        }
+        base.put(TableCatalog.OPTION_PREFIX + key, value)
       }
       if (v1Table.tableType == CatalogTableType.EXTERNAL) {
         base.put(TableCatalog.PROP_EXTERNAL, "true")
@@ -436,15 +434,6 @@ class DeltaTableV2 private(
 }
 
 object DeltaTableV2 {
-
-  /**
-   * Storage property key prefixes that should be excluded from the user-visible V2 table
-   * properties returned by [[DeltaTableV2.properties()]]. These are Hadoop filesystem
-   * configuration options that may contain sensitive credentials (access keys, session
-   * tokens, etc.) injected by catalogs at table-load time.
-   */
-  private[delta] val HIDDEN_STORAGE_PROPERTY_PREFIXES: Seq[String] = Seq("fs.")
-
   def unapply(deltaTable: DeltaTableV2): Option[(
       SparkSession,
       Path,
@@ -631,14 +620,26 @@ private class WriteIntoDeltaBuilder(
             )
           }
           // TODO: Get the config from WriteIntoDelta's txn.
-          WriteIntoDelta(
+          val deltaOptions = new DeltaOptions(
+            options.toMap, session.sessionState.conf)
+          val writeCmd = WriteIntoDelta(
             table.deltaLog,
             if (forceOverwrite) SaveMode.Overwrite else SaveMode.Append,
-            new DeltaOptions(options.toMap, session.sessionState.conf),
+            deltaOptions,
             Nil,
             table.deltaLog.unsafeVolatileSnapshot.metadata.configuration,
             data,
-            table.catalogTable).run(session)
+            table.catalogTable)
+          val finalCmd = if (deltaOptions.isReplaceOnOrUsingDefined) {
+            DeltaInsertReplaceOnOrUsingCommand.createCmdForSaveAndSaveAsTable(
+              deltaTable = table,
+              data = data,
+              writeCmd = writeCmd,
+              apiOrigin = InsertReplaceOnOrUsingAPIOrigin.DFv1InsertInto)
+          } else {
+            writeCmd
+          }
+          finalCmd.run(session)
 
           // TODO: Push this to Apache Spark
           // Re-cache all cached plans(including this relation itself, if it's cached) that refer
