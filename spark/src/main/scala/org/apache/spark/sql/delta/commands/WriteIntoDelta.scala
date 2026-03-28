@@ -612,12 +612,10 @@ case class WriteIntoDelta(
         UnresolvedAttribute(
           Seq(effectiveTableAliasOpt.get, c))).distinct
       val resolved = cols.map { c =>
-        val queryAttr = analyzedPlan.output.find(a =>
-          resolver(a.name, c)).get
         EqualTo(
           UnresolvedAttribute(
             Seq(effectiveTableAliasOpt.get, c)),
-          queryAttr)
+          UnresolvedAttribute(c))
       }
       (tblAttrs, resolved)
     }
