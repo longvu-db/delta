@@ -35,7 +35,10 @@ import org.apache.spark.SparkContext
 import org.apache.spark.sql.{Column, DataFrame, Dataset, Row, SparkSession}
 import org.apache.spark.sql.catalyst.analysis.EliminateSubqueryAliases
 import org.apache.spark.sql.catalyst.catalog.CatalogTable
-import org.apache.spark.sql.catalyst.expressions.{And, Attribute, AttributeReference, EqualNullSafe, Expression, ExpressionSet, If, InSubquery, IsNotNull, ListQuery, Literal, Not, SubqueryExpression}
+import org.apache.spark.sql.catalyst.expressions.{
+  And, Attribute, AttributeReference, EqualNullSafe, Expression,
+  ExpressionSet, If, InSubquery, IsNotNull, ListQuery, Literal,
+  Not, SubqueryExpression}
 import org.apache.spark.sql.catalyst.expressions.Literal.{FalseLiteral, TrueLiteral}
 import org.apache.spark.sql.catalyst.plans.QueryPlan
 import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, Filter, LogicalPlan, SupportsSubquery}

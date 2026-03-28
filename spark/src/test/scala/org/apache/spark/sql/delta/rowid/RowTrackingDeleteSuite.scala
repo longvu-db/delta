@@ -131,6 +131,31 @@ trait RowTrackingDeleteSuiteBase extends RowTrackingDeleteTestDimension {
     }
   }
 
+  // Subqueries are now supported in DELETE for Delta OSS.
+  for {
+    isPartitioned <- BOOLEAN_DOMAIN
+    whereClause <- Seq(
+      s"id in (SELECT id + 1000 FROM $subqueryTableName)",
+      s"id in (SELECT id FROM $subqueryTableName " +
+        s"WHERE id = 7 OR id = 11)",
+      s"EXISTS (SELECT 1 FROM $subqueryTableName " +
+        s"WHERE id >= 0)"
+    )
+  } {
+    test(s"DELETE with subquery preserves Row IDs, " +
+      s"isPartitioned=$isPartitioned, " +
+      s"whereClause=`$whereClause`") {
+      withRowIdTestTable(isPartitioned) {
+        withTable(subqueryTableName) {
+          createTestTable(
+            subqueryTableName,
+            isPartitioned,
+            multipleFilesPerPartition = false)
+          deleteAndValidateStableRowId(Some(whereClause))
+        }
+      }
+    }
+  }
 
   for (isPartitioned <- BOOLEAN_DOMAIN)  {
     test(s"Multiple DELETEs preserve Row IDs, isPartitioned=$isPartitioned") {
