@@ -513,7 +513,8 @@ case class WriteIntoDelta(
       tableRelation0
     }
 
-    val originalQuery = data.queryExecution.analyzed match {
+    val analyzedPlan = data.queryExecution.analyzed
+    val originalQuery = analyzedPlan match {
       case Project(_, child) => child
       case plan => plan
     }
@@ -566,7 +567,7 @@ case class WriteIntoDelta(
       cols.foreach { c =>
         val isInTable = checkCol(
           tableRelation, Seq(effectiveTableAliasOpt.get, c))
-        val isInQuery = originalQuery.output.exists(a =>
+        val isInQuery = analyzedPlan.output.exists(a =>
           resolver(a.name, c))
 
         if (!isInTable) {
@@ -580,7 +581,7 @@ case class WriteIntoDelta(
           throw DeltaErrors.unresolvedInsertReplaceUsingColumnsError(
             colName = c,
             relationType = "query",
-            suggestion = originalQuery.schema.fieldNames
+            suggestion = analyzedPlan.schema.fieldNames
               .sorted.mkString(", "))
         }
       }
@@ -593,7 +594,7 @@ case class WriteIntoDelta(
         .exists(_.toBoolean)
       if (disallowMisaligned && !isInsertReplaceUsingByName) {
         val tableSchema = tableRelation.schema
-        val querySchema = originalQuery.schema
+        val querySchema = analyzedPlan.schema
         val misaligned = cols.filter { c =>
           val tableIdx = tableSchema.fieldNames.indexWhere(
             n => resolver(n, c))
@@ -611,7 +612,7 @@ case class WriteIntoDelta(
         UnresolvedAttribute(
           Seq(effectiveTableAliasOpt.get, c))).distinct
       val resolved = cols.map { c =>
-        val queryAttr = originalQuery.output.find(a =>
+        val queryAttr = analyzedPlan.output.find(a =>
           resolver(a.name, c)).get
         EqualTo(
           UnresolvedAttribute(
