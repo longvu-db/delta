@@ -1,7 +1,7 @@
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/catalog/AbstractDeltaCatalog.scala:727:19: non-variable type argument org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty in type pattern Seq[org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty] (the underlying of Seq[org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty]) is unchecked since it is eliminated by erasure
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/catalog/AbstractDeltaCatalog.scala:725:19: non-variable type argument org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty in type pattern Seq[org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty] (the underlying of Seq[org.apache.spark.sql.connector.catalog.TableChange.RemoveProperty]) is unchecked since it is eliminated by erasure
 [warn]       case (t, s: Seq[RemoveProperty]) if t == classOf[RemoveProperty] =>
 [warn]                   ^
-[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/catalog/AbstractDeltaCatalog.scala:729:19: non-variable type argument org.apache.spark.sql.connector.catalog.TableChange.SetProperty in type pattern Seq[org.apache.spark.sql.connector.catalog.TableChange.SetProperty] (the underlying of Seq[org.apache.spark.sql.connector.catalog.TableChange.SetProperty]) is unchecked since it is eliminated by erasure
+[warn] /home/long.vu/delta/spark/src/main/scala/org/apache/spark/sql/delta/catalog/AbstractDeltaCatalog.scala:727:19: non-variable type argument org.apache.spark.sql.connector.catalog.TableChange.SetProperty in type pattern Seq[org.apache.spark.sql.connector.catalog.TableChange.SetProperty] (the underlying of Seq[org.apache.spark.sql.connector.catalog.TableChange.SetProperty]) is unchecked since it is eliminated by erasure
 [warn]       case (t, s: Seq[SetProperty]) if t == classOf[SetProperty] =>
 [warn]                   ^
 [warn] 30 deprecations (since 2.13.0)

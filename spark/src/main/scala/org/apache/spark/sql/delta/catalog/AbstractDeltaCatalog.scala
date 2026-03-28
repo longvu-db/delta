@@ -109,8 +109,7 @@ class AbstractDeltaCatalog extends DelegatingCatalogExtension
       allTableProperties: util.Map[String, String],
       writeOptions: Map[String, String],
       sourceQuery: Option[DataFrame],
-      operation: TableCreationModes.CreationMode,
-      isFromStagedTable: Boolean = false
+      operation: TableCreationModes.CreationMode
     ): Table = recordFrameProfile(
         "DeltaCatalog", "createDeltaTable") {
     // These two keys are tableProperties in data source v2 but not in v1, so we have to filter
@@ -671,8 +670,7 @@ class AbstractDeltaCatalog extends DelegatingCatalogExtension
         props,
         writeOptions,
         asSelectQuery,
-        operation,
-        isFromStagedTable = true
+        operation
       )
     }
 

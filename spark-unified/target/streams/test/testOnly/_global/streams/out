@@ -1,7 +1,7 @@
 [debug] javaOptions: Vector(-Xmx1024m, -Dspark.ui.enabled=false, -Dspark.ui.showConsoleProgress=false, -Dspark.databricks.delta.snapshotPartitions=2, -Dspark.sql.shuffle.partitions=5, -Ddelta.log.cacheSize=3, -Dspark.databricks.delta.delta.log.cacheSize=3, -Dspark.sql.sources.parallelPartitionDiscovery.parallelism=5, -Xmx1024m, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, --add-opens=java.base/sun.nio.ch=ALL-UNNAMED, --add-opens=java.base/sun.util.calendar=ALL-UNNAMED, -Dlog4j.configurationFile=log4j2.properties, -Duser.timezone=UTC, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.lang.invoke=ALL-UNNAMED, --add-opens=java.base/java.io=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.base/java.util=ALL-UNNAMED, --add-opens=java.base/java.util.concurrent=ALL-UNNAMED, --add-opens=java.base/sun.nio.ch=ALL-UNNAMED, --add-opens=java.base/sun.nio.cs=ALL-UNNAMED, --add-opens=java.base/sun.security.action=ALL-UNNAMED, --add-opens=java.base/sun.util.calendar=ALL-UNNAMED, -Dspark.ui.enabled=false, -Dspark.ui.showConsoleProgress=false, -Dspark.databricks.delta.snapshotPartitions=2, -Dspark.sql.shuffle.partitions=5, -Ddelta.log.cacheSize=3, -Dspark.databricks.delta.delta.log.cacheSize=3, -Dspark.sql.sources.parallelPartitionDiscovery.parallelism=5, -Xmx1024m)
 [debug] Forking tests - parallelism = false
 [debug] Create a single-thread test executor
-[debug] Runner for org.scalatest.tools.Framework produced 6 initial tasks for 6 tests.
+[debug] Runner for org.scalatest.tools.Framework produced 8 initial tasks for 8 tests.
 [debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite, sbt.ForkMain$SubclassFingerscan@a4102b8, false, [SuiteSelector])
 [info] DeltaInsertReplaceOnDFWriterV1InsertIntoSuite:
 [info] - replaceOn with always-true condition replaces all rows
@@ -356,15 +356,95 @@
 [info] - saveAsTable: replaceUsing on non-existent table errors
 [info] - saveAsTable: replaceUsing with schema evolution
 [debug]     Produced 0 nested tasks and 60 events.
-[info] Run completed in 6 minutes, 41 seconds.
-[info] Total number of tests run: 329
-[info] Suites: completed 6, aborted 0
-[info] Tests: succeeded 329, failed 0, canceled 0, ignored 7, pending 0
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnOrUsingDFOptionCombinationSuite, sbt.ForkMain$SubclassFingerscan@79ca92b9, false, [SuiteSelector])
+[info] DeltaInsertReplaceOnOrUsingDFOptionCombinationSuite:
+[info] - `replaceOn` should be invalid with `replaceUsing` option, save DataFrameWriterV1 API
+[info] - `replaceOn` should be invalid with `replaceUsing` option, saveAsTable DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceOn` option, save DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceOn` option, insertInto DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceOn` option, insertInto path-based DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceOn` option, saveAsTable DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceOn` option, saveAsTable path-based DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceOn` option, save DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceOn` option, insertInto DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceOn` option, insertInto path-based DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceOn` option, saveAsTable DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceOn` option, saveAsTable path-based DataFrameWriterV1 API
+[info] - DataFrameWriterV2 overwrite(predicate) should be invalid with `replaceOn` option
+[info] - DataFrameWriterV2 overwritePartitions should be invalid with `replaceOn` option
+[info] - SQL session config DPO should not affect `replaceOn` option, save DataFrameWriterV1 API, enableDynamicPartitionOverwrite=true, partitionOverwriteMode=STATIC
+[info] - SQL session config DPO should not affect `replaceOn` option, save DataFrameWriterV1 API, enableDynamicPartitionOverwrite=true, partitionOverwriteMode=DYNAMIC
+[info] - SQL session config DPO should not affect `replaceOn` option, save DataFrameWriterV1 API, enableDynamicPartitionOverwrite=false, partitionOverwriteMode=STATIC
+[info] - SQL session config DPO should not affect `replaceOn` option, save DataFrameWriterV1 API, enableDynamicPartitionOverwrite=false, partitionOverwriteMode=DYNAMIC
+[info] - `overwriteSchema`=true should be invalid with `replaceOn`, save DataFrameWriterV1 API
+[info] - `overwriteSchema`=true should be invalid with `replaceOn`, saveAsTable DataFrameWriterV1 API
+[info] - `overwriteSchema`=true should be invalid with `replaceOn`, insertInto DataFrameWriterV1 API
+[info] - `overwriteSchema`=false should be valid with `replaceOn`, save DataFrameWriterV1 API
+[info] - `overwriteSchema`=false should be valid with `replaceOn`, saveAsTable DataFrameWriterV1 API
+[info] - `overwriteSchema`=false should be valid with `replaceOn`, insertInto DataFrameWriterV1 API
+[info] - `dataChange`=false should be invalid with `replaceOn`, save DataFrameWriterV1 API
+[info] - `dataChange`=false should be invalid with `replaceOn`, saveAsTable DataFrameWriterV1 API
+[info] - `dataChange`=false should be invalid with `replaceOn`, insertInto DataFrameWriterV1 API
+[info] - `overwriteSchema`=true in Append mode should just append with `replaceOn`, save DataFrameWriterV1 API
+[info] - `dataChange`=true should be valid with `replaceOn`, save DataFrameWriterV1 API
+[info] - `dataChange`=true should be valid with `replaceOn`, saveAsTable DataFrameWriterV1 API
+[info] - `dataChange`=true should be valid with `replaceOn`, insertInto DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceUsing` option, save DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceUsing` option, insertInto DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceUsing` option, insertInto path-based DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceUsing` option, saveAsTable DataFrameWriterV1 API
+[info] - `replaceWhere` should be invalid with `replaceUsing` option, saveAsTable path-based DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceUsing` option, save DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceUsing` option, insertInto DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceUsing` option, insertInto path-based DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceUsing` option, saveAsTable DataFrameWriterV1 API
+[info] - `partitionOverwriteMode` should be invalid with `replaceUsing` option, saveAsTable path-based DataFrameWriterV1 API
+[info] - DataFrameWriterV2 overwrite(predicate) should be invalid with `replaceUsing` option
+[info] - DataFrameWriterV2 overwritePartitions should be invalid with `replaceUsing` option
+[info] - SQL session config DPO should not affect `replaceUsing` option, save DataFrameWriterV1 API, enableDynamicPartitionOverwrite=true, partitionOverwriteMode=STATIC
+[info] - SQL session config DPO should not affect `replaceUsing` option, save DataFrameWriterV1 API, enableDynamicPartitionOverwrite=true, partitionOverwriteMode=DYNAMIC
+[info] - SQL session config DPO should not affect `replaceUsing` option, save DataFrameWriterV1 API, enableDynamicPartitionOverwrite=false, partitionOverwriteMode=STATIC
+[info] - SQL session config DPO should not affect `replaceUsing` option, save DataFrameWriterV1 API, enableDynamicPartitionOverwrite=false, partitionOverwriteMode=DYNAMIC
+[info] - `overwriteSchema`=true should be invalid with `replaceUsing`, save DataFrameWriterV1 API
+[info] - `overwriteSchema`=true should be invalid with `replaceUsing`, saveAsTable DataFrameWriterV1 API
+[info] - `overwriteSchema`=true should be invalid with `replaceUsing`, insertInto DataFrameWriterV1 API
+[info] - `overwriteSchema`=false should be valid with `replaceUsing`, save DataFrameWriterV1 API
+[info] - `overwriteSchema`=false should be valid with `replaceUsing`, saveAsTable DataFrameWriterV1 API
+[info] - `overwriteSchema`=false should be valid with `replaceUsing`, insertInto DataFrameWriterV1 API
+[info] - `dataChange`=false should be invalid with `replaceUsing`, save DataFrameWriterV1 API
+[info] - `dataChange`=false should be invalid with `replaceUsing`, saveAsTable DataFrameWriterV1 API
+[info] - `dataChange`=false should be invalid with `replaceUsing`, insertInto DataFrameWriterV1 API
+[info] - `overwriteSchema`=true in Append mode should just append with `replaceUsing`, save DataFrameWriterV1 API
+[info] - `dataChange`=true should be valid with `replaceUsing`, save DataFrameWriterV1 API
+[info] - `dataChange`=true should be valid with `replaceUsing`, saveAsTable DataFrameWriterV1 API
+[info] - `dataChange`=true should be valid with `replaceUsing`, insertInto DataFrameWriterV1 API
+[info] - `overwriteSchema`=true should be invalid with `replaceOn` (case insensitive)
+[info] - `overwriteSchema`=true should be invalid with `replaceUsing` (case insensitive)
+[debug]     Produced 0 nested tasks and 62 events.
+[debug]   Running TaskDef(org.apache.spark.sql.delta.DeltaInsertReplaceOnOrUsingDFv2CreateReplaceBlockingSuite, sbt.ForkMain$SubclassFingerscan@1460a8c0, false, [SuiteSelector])
+[info] DeltaInsertReplaceOnOrUsingDFv2CreateReplaceBlockingSuite:
+[info] - create() blocked with replaceOn option !!! IGNORED !!!
+[info] - replace() blocked with replaceOn option !!! IGNORED !!!
+[info] - createOrReplace() blocked with replaceOn option - table does not exist !!! IGNORED !!!
+[info] - createOrReplace() blocked with replaceOn option - table exists !!! IGNORED !!!
+[info] - create() blocked with replaceUsing option !!! IGNORED !!!
+[info] - replace() blocked with replaceUsing option !!! IGNORED !!!
+[info] - createOrReplace() blocked with replaceUsing option - table does not exist !!! IGNORED !!!
+[info] - createOrReplace() blocked with replaceUsing option - table exists !!! IGNORED !!!
+[info] - blocked with case-insensitive REPLACEON option name !!! IGNORED !!!
+[info] - blocked with case-insensitive REPLACEUSING option name !!! IGNORED !!!
+[debug]     Produced 0 nested tasks and 10 events.
+[info] Run completed in 7 minutes, 25 seconds.
+[info] Total number of tests run: 391
+[info] Suites: completed 8, aborted 0
+[info] Tests: succeeded 391, failed 0, canceled 0, ignored 17, pending 0
 [info] All tests passed.
 [debug] Passed tests:
+[debug] 	org.apache.spark.sql.delta.DeltaInsertReplaceOnOrUsingDFOptionCombinationSuite
 [debug] 	org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveSuite
 [debug] 	org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveAsTableSuite
 [debug] 	org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1SaveSuite
 [debug] 	org.apache.spark.sql.delta.DeltaInsertReplaceOnDFWriterV1InsertIntoSuite
 [debug] 	org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1InsertIntoSuite
 [debug] 	org.apache.spark.sql.delta.DeltaInsertReplaceUsingDFWriterV1SaveAsTableSuite
+[debug] 	org.apache.spark.sql.delta.DeltaInsertReplaceOnOrUsingDFv2CreateReplaceBlockingSuite
