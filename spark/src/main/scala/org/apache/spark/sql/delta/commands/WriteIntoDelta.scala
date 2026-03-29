@@ -28,9 +28,7 @@ import org.apache.spark.sql.delta.commands.cdc.CDCReader
 import org.apache.spark.sql.delta.constraints.Constraint
 import org.apache.spark.sql.delta.constraints.Constraints.Check
 import org.apache.spark.sql.delta.constraints.Invariants.ArbitraryExpression
-import org.apache.spark.sql.delta.schema.{
-  ImplicitMetadataOperation,
-  InvariantViolationException, SchemaUtils}
+import org.apache.spark.sql.delta.schema.{ImplicitMetadataOperation, InvariantViolationException, SchemaUtils}
 import org.apache.spark.sql.delta.skipping.clustering.ClusteredTableUtils
 import org.apache.spark.sql.delta.skipping.clustering.temp.ClusterBySpec
 import org.apache.spark.sql.delta.sources.DeltaSQLConf
@@ -515,8 +513,7 @@ case class WriteIntoDelta(
       tableRelation0
     }
 
-    val analyzedPlan = data.queryExecution.analyzed
-    val originalQuery = analyzedPlan match {
+    val originalQuery = data.queryExecution.analyzed match {
       case Project(_, child) => child
       case plan => plan
     }
@@ -569,7 +566,7 @@ case class WriteIntoDelta(
       cols.foreach { c =>
         val isInTable = checkCol(
           tableRelation, Seq(effectiveTableAliasOpt.get, c))
-        val isInQuery = analyzedPlan.output.exists(a =>
+        val isInQuery = originalQuery.output.exists(a =>
           resolver(a.name, c))
 
         if (!isInTable) {
@@ -583,7 +580,7 @@ case class WriteIntoDelta(
           throw DeltaErrors.unresolvedInsertReplaceUsingColumnsError(
             colName = c,
             relationType = "query",
-            suggestion = analyzedPlan.schema.fieldNames
+            suggestion = originalQuery.schema.fieldNames
               .sorted.mkString(", "))
         }
       }
@@ -596,7 +593,7 @@ case class WriteIntoDelta(
         .exists(_.toBoolean)
       if (disallowMisaligned && !isInsertReplaceUsingByName) {
         val tableSchema = tableRelation.schema
-        val querySchema = analyzedPlan.schema
+        val querySchema = originalQuery.schema
         val misaligned = cols.filter { c =>
           val tableIdx = tableSchema.fieldNames.indexWhere(
             n => resolver(n, c))
@@ -614,23 +611,23 @@ case class WriteIntoDelta(
         UnresolvedAttribute(
           Seq(effectiveTableAliasOpt.get, c))).distinct
       val resolved = cols.map { c =>
+        val queryAttr = originalQuery.output.find(a =>
+          resolver(a.name, c)).get
         EqualTo(
           UnresolvedAttribute(
             Seq(effectiveTableAliasOpt.get, c)),
-          UnresolvedAttribute(c))
+          queryAttr)
       }
       (tblAttrs, resolved)
     }
 
-    val existsChild = if (options.replaceUsing.isDefined)
-      analyzedPlan else originalQuery
     Exists(
       plan = Project(
         projectList = Seq(
           Alias(Literal(1), "__dummy_name_for_a_constant")()),
         child = Filter(
           condition = conds.reduce(And),
-          child = existsChild)),
+          child = originalQuery)),
       outerAttrs = outerAttrs)
   }
 }
