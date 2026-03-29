@@ -28,7 +28,9 @@ import org.apache.spark.sql.delta.commands.cdc.CDCReader
 import org.apache.spark.sql.delta.constraints.Constraint
 import org.apache.spark.sql.delta.constraints.Constraints.Check
 import org.apache.spark.sql.delta.constraints.Invariants.ArbitraryExpression
-import org.apache.spark.sql.delta.schema.{ImplicitMetadataOperation, InvariantViolationException, SchemaUtils}
+import org.apache.spark.sql.delta.schema.{
+  ImplicitMetadataOperation,
+  InvariantViolationException, SchemaUtils}
 import org.apache.spark.sql.delta.skipping.clustering.ClusteredTableUtils
 import org.apache.spark.sql.delta.skipping.clustering.temp.ClusterBySpec
 import org.apache.spark.sql.delta.sources.DeltaSQLConf
@@ -620,13 +622,15 @@ case class WriteIntoDelta(
       (tblAttrs, resolved)
     }
 
+    val existsChild = if (options.replaceUsing.isDefined)
+      analyzedPlan else originalQuery
     Exists(
       plan = Project(
         projectList = Seq(
           Alias(Literal(1), "__dummy_name_for_a_constant")()),
         child = Filter(
           condition = conds.reduce(And),
-          child = originalQuery)),
+          child = existsChild)),
       outerAttrs = outerAttrs)
   }
 }
