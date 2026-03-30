@@ -24,7 +24,6 @@ private[delta] class PhaseLockingTransactionExecutionObserver(
   with PhaseLockingExecutionObserver {
 
   override val phaseLocks: Seq[ExecutionPhaseLock] = Seq(
-    phases.analysisPhase,
     phases.initialPhase,
     phases.preparePhase,
     phases.commitPhase,
@@ -47,10 +46,8 @@ private[delta] class PhaseLockingTransactionExecutionObserver(
    */
   @volatile protected var autoAdvanceNextObserver: Boolean = false
 
-  override def startingTransaction(f: => OptimisticTransaction): OptimisticTransaction = {
-    phases.analysisPhase.leave()
+  override def startingTransaction(f: => OptimisticTransaction): OptimisticTransaction =
     phases.initialPhase.execute(f)
-  }
 
   override def preparingCommit[T](f: => T): T = phases.preparePhase.execute(f)
 

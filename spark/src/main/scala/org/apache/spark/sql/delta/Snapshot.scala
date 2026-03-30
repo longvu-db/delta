@@ -24,9 +24,7 @@ import scala.collection.mutable
 
 import org.apache.spark.sql.delta.actions._
 import org.apache.spark.sql.delta.actions.Action.logSchema
-import org.apache.spark.sql.delta.ClassicColumnConversions._
 import org.apache.spark.sql.delta.coordinatedcommits.{CatalogOwnedTableUtils, CommitCoordinatorClient, CommitCoordinatorProvider, CoordinatedCommitsUsageLogs, CoordinatedCommitsUtils, TableCommitCoordinatorClient}
-import org.apache.spark.sql.delta.expressions.EncodeNestedVariantAsZ85String
 import org.apache.spark.sql.delta.logging.DeltaLogKeys
 import org.apache.spark.sql.delta.metering.DeltaLogging
 import org.apache.spark.sql.delta.schema.SchemaUtils
@@ -560,21 +558,13 @@ class Snapshot(
         val addSchema = schema("add").dataType.asInstanceOf[StructType]
         val (checkpointSchemaToUse, checkpointStatsColToUse) =
           if (addSchema.exists(_.name == "stats_parsed") && !addSchema.exists(_.name == "stats")) {
-            val statsParsedSchema = addSchema("stats_parsed").dataType.asInstanceOf[StructType]
             val checkpointSchemaToUse =
               Action.logSchemaWithAddStatsParsed(addSchema("stats_parsed"))
-            val statsCol = col("add.stats_parsed")
-            // Only use EncodeNestedVariantAsZ85String if the schema contains VariantType.
-            // This avoids performance overhead for tables without variant columns.
-            val encodedStatsCol =
-              if (SchemaUtils.checkForVariantTypeColumnsRecursively(statsParsedSchema)) {
-                Column(EncodeNestedVariantAsZ85String(statsCol.expr))
-              } else {
-                statsCol
-              }
             (
               checkpointSchemaToUse,
-              to_json(encodedStatsCol)
+              to_json(
+                col("add.stats_parsed")
+              )
             )
           } else {
             // Normal (JSON-like) schema suffices

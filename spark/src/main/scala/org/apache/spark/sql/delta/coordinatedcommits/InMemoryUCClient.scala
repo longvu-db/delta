@@ -24,7 +24,6 @@ import org.apache.spark.sql.delta.actions.{Metadata, Protocol}
 import io.delta.storage.commit.{Commit => JCommit, GetCommitsResponse => JGetCommitsResponse}
 import io.delta.storage.commit.actions.{AbstractMetadata, AbstractProtocol}
 import io.delta.storage.commit.uccommitcoordinator.UCClient
-import io.delta.storage.commit.uniform.UniformMetadata
 
 /**
  * An in-memory implementation of [[UCClient]] for testing purposes.
@@ -64,8 +63,7 @@ class InMemoryUCClient(
       lastKnownBackfilledVersion: Optional[JLong],
       disown: Boolean,
       newMetadata: Optional[AbstractMetadata],
-      newProtocol: Optional[AbstractProtocol],
-      uniform: Optional[UniformMetadata] = Optional.empty()): Unit = {
+      newProtocol: Optional[AbstractProtocol]): Unit = {
     ucCommitCoordinator.commitToCoordinator(
       tableId,
       tableUri,

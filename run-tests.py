@@ -213,6 +213,10 @@ def run_tests_in_docker(image_tag, test_group):
     # Do not pass docker related env variable as we want this script to run natively in
     # the container and not attempt to recursively another docker container.
     envs = "-e JENKINS_URL -e SBT_1_5_5_MIRROR_JAR_URL "
+    maven_proxy_url = os.getenv("MAVEN_PROXY_URL")
+    if maven_proxy_url is not None:
+        envs = envs + "-e MAVEN_PROXY_URL=%s " % maven_proxy_url
+
     scala_version = os.getenv("SCALA_VERSION")
     if scala_version is not None:
         envs = envs + "-e SCALA_VERSION=%s " % scala_version
@@ -261,7 +265,7 @@ def print_configuration(args: argparse.Namespace) -> None:
     env_vars = [
         "USE_DOCKER", "SCALA_VERSION", "DISABLE_UNIDOC", "DOCKER_REGISTRY",
         "NUM_SHARDS", "SHARD_ID", "TEST_PARALLELISM_COUNT", "JENKINS_URL",
-        "SBT_1_5_5_MIRROR_JAR_URL", "DELTA_TESTING", "SBT_OPTS"
+        "SBT_1_5_5_MIRROR_JAR_URL", "MAVEN_PROXY_URL", "DELTA_TESTING"
     ]
 
     for var in env_vars:
@@ -277,6 +281,7 @@ def print_configuration(args: argparse.Namespace) -> None:
 if __name__ == "__main__":
     root_dir = os.path.dirname(os.path.abspath(__file__))
     args = get_args()
+
 
     print_configuration(args)
 
