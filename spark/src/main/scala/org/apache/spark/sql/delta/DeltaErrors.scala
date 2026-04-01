@@ -1111,6 +1111,12 @@ trait DeltaErrorsBase
     )
   }
 
+  def dfv2CreateReplaceIncompatibleReplaceOnOrUsingError(): Throwable = {
+    new DeltaAnalysisException(
+      errorClass = "DELTA_DFV2_CREATE_REPLACE_INCOMPATIBLE_REPLACE_ON_OR_USING",
+      messageParameters = Array.empty)
+  }
+
   def replaceWhereMismatchException(
       replaceWhere: String,
       invariantViolation: InvariantViolationException): Throwable = {
@@ -3065,12 +3071,6 @@ trait DeltaErrorsBase
     new DeltaIllegalArgumentException(
       errorClass = "DELTA_OVERWRITE_BY_FILTER_INCOMPATIBLE_REPLACE_ON_OR_USING"
     )
-  }
-
-  def dfv2CreateReplaceIncompatibleReplaceOnOrUsingError(): Throwable = {
-    new DeltaAnalysisException(
-      errorClass = "DELTA_DFV2_CREATE_REPLACE_INCOMPATIBLE_REPLACE_ON_OR_USING",
-      messageParameters = Array.empty)
   }
 
   def replaceWhereUsedInOverwrite(): Throwable = {
