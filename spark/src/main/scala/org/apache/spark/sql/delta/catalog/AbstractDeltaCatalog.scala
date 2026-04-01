@@ -215,9 +215,7 @@ class AbstractDeltaCatalog extends DelegatingCatalogExtension
         DeltaTableUtils.validDeltaTableHadoopPrefixes.exists(k.startsWith)
       }
       val deltaOptions = new DeltaOptions(
-        withDb.storage.properties,
-        spark.sessionState.conf
-      )
+        withDb.storage.properties, spark.sessionState.conf)
       if (deltaOptions.isReplaceOnOrUsingDefined) {
         if (deltaOptions.replaceOn.isDefined && !spark.sessionState.conf.getConf(
             DeltaSQLConf.REPLACE_ON_OPTION_IN_DATAFRAME_WRITER_ENABLED)) {
