@@ -164,7 +164,7 @@ trait DeleteCDCTests extends DeleteCDCMixin
     )
   }
 
-  testCDCDelete(s"one file and one row - subquery = false")(
+  testCDCDelete(s"one file and one row")(
     initialData = spark.range(0, 4, step = 1, numPartitions = 2),
     deleteCondition = "id >= 1",
     expectedData = Seq(0).toDF("id"),
