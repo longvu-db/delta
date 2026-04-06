@@ -385,23 +385,9 @@ trait DeleteBaseTests extends DeleteBaseMixin {
     append(Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value"))
     Seq((2, 2), (1, 4)).toDF("c", "d").createOrReplaceTempView("source")
 
-    val optRuleName = spark.sessionState.optimizer
-      .batches.flatMap(_.rules)
-      .find(_.ruleName.contains(
-        "OptimizeSubqueries"))
-      .map(_.ruleName).getOrElse("NOT_FOUND")
-    // scalastyle:off println
-    new java.io.PrintWriter("/tmp/rule-name.log") {
-      write("RULE_NAME: " + optRuleName); close()
-    }
-    // scalastyle:on println
-    withSQLConf(
-      "spark.sql.optimizer.excludedRules" ->
-        optRuleName) {
-      executeDelete(
-        target = tableSQLIdentifier,
-        "EXISTS (SELECT 1 FROM source WHERE key = c)")
-    }
+    executeDelete(
+      target = tableSQLIdentifier,
+      "EXISTS (SELECT 1 FROM source WHERE key = c)")
     checkAnswer(
       readDeltaTableByIdentifier(tableSQLIdentifier),
       Row(0, 3) :: Nil)
@@ -412,15 +398,9 @@ trait DeleteBaseTests extends DeleteBaseMixin {
     // source c values: 2, 1. Deletes rows where key does NOT match any source.c (key=0)
     Seq((2, 2), (1, 4)).toDF("c", "d").createOrReplaceTempView("source")
 
-    withSQLConf(
-      "spark.sql.optimizer.excludedRules" ->
-        spark.sessionState.optimizer.batches.flatMap(_.rules)
-          .find(_.ruleName.contains("OptimizeSubqueries"))
-          .map(_.ruleName).getOrElse("OptimizeSubqueries")) {
-      executeDelete(
-        target = tableSQLIdentifier,
-        "NOT EXISTS (SELECT 1 FROM source WHERE key = c)")
-    }
+    executeDelete(
+      target = tableSQLIdentifier,
+      "NOT EXISTS (SELECT 1 FROM source WHERE key = c)")
     checkAnswer(
       readDeltaTableByIdentifier(tableSQLIdentifier),
       Row(2, 2) :: Row(1, 4) :: Row(1, 1) :: Nil)

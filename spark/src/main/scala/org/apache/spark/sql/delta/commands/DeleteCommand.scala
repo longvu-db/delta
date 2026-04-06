@@ -39,7 +39,7 @@ import org.apache.spark.sql.catalyst.catalog.CatalogTable
 import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference, EqualNullSafe, Expression, If, Literal, Not, SubqueryExpression}
 import org.apache.spark.sql.catalyst.expressions.Literal.TrueLiteral
 import org.apache.spark.sql.catalyst.plans.QueryPlan
-import org.apache.spark.sql.catalyst.plans.logical.{Command, KeepAnalyzedQuery}
+import org.apache.spark.sql.catalyst.plans.logical.Command
 import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, LogicalPlan, SupportsSubquery}
 import org.apache.spark.sql.execution.command.LeafRunnableCommand
 import org.apache.spark.sql.execution.metric.SQLMetric
@@ -115,35 +115,13 @@ case class DeleteCommand(
     target: LogicalPlan,
     condition: Option[Expression])
   extends LeafRunnableCommand with DeltaCommand with DeleteCommandMetrics
-  with SupportsSubquery with KeepAnalyzedQuery {
-
-  // Preserve the analyzed condition before the optimizer
-  // can corrupt it (e.g. OptimizeSubqueries transforming
-  // correlated Exists into uncorrelated ScalarSubquery).
-  @transient private var analyzedCondition: Option[Expression] = None
-
-  override def storeAnalyzedQuery(): Command = {
-    analyzedCondition = condition
-    // scalastyle:off println
-    new java.io.PrintWriter(
-      new java.io.FileWriter(
-        "/tmp/store-analyzed.log", true)) {
-      write("STORED: " + condition + "\n")
-      close()
-    }
-    // scalastyle:on println
-    this
-  }
-
-  /** Use the preserved analyzed condition if available. */
-  private def effectiveCondition: Option[Expression] =
-    analyzedCondition.orElse(condition)
+  with SupportsSubquery {
 
   override def innerChildren: Seq[QueryPlan[_]] = Seq(target)
 
   override val output: Seq[Attribute] = Seq(AttributeReference("num_affected_rows", LongType)())
 
-  private lazy val conditionHasSubquery = effectiveCondition.exists(SubqueryExpression.hasSubquery)
+  private lazy val conditionHasSubquery = condition.exists(SubqueryExpression.hasSubquery)
 
   override lazy val metrics = createMetrics
 
@@ -215,7 +193,7 @@ case class DeleteCommand(
     val startTime = System.nanoTime()
     val numFilesTotal = txn.snapshot.numOfFiles
 
-    val deleteActions: Seq[Action] = effectiveCondition match {
+    val deleteActions: Seq[Action] = condition match {
       case None =>
         // Case 1: Delete the whole table if the condition is true
         val reportRowLevelMetrics = conf.getConf(DeltaSQLConf.DELTA_DML_METRICS_FROM_METADATA)
@@ -529,23 +507,10 @@ case class DeleteCommand(
     withStatusCode(
       "DELTA", rewritingFilesMsg(numFilesToRewrite)) {
       import org.apache.spark.sql.delta.commands.cdc.CDCReader._
-      // scalastyle:off println
-      val dw = new java.io.PrintWriter(
-        "/tmp/cdc-debug2.log")
-      dw.println("cond: " + effectiveCondition.get)
-      dw.println("cond class: " +
-        effectiveCondition.get.getClass.getSimpleName)
-      dw.println("cond tree:\n" +
-        effectiveCondition.get.treeString)
-      dw.close()
-      // scalastyle:on println
       val filteredDf = if (writeCdc) {
         if (conditionHasSubquery) {
           // For subqueries with CDC: use the same
           // single-pass If() approach as non-subquery.
-          // KeepAnalyzedQuery preserves the correlated
-          // Exists condition before OptimizeSubqueries
-          // can corrupt it.
           val updatedDF = baseData
             .filter(incrNoopCountExpr)
             .withColumn(

@@ -43,29 +43,7 @@ trait DeleteCDCMixin extends DeleteSQLMixin with CDCEnabled {
             "true")) {
         append(initialData.toDF(), partitionColumns)
 
-        val rn = spark.sessionState.optimizer
-          .batches.flatMap(_.rules)
-          .find(_.ruleName.contains(
-            "OptimizeSubqueries"))
-          .map(_.ruleName)
-          .getOrElse("NOT_FOUND")
-        withSQLConf(
-          "spark.sql.optimizer.excludedRules" ->
-            rn) {
-          // scalastyle:off println
-          val confVal = spark.conf.get(
-            "spark.sql.optimizer.excludedRules")
-          new java.io.PrintWriter(
-            "/tmp/cdc-conf.log") {
-            write("CONF: " + confVal + "\n")
-            write("RULE: " + rn + "\n")
-            write("MATCH: " + (confVal == rn))
-            close()
-          }
-          // scalastyle:on println
-          executeDelete(
-            tableSQLIdentifier, deleteCondition)
-        }
+        executeDelete(tableSQLIdentifier, deleteCondition)
 
         checkAnswer(
           readDeltaTableByIdentifier(),
@@ -221,17 +199,11 @@ trait DeleteCDCTests extends DeleteCDCMixin
       append(spark.range(0, numRowsPerFile * numFiles,
         1, numFiles).toDF())
 
-      withSQLConf(
-        "spark.sql.optimizer.excludedRules" ->
-          ("org.apache.spark.sql.catalyst" +
-            ".optimizer.Optimizer" +
-            "$OptimizeSubqueries")) {
-        executeDelete(tableSQLIdentifier,
-          s"EXISTS (SELECT 1 FROM " +
-            s"$deleteSourceTableName s " +
-            s"WHERE s.src_id = id " +
-            s"AND s.src_id > 200)")
-      }
+      executeDelete(tableSQLIdentifier,
+        s"EXISTS (SELECT 1 FROM " +
+          s"$deleteSourceTableName s " +
+          s"WHERE s.src_id = id " +
+          s"AND s.src_id > 200)")
       // No rows match, table unchanged
       checkAnswer(
         readDeltaTableByIdentifier(),
