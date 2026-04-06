@@ -23,7 +23,7 @@ import org.apache.spark.sql.catalyst.expressions.{Attribute, Expression}
 case class DeltaDelete(
     child: LogicalPlan,
     condition: Option[Expression])
-  extends UnaryNode {
+  extends UnaryNode with SupportsSubquery {
   override def output: Seq[Attribute] = Seq.empty
 
   override protected def withNewChildInternal(newChild: LogicalPlan): DeltaDelete =
