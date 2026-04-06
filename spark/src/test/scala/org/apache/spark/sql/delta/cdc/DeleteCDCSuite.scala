@@ -172,3 +172,101 @@ trait DeleteCDCTests extends DeleteCDCMixin
       spark.range(1, 4).toDF("id").withColumn("_change_type", lit("delete")))
 
 }
+
+// Delete from table with existing DVs.
+trait DeleteTableWithDVsMixin
+  extends DeleteSQLMixin
+  with DeletionVectorsTestUtils {
+
+  override protected def executeDelete(target: String, where: String = null): Unit = {
+    val (tgtTableName, _) = DeltaTestUtils.parseTableAndAlias(target)
+    // Add deletion vectors to all files.
+    addDeletionVectorsToTable(tgtTableName)
+    super.executeDelete(target, where)
+  }
+
+  override def excluded: Seq[String] =
+    super.excluded ++ Seq(
+      // Requires continuous version numbers. Run "Read multiple CDC versions with DV off" instead.
+      "Read multiple CDC versions"
+    )
+}
+
+// Delete from table with existing DVs without writing persistent DVs.
+trait DeleteTableWithDVsDVsOffMixin extends DeleteSQLMixin with DeleteTableWithDVsMixin {
+  override def beforeAll(): Unit = {
+    super.beforeAll()
+    enableDeletionVectorsInNewTables(spark.conf)
+    spark.conf.set(DELETE_USE_PERSISTENT_DELETION_VECTORS.key, "false")
+  }
+}
+
+trait DeleteCDCTableWithDVsTests extends DeleteCDCMixin
+  with CDCTestMixin
+  with DeletionVectorsTestUtils {
+  import testImplicits._
+
+  private def executeDeleteWithoutAddingDVs(target: String, where: String = null): Unit = {
+    super[DeleteCDCMixin].executeDelete(target, where)
+  }
+
+  testCDCDelete("delete from file with DV without subquery")(
+    initialData = spark.range(0, 10, step = 1, numPartitions = 2),
+    deleteCondition = "id IN (0, 3)",
+    expectedData = Seq(1, 2, 4, 5, 6, 7, 8, 9).toDF(),
+    expectedChangeDataWithoutVersion = Seq(0, 3).toDF()
+      .withColumn(CDC_TYPE_COLUMN_NAME, lit("delete"))
+  )
+
+  test("Read multiple CDC versions from table with DVs") {
+    // Step 0: insert some data.
+    append(spark.range(10).coalesce(2).toDF())
+
+    // Step 1: add DVs.
+    addDeletionVectorsToTable(tableSQLIdentifier)
+
+    // Step 2: delete half rows. Calling [[executeDelete]] of the super class to avoid adding
+    // DVs again.
+    executeDeleteWithoutAddingDVs(tableSQLIdentifier, "id % 2 = 0")
+    val newCdf1 = spark.createDataset(Seq(0, 2, 4, 6, 8))
+      .withColumn(CDC_TYPE_COLUMN_NAME, lit(CDC_TYPE_DELETE_STRING))
+      .withColumn(CDC_COMMIT_VERSION, lit(2))
+    checkAnswer(
+      computeCDC(spark, deltaLog, 2, 2).drop(CDC_COMMIT_TIMESTAMP),
+      newCdf1
+    )
+
+    // Step 3: delete one whole file.
+    executeDeleteWithoutAddingDVs(tableSQLIdentifier, "id < 5")
+    val newCdf2 = spark.createDataset(Seq(1, 3))
+      .withColumn(CDC_TYPE_COLUMN_NAME, lit(CDC_TYPE_DELETE_STRING))
+      .withColumn(CDC_COMMIT_VERSION, lit(3))
+    checkAnswer(
+      computeCDC(spark, deltaLog, 2, 3).drop(CDC_COMMIT_TIMESTAMP),
+      newCdf1.union(newCdf2)
+    )
+
+    // Step 4: delete one row from remaining rows.
+    executeDeleteWithoutAddingDVs(tableSQLIdentifier, "id = 7")
+    val newCdf3 = spark.createDataset(Seq(7))
+      .withColumn(CDC_TYPE_COLUMN_NAME, lit(CDC_TYPE_DELETE_STRING))
+      .withColumn(CDC_COMMIT_VERSION, lit(4))
+    checkAnswer(
+      computeCDC(spark, deltaLog, 2, 4).drop(CDC_COMMIT_TIMESTAMP),
+      newCdf1.union(newCdf2).union(newCdf3)
+    )
+  }
+}
+
+trait DeleteCDCTableWithDVsDVsOffTests extends DeleteCDCMixin
+  with DeletionVectorsTestUtils {
+  test("copied rows metric is correct") {
+    append(spark.range(0, 10, 1, numPartitions = 2).toDF())
+    addDeletionVectorsToTable(tableSQLIdentifier)
+    super[DeleteCDCMixin].executeDelete(tableSQLIdentifier, "id IN (0, 1, 2, 8, 9)")
+    val metrics = DeltaMetricsUtils.getLastOperationMetrics(tableSQLIdentifier)
+    assert(metrics("numCopiedRows") === 5)
+    assert(metrics("numDeletedRows") === 5)
+    assert(metrics("numDeletionVectorsAdded") === 0)
+  }
+}
