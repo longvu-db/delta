@@ -506,6 +506,16 @@ case class DeleteCommand(
     withStatusCode(
       "DELTA", rewritingFilesMsg(numFilesToRewrite)) {
       import org.apache.spark.sql.delta.commands.cdc.CDCReader._
+      // scalastyle:off println
+      val dw = new java.io.PrintWriter(
+        "/tmp/cdc-debug2.log")
+      dw.println("cond: " + condition.get)
+      dw.println("cond class: " +
+        condition.get.getClass.getSimpleName)
+      dw.println("cond tree:\n" +
+        condition.get.treeString)
+      dw.close()
+      // scalastyle:on println
       val filteredDf = if (writeCdc) {
         if (conditionHasSubquery) {
           // For subqueries in OSS: use single-pass If() approach instead
