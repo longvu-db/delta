@@ -39,6 +39,7 @@ import org.apache.spark.sql.catalyst.catalog.CatalogTable
 import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference, EqualNullSafe, Expression, If, Literal, Not, SubqueryExpression}
 import org.apache.spark.sql.catalyst.expressions.Literal.TrueLiteral
 import org.apache.spark.sql.catalyst.plans.QueryPlan
+import org.apache.spark.sql.catalyst.plans.logical.{Command, KeepAnalyzedQuery}
 import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, LogicalPlan, SupportsSubquery}
 import org.apache.spark.sql.execution.command.LeafRunnableCommand
 import org.apache.spark.sql.execution.metric.SQLMetric
@@ -114,13 +115,35 @@ case class DeleteCommand(
     target: LogicalPlan,
     condition: Option[Expression])
   extends LeafRunnableCommand with DeltaCommand with DeleteCommandMetrics
-  with SupportsSubquery {
+  with SupportsSubquery with KeepAnalyzedQuery {
+
+  // Preserve the analyzed condition before the optimizer
+  // can corrupt it (e.g. OptimizeSubqueries transforming
+  // correlated Exists into uncorrelated ScalarSubquery).
+  @transient private var analyzedCondition: Option[Expression] = None
+
+  override def storeAnalyzedQuery(): Command = {
+    analyzedCondition = condition
+    // scalastyle:off println
+    new java.io.PrintWriter(
+      new java.io.FileWriter(
+        "/tmp/store-analyzed.log", true)) {
+      write("STORED: " + condition + "\n")
+      close()
+    }
+    // scalastyle:on println
+    this
+  }
+
+  /** Use the preserved analyzed condition if available. */
+  private def effectiveCondition: Option[Expression] =
+    analyzedCondition.orElse(condition)
 
   override def innerChildren: Seq[QueryPlan[_]] = Seq(target)
 
   override val output: Seq[Attribute] = Seq(AttributeReference("num_affected_rows", LongType)())
 
-  private lazy val conditionHasSubquery = condition.exists(SubqueryExpression.hasSubquery)
+  private lazy val conditionHasSubquery = effectiveCondition.exists(SubqueryExpression.hasSubquery)
 
   override lazy val metrics = createMetrics
 
@@ -192,7 +215,7 @@ case class DeleteCommand(
     val startTime = System.nanoTime()
     val numFilesTotal = txn.snapshot.numOfFiles
 
-    val deleteActions: Seq[Action] = condition match {
+    val deleteActions: Seq[Action] = effectiveCondition match {
       case None =>
         // Case 1: Delete the whole table if the condition is true
         val reportRowLevelMetrics = conf.getConf(DeltaSQLConf.DELTA_DML_METRICS_FROM_METADATA)
@@ -509,24 +532,26 @@ case class DeleteCommand(
       // scalastyle:off println
       val dw = new java.io.PrintWriter(
         "/tmp/cdc-debug2.log")
-      dw.println("cond: " + condition.get)
+      dw.println("cond: " + effectiveCondition.get)
       dw.println("cond class: " +
-        condition.get.getClass.getSimpleName)
+        effectiveCondition.get.getClass.getSimpleName)
       dw.println("cond tree:\n" +
-        condition.get.treeString)
+        effectiveCondition.get.treeString)
       dw.close()
       // scalastyle:on println
       val filteredDf = if (writeCdc) {
         if (conditionHasSubquery) {
-          // For subqueries in OSS: use single-pass If() approach instead
-          // of the union approach. filterCondition wraps EXISTS in
-          // Not(EqualNullSafe(..., true)) which avoids broken LeftSemi
-          // join decorrelation (no SkipSecureViewPlanning in OSS).
+          // For subqueries with CDC: use the same
+          // single-pass If() approach as non-subquery.
+          // KeepAnalyzedQuery preserves the correlated
+          // Exists condition before OptimizeSubqueries
+          // can corrupt it.
           val updatedDF = baseData
             .filter(incrNoopCountExpr)
             .withColumn(
               CDC_TYPE_COLUMN_NAME,
-              Column(If(filterCondition, CDC_TYPE_NOT_CDC, CDC_TYPE_DELETE)))
+              Column(If(filterCondition,
+                CDC_TYPE_NOT_CDC, CDC_TYPE_DELETE)))
           updatedDF
         } else {
           // The logic here ends up being surprisingly elegant, with all source rows ending up in

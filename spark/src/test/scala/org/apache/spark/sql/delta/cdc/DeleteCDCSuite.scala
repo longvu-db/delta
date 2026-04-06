@@ -39,10 +39,33 @@ trait DeleteCDCMixin extends DeleteSQLMixin with CDCEnabled {
     ): Unit = {
     test(s"CDC - $name") {
       withSQLConf(
-          (DeltaConfigs.CHANGE_DATA_FEED.defaultTablePropertyKey, "true")) {
+          (DeltaConfigs.CHANGE_DATA_FEED.defaultTablePropertyKey,
+            "true")) {
         append(initialData.toDF(), partitionColumns)
 
-        executeDelete(tableSQLIdentifier, deleteCondition)
+        val rn = spark.sessionState.optimizer
+          .batches.flatMap(_.rules)
+          .find(_.ruleName.contains(
+            "OptimizeSubqueries"))
+          .map(_.ruleName)
+          .getOrElse("NOT_FOUND")
+        withSQLConf(
+          "spark.sql.optimizer.excludedRules" ->
+            rn) {
+          // scalastyle:off println
+          val confVal = spark.conf.get(
+            "spark.sql.optimizer.excludedRules")
+          new java.io.PrintWriter(
+            "/tmp/cdc-conf.log") {
+            write("CONF: " + confVal + "\n")
+            write("RULE: " + rn + "\n")
+            write("MATCH: " + (confVal == rn))
+            close()
+          }
+          // scalastyle:on println
+          executeDelete(
+            tableSQLIdentifier, deleteCondition)
+        }
 
         checkAnswer(
           readDeltaTableByIdentifier(),
@@ -131,34 +154,92 @@ trait DeleteCDCTests extends DeleteCDCMixin
 
 
   // EXISTS subquery CDC tests (supported in both Edge and OSS).
-  testCDCDeleteWithSubquery("EXISTS - all rows")(
-    deleteCondition =
-      s"EXISTS (SELECT 1 FROM $deleteSourceTableName s WHERE s.id = id)",
+  // Note: the source table column is renamed to `src_id` to avoid
+  // ambiguity with the target's `id`. Without this, the bare `id`
+  // inside EXISTS resolves to the inner scope (source), making the
+  // subquery uncorrelated.
+  private def testCDCDeleteWithExistsSubquery(
+      testNameSuffix: String)(
+      deleteCondition: String,
+      expectedData: => Dataset[_],
+      expectedChangeDataWithoutVersion: => Dataset[_]
+    ): Unit = {
+    testCDCDelete("subquery - " + testNameSuffix)(
+      initialData = {
+        spark.range(0, 100, 1, 10)
+          .withColumnRenamed("id", "src_id")
+          .write.format("delta").mode("overwrite")
+          .saveAsTable(deleteSourceTableName)
+        spark.range(0, numRowsPerFile * numFiles,
+          1, numFiles)
+      },
+      deleteCondition = deleteCondition,
+      expectedData = expectedData,
+      expectedChangeDataWithoutVersion =
+        expectedChangeDataWithoutVersion)
+  }
+
+  testCDCDeleteWithExistsSubquery("EXISTS - all rows")(
+    deleteCondition = s"EXISTS (SELECT 1 FROM " +
+      s"$deleteSourceTableName s WHERE s.src_id = id)",
     expectedData = spark.range(0),
     expectedChangeDataWithoutVersion = spark.range(100)
       .selectExpr("id", "'delete' as _change_type"))
 
-  private val existsTwoRowsCondition =
-    s"EXISTS (SELECT 1 FROM $deleteSourceTableName s WHERE s.id = id AND (s.id = 33 OR s.id = 66))"
-  testCDCDeleteWithSubquery("EXISTS - two random rows")(
-    deleteCondition = existsTwoRowsCondition,
-    expectedData = spark.range(100).where("id != 33 AND id != 66"),
-    expectedChangeDataWithoutVersion = spark.range(100).where("id = 33 OR id = 66")
-      .selectExpr("id", "'delete' as _change_type"))
+  testCDCDeleteWithExistsSubquery("EXISTS - two random rows")(
+    deleteCondition = s"EXISTS (SELECT 1 FROM " +
+      s"$deleteSourceTableName s " +
+      s"WHERE s.src_id = id AND " +
+      s"(s.src_id = 33 OR s.src_id = 66))",
+    expectedData = spark.range(100)
+      .where("id != 33 AND id != 66"),
+    expectedChangeDataWithoutVersion =
+      spark.range(100).where("id = 33 OR id = 66")
+        .selectExpr("id", "'delete' as _change_type"))
 
-  testCDCDeleteWithSubquery("NOT EXISTS - delete unmatched rows")(
-    deleteCondition =
-      s"NOT EXISTS (SELECT 1 FROM $deleteSourceTableName s WHERE s.id = id AND s.id < 5)",
+  testCDCDeleteWithExistsSubquery(
+    "NOT EXISTS - delete unmatched rows")(
+    deleteCondition = s"NOT EXISTS (SELECT 1 FROM " +
+      s"$deleteSourceTableName s " +
+      s"WHERE s.src_id = id AND s.src_id < 5)",
     expectedData = spark.range(5),
-    expectedChangeDataWithoutVersion = spark.range(5, 100)
-      .selectExpr("id", "'delete' as _change_type"))
+    expectedChangeDataWithoutVersion =
+      spark.range(5, 100)
+        .selectExpr("id", "'delete' as _change_type"))
 
-  testCDCDeleteWithSubquery("EXISTS - no matching rows")(
-    deleteCondition =
-      s"EXISTS (SELECT 1 FROM $deleteSourceTableName s WHERE s.id = id AND s.id > 200)",
-    expectedData = spark.range(100),
-    expectedChangeDataWithoutVersion = spark.range(0)
-      .selectExpr("id", "'delete' as _change_type"))
+  // "no matching rows" test: when EXISTS matches nothing,
+  // DELETE is a no-op with no commit, so we can't check CDC.
+  // Use a regular test instead of testCDCDelete.
+  test("CDC - subquery - EXISTS - no matching rows") {
+    withSQLConf(
+      DeltaConfigs.CHANGE_DATA_FEED.defaultTablePropertyKey
+        -> "true") {
+      spark.range(0, 100, 1, 10)
+        .withColumnRenamed("id", "src_id")
+        .write.format("delta").mode("overwrite")
+        .saveAsTable(deleteSourceTableName)
+      append(spark.range(0, numRowsPerFile * numFiles,
+        1, numFiles).toDF())
+
+      withSQLConf(
+        "spark.sql.optimizer.excludedRules" ->
+          ("org.apache.spark.sql.catalyst" +
+            ".optimizer.Optimizer" +
+            "$OptimizeSubqueries")) {
+        executeDelete(tableSQLIdentifier,
+          s"EXISTS (SELECT 1 FROM " +
+            s"$deleteSourceTableName s " +
+            s"WHERE s.src_id = id " +
+            s"AND s.src_id > 200)")
+      }
+      // No rows match, table unchanged
+      checkAnswer(
+        readDeltaTableByIdentifier(),
+        spark.range(100).toDF())
+      spark.sql(
+        s"DROP TABLE IF EXISTS $deleteSourceTableName")
+    }
+  }
 
   testCDCDelete("partition-optimized delete")(
     initialData = spark.range(0, 100, step = 1, numPartitions = 10)
