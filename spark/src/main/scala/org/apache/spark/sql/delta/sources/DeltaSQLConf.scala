@@ -100,6 +100,15 @@ trait DeltaSQLConfBase extends DeltaSQLConfUtils {
       .booleanConf
       .createWithDefault(true)
 
+  val DELTA_DML_GENERATE_NEW_EXPR_IDS_BEFORE_UNION =
+    buildConf("dml.generateNewExprIdsBeforeUnion")
+      .internal()
+      .doc("When true, will assign new ExprIds to all expressions inside a union in DML " +
+        "commands, to prevent having potential errors due to expressions having different " +
+        "types, but same IDs. This is only intended to be used as a kill switch.")
+      .booleanConf
+      .createWithDefault(true)
+
   val DELTA_DML_METRICS_FROM_METADATA =
     buildConf("dmlMetricsFromMetadata.enabled")
       .internal()

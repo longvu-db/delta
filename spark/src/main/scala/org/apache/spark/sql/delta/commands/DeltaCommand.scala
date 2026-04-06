@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit.NANOSECONDS
 
 import scala.util.control.NonFatal
 
-import org.apache.spark.sql.delta.{DeltaAnalysisException, DeltaErrors, DeltaLog, DeltaOptions, DeltaTableIdentifier, DeltaTableUtils, NumRecordsStats, OptimisticTransaction, ResolvedPathBasedNonDeltaTable}
+import org.apache.spark.sql.delta.{DataFrameUtils, DeltaAnalysisException, DeltaErrors, DeltaLog, DeltaOptions, DeltaTableIdentifier, DeltaTableUtils, NumRecordsStats, OptimisticTransaction, ResolvedPathBasedNonDeltaTable}
 import org.apache.spark.sql.delta.actions._
 import org.apache.spark.sql.delta.catalog.{DeltaTableV2, IcebergTablePlaceHolder}
 import org.apache.spark.sql.delta.files.TahoeBatchFileIndex
@@ -32,13 +32,14 @@ import org.apache.spark.sql.delta.util.DeltaFileOperations
 import org.apache.hadoop.fs.Path
 
 import org.apache.spark.internal.MDC
-import org.apache.spark.sql.{AnalysisException, SparkSession}
+import org.apache.spark.sql.{AnalysisException, Column, Dataset, SparkSession}
 import org.apache.spark.sql.catalyst.TableIdentifier
 import org.apache.spark.sql.catalyst.analysis.{Analyzer, EliminateSubqueryAliases, NoSuchTableException, ResolvedTable, UnresolvedAttribute, UnresolvedRelation}
 import org.apache.spark.sql.catalyst.catalog.{CatalogTable, CatalogTableType}
-import org.apache.spark.sql.catalyst.expressions.{Expression, SubqueryExpression}
+import org.apache.spark.sql.catalyst.expressions.{And, EqualNullSafe, Expression, ExpressionSet, InSubquery, IsNotNull, ListQuery, Literal, Not, SubqueryExpression}
+import org.apache.spark.sql.catalyst.expressions.Literal.{FalseLiteral, TrueLiteral}
 import org.apache.spark.sql.catalyst.parser.ParseException
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, SubqueryAlias}
+import org.apache.spark.sql.catalyst.plans.logical.{Filter, LogicalPlan, SubqueryAlias}
 import org.apache.spark.sql.connector.catalog.V1Table
 import org.apache.spark.sql.delta.DeltaOperations.Operation
 import org.apache.spark.sql.delta.sources.DeltaSQLConf.DELTA_COLLECT_STATS
@@ -46,6 +47,7 @@ import org.apache.spark.sql.execution.SQLExecution
 import org.apache.spark.sql.execution.datasources.{HadoopFsRelation, LogicalRelation, LogicalRelationWithTable}
 import org.apache.spark.sql.execution.datasources.v2.{DataSourceV2Relation, DataSourceV2RelationShim}
 import org.apache.spark.sql.execution.metric.{SQLMetric, SQLMetrics}
+import org.apache.spark.sql.functions.count
 
 /**
  * Helper trait for all delta commands.
@@ -474,6 +476,127 @@ trait DeltaCommand extends DeltaLogging with DeltaCommandInvariants {
       log" (${MDC(DeltaLogKeys.NUM_RECORDS, stats.numLogicalRecordsAddedPartial)})" +
       log" does not match removed records" +
       log" (${MDC(DeltaLogKeys.NUM_RECORDS2, stats.numLogicalRecordsRemovedPartial)})")
+  }
+  protected def isInPredicateNullFree(
+      values: Seq[Expression], l: ListQuery, target: LogicalPlan): Boolean = {
+    val outputNotNulls = ExpressionSet((l.plan.output ++ values).map(IsNotNull))
+    outputNotNulls.subsetOf(l.plan.constraints ++ l.children ++ target.constraints)
+  }
+
+  /**
+   * Make the given In predicate null-free by adding IsNotNull filters on both operands of the In
+   * predicate, namely, value and list.
+   *
+   * Two points to note:
+   *
+   * 1. The semantics of In is changed after being turned null-free. Specifically,
+   *    all the null results produced by the original In predicate will now become false.
+   *
+   * 2. If we know that neither value or list can have nulls, then it still produces the
+   *    same result after being turned null-free.
+   *
+   * @param value left-hand operand of In, e.g., value in (list)
+   * @param target the child logical plan of value
+   * @param list right-hand operand of In, e.g., value in (list)
+   */
+  protected def makeNullFree(
+      value: Expression, target: LogicalPlan, list: ListQuery): InSubquery = {
+    val notNullForOuterPlan = ExpressionSet(Seq(IsNotNull(value)))
+    val notNullsForSubquery = list.childOutputs.flatMap(_.references.toIterator).map(IsNotNull)
+    val newPlan = Filter(notNullsForSubquery.reduce(And), list.plan)
+    val newListQuery =
+      list.copy(joinCond = list.joinCond ++ notNullForOuterPlan).withNewPlan(newPlan)
+    assert(isInPredicateNullFree(Seq(value), newListQuery, target),
+      s"Unable to make the list query null-free: ${list.treeString}")
+    InSubquery(Seq(value), newListQuery)
+  }
+
+  /**
+   * Return an condition expression that is equivalent to `Not(condition) or IsNull(condition)`.
+   *
+   * Internally, this can be expressed with `Not(EqualNullSafe(condition, TrueLiteral))` which
+   * automatically eliminates the common subexpression. However, subqueries require a slight
+   * preprocessing.
+   *
+   * Given a condition C, we are not allowed to evaluate Not(EqualNullSafe(C, True)) when C contains
+   * In/NotIn subquery predicates because SparkSql doesn't have native null-aware joins. But we can
+   * do so when we know that the the output of In predicates doesn't have nulls, i.e., null-free.
+   * So we transform the condition from C to C' using two transformation rules so that:
+   * - All In predicates in C' are null-free, and
+   * - EqualNullSafe(C', True) === EqualNullSafe(C, True)
+   * Finally we return Not(EqualNullSafe(C', True)).
+   *
+   * Note that this method can be expensive when the condition has a NotIn as Rule 1 involves
+   * actual data processing.
+   *
+   * @param spark spark session
+   * @param condition the input condition
+   * @param target the target logical plan
+   * @param deltaLog the target deltalog for metrics-logging purposes
+   * @param operation the operation name for metrics-logging purposes
+   */
+  protected def notOrIsNull(
+      spark: SparkSession,
+      condition: Expression,
+      target: LogicalPlan,
+      deltaLog: DeltaLog,
+      operation: String): Expression = {
+    // The downward direction is important, because Rule 1 needs to be applied before Rule 2.
+    val newCond = condition transformDown {
+      // Rule 1 - If condition has a NotIn predicate, we evaluate the ListQuery and see if
+      //          it contains any nulls
+      //            - if it does, then this NotIn expression can only be evaluated into
+      //              null or false, both of which will become false after applying
+      //              EqualNullSafe(condition, True), so we just turn it into a false.
+      //            - if it doesn't, then we check if the ListQuery result is empty. If it is empty,
+      //              we return True, as an empty NOT IN subquery always returns True.
+      //           -  otherwise the only case that can make NotIn evaluate to null is when value
+      //              is null. As null will become false after EqualNullSafe(condition, True), we
+      //              safely turn this NotIn into And(IsNotNull(value), makeNullFree(NotIn)).
+      //                - when value is null, this expression is just false.
+      //                - when value is not null, this expression is just makeNullFree(NotIn), which
+      //                  is equivalent to the original NotIn, because we already know that neither
+      //                  value or list is null.
+      case Not(InSubquery(Seq(value),
+      list @ ListQuery(plan, _, _, numCols, _, _))) if
+        !isInPredicateNullFree(Seq(value), list, target) =>
+        val data = DataFrameUtils.ofRows(spark, plan)
+        assert(numCols == 1, "The output of a ListQuery should have exactly 1 column.")
+        import org.apache.spark.sql.delta.implicits._
+        val (totalCount, nonNullCount) = recordDeltaOperation(
+          deltaLog,
+          s"delta.dml.$operation.checkNullsForNotIn") {
+          data.select(
+            count(Column("*")),
+            count(Column(
+              list.childOutputs.head.name)))
+            .as[(Long, Long)]
+            .first()
+        }
+        if (totalCount > nonNullCount) {
+          // ListQuery contains null, safe to convert it to false
+          FalseLiteral
+        } else {
+          if (totalCount == 0) {
+            // Special handling: Nothing is considered to be part of an empty
+            // ListQuery result and that is negated to True.
+            TrueLiteral
+          } else {
+            val nullFreeIn = makeNullFree(value, target, list)
+            And(Not(nullFreeIn), IsNotNull(value))
+          }
+        }
+      // Rule 2 - If the condition has a In predicate, this rule makes it null-free. This
+      //          effectively turns all the null results of In into false. This is OK as long as
+      //          there is at most one Not outside of this In predicate. Right now Spark SQL
+      //          analyzer blocks expression with a In inside of a Not, except for NotIn.
+      //          If this In is part of NotIn, it won't trigger this rule because this In would
+      //          have been already turned null-free by Rule 1.
+      case InSubquery(Seq(value), list: ListQuery)
+          if !isInPredicateNullFree(Seq(value), list, target) =>
+        makeNullFree(value, target, list)
+    }
+    Not(EqualNullSafe(newCond, TrueLiteral))
   }
 
   /**

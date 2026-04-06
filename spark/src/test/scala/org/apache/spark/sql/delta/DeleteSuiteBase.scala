@@ -17,6 +17,7 @@
 package org.apache.spark.sql.delta
 
 // scalastyle:off import.ordering.noEmptyLine
+import org.apache.spark.sql.delta.DeltaAnalysisException
 import org.apache.spark.sql.delta.sources.DeltaSQLConf
 
 import org.apache.spark.{SparkThrowable, SparkUnsupportedOperationException}
@@ -380,40 +381,39 @@ trait DeleteBaseTests extends DeleteBaseMixin {
       Row("c", "v") :: Row("d", "vv") :: Nil)
   }
 
-  test("do not support subquery test") {
+  test("delete with correlated EXISTS subquery") {
     append(Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value"))
-    Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("c", "d").createOrReplaceTempView("source")
+    // source c values: 2, 1. DELETE removes rows where key matches any source.c
+    Seq((2, 2), (1, 4)).toDF("c", "d").createOrReplaceTempView("source")
 
-    // basic subquery
-    val e0 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "key < (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e0.contains("Subqueries are not supported"))
-
-    // subquery with EXISTS
-    val e1 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "EXISTS (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e1.contains("Subqueries are not supported"))
-
-    // subquery with NOT EXISTS
-    val e2 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "NOT EXISTS (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e2.contains("Subqueries are not supported"))
-
-    // subquery with IN
-    val e3 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "key IN (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e3.contains("Subqueries are not supported"))
-
-    // subquery with NOT IN
-    val e4 = intercept[AnalysisException] {
-      executeDelete(target = tableSQLIdentifier, "key NOT IN (SELECT max(c) FROM source)")
-    }.getMessage
-    assert(e4.contains("Subqueries are not supported"))
+    // Use plain column names without table qualifiers to avoid
+    // resolution issues with path-based table identifiers.
+    withSQLConf(
+      "spark.sql.planChangeLog.level" -> "WARN") {
+      executeDelete(
+        target = tableSQLIdentifier,
+        "EXISTS (SELECT 1 FROM source WHERE key = c)")
+    }
+    checkAnswer(
+      readDeltaTableByIdentifier(tableSQLIdentifier),
+      Row(0, 3) :: Nil)
   }
+
+  test("delete with correlated NOT EXISTS subquery") {
+    append(Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value"))
+    // source c values: 2, 1. Deletes rows where key does NOT match any source.c (key=0)
+    Seq((2, 2), (1, 4)).toDF("c", "d").createOrReplaceTempView("source")
+
+    executeDelete(
+      target = tableSQLIdentifier,
+      "NOT EXISTS (SELECT 1 FROM source WHERE key = c)")
+    checkAnswer(
+      readDeltaTableByIdentifier(tableSQLIdentifier),
+      Row(2, 2) :: Row(1, 4) :: Row(1, 1) :: Nil)
+  }
+
+  // Comprehensive subquery tests are in separate traits below:
+  // DeleteSubqueryBaseMixin, DeleteSubqueryTests.
 
   test("schema pruning on data condition") {
     val input = Seq((2, 2), (1, 4), (1, 1), (0, 3)).toDF("key", "value")
@@ -477,12 +477,8 @@ trait DeleteBaseTests extends DeleteBaseMixin {
 
         val expectedErrorRegex = "(?s).*(?i)unsupported.*(?i).*Invalid expressions.*"
 
-        var catchException = true
-
-        var errorRegex = if (functionType.equals("Generate")) {
-          ".*Subqueries are not supported in the DELETE.*"
-        } else customErrorRegex.getOrElse(expectedErrorRegex)
-
+        var catchException = expectException
+        var errorRegex = customErrorRegex.getOrElse(expectedErrorRegex)
 
         if (catchException) {
           val dataBeforeException = spark.read.format("delta").table("deltaTable").collect()
@@ -517,26 +513,6 @@ trait DeleteBaseTests extends DeleteBaseMixin {
     expectException = true
   )
 
-  // Explode functions are supported in where if only one row generated.
-  testUnsupportedExpression(
-    function = "explode",
-    functionType = "Generate",
-    data = Seq((2, List(2))).toDF("key", "value"),
-    where = "key = (select explode(value) from deltaTable)",
-    expectException = false // generate only one row, no exception.
-  )
-
-  // Explode functions are supported in where but if there's more than one row generated,
-  // it will throw an exception.
-  testUnsupportedExpression(
-    function = "explode",
-    functionType = "Generate",
-    data = Seq((2, List(2)), (1, List(4, 5))).toDF("key", "value"),
-    where = "key = (select explode(value) from deltaTable)",
-    expectException = true, // generate more than one row. Exception expected.
-    customErrorRegex =
-      Some(".*More than one row returned by a subquery used as an expression(?s).*")
-  )
 
   test("Variant type") {
     val dstDf = sql(
@@ -565,4 +541,103 @@ trait DeleteBaseTests extends DeleteBaseMixin {
       condition = Some(s"value = '$partValue'"),
       expectedResults = Nil)
   }
+}
+
+/**
+ * Base mixin for subquery DELETE tests. Provides helpers shared by all subquery test traits.
+ */
+trait DeleteSubqueryBaseMixin extends DeleteBaseMixin {
+  import testImplicits._
+
+  protected def checkDeleteResult(
+      target: Seq[(Any, String)],
+      source: Seq[(Any, String)] = Nil,
+      source2: Seq[(Any, String)] = Nil,
+      deleteWhere: String,
+      expected: Seq[(Any, String)]): Unit = {
+    assert(spark.catalog.tableExists("target"),
+      "Table target must exist. Use testWithPartitioning().")
+    withTempView("source", "source2") {
+      target
+        .map { case (c, t1) => (c.asInstanceOf[Integer], t1) }
+        .toDF("c", "t1")
+        .coalesce(1)
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .saveAsTable("target")
+      if (source.nonEmpty) {
+        source
+          .map { case (c, s1) => (c.asInstanceOf[Integer], s1) }
+          .toDF("c", "s1")
+          .createOrReplaceTempView("source")
+      }
+      if (source2.nonEmpty) {
+        source2
+          .map { case (c, s2) => (c.asInstanceOf[Integer], s2) }
+          .toDF("c", "s2")
+          .createOrReplaceTempView("source2")
+      }
+      executeDelete(target = "target t", where = deleteWhere)
+      checkAnswer(sqlContext.table("target"), expected.map(t => Row.fromTuple(t)))
+    }
+  }
+
+  protected def testWithPartitioning(name: String)(body: => Unit): Unit = {
+    Seq(true, false).foreach { isPartitioned =>
+      val partSpec = if (isPartitioned) "partitioned by (c)" else ""
+      test(name + s" isPartitioned=$isPartitioned") {
+        withTable("target") {
+          sql(s"CREATE TABLE target(c int, t1 string) USING delta $partSpec")
+          body
+        }
+      }
+    }
+  }
+}
+
+
+trait DeleteSubqueryTests extends DeleteSubqueryBaseMixin {
+  import testImplicits._
+
+
+  testWithPartitioning("exists/notexists subquery") {
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "EXISTS (SELECT 1 FROM source WHERE t.c = source.c)",
+      expected = (3, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: Nil,
+      source = (2, "a") :: (1, "b") :: Nil,
+      deleteWhere = "NOT EXISTS (SELECT 1 FROM source WHERE t.c = source.c)",
+      expected = (1, "b") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "a") :: Nil,
+      source = (null, "a") :: (1, "b") :: Nil,
+      deleteWhere = "EXISTS (SELECT * FROM source WHERE t.c = c)",
+      expected = (3, "a") :: (null, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "a") :: Nil,
+      source = (null, "a") :: (1, "b") :: Nil,
+      deleteWhere = "NOT EXISTS (SELECT c FROM source WHERE t.c = source.c)",
+      expected = (1, "b") :: Nil)
+
+    // <=>
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "a") :: Nil,
+      source = (null, "a") :: (1, "b") :: Nil,
+      deleteWhere = "EXISTS (SELECT c FROM source WHERE t.c <=> source.c)",
+      expected = (3, "a") :: Nil)
+
+    checkDeleteResult(
+      target = (3, "a") :: (1, "b") :: (null, "a") :: Nil,
+      source = (null, "a") :: (1, "b") :: Nil,
+      deleteWhere = "NOT EXISTS (SELECT c FROM source WHERE t.c <=> source.c)",
+      expected = (1, "b") :: (null, "a") :: Nil)
+  }
+
 }

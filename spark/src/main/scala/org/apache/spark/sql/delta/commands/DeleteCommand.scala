@@ -23,6 +23,7 @@ import scala.util.control.NonFatal
 import org.apache.spark.sql.delta.metric.IncrementMetric
 import org.apache.spark.sql.delta._
 import org.apache.spark.sql.delta.ClassicColumnConversions._
+import org.apache.spark.sql.delta.DeltaOperations.Operation
 import org.apache.spark.sql.delta.actions.{Action, AddCDCFile, AddFile, FileAction}
 import org.apache.spark.sql.delta.commands.DeleteCommand.{rewritingFilesMsg, FINDING_TOUCHED_FILES_MSG}
 import org.apache.spark.sql.delta.commands.MergeIntoCommandBase.totalBytesAndDistinctPartitionValues
@@ -32,18 +33,17 @@ import org.apache.spark.sql.delta.stats.StatsCollectionUtils
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 
 import org.apache.spark.SparkContext
-import org.apache.spark.sql.{Column, DataFrame, Dataset, Row, SparkSession}
+import org.apache.spark.sql._
 import org.apache.spark.sql.catalyst.analysis.EliminateSubqueryAliases
 import org.apache.spark.sql.catalyst.catalog.CatalogTable
-import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference, EqualNullSafe, Expression, If, Literal, Not}
+import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference, EqualNullSafe, Expression, If, Literal, Not, SubqueryExpression}
 import org.apache.spark.sql.catalyst.expressions.Literal.TrueLiteral
 import org.apache.spark.sql.catalyst.plans.QueryPlan
-import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, LogicalPlan}
-import org.apache.spark.sql.delta.DeltaOperations.Operation
+import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, LogicalPlan, SupportsSubquery}
 import org.apache.spark.sql.execution.command.LeafRunnableCommand
 import org.apache.spark.sql.execution.metric.SQLMetric
 import org.apache.spark.sql.execution.metric.SQLMetrics.{createMetric, createTimingMetric}
-import org.apache.spark.sql.functions.input_file_name
+import org.apache.spark.sql.functions.{input_file_name, lit}
 import org.apache.spark.sql.types.LongType
 
 trait DeleteCommandMetrics { self: LeafRunnableCommand =>
@@ -113,11 +113,14 @@ case class DeleteCommand(
     catalogTable: Option[CatalogTable],
     target: LogicalPlan,
     condition: Option[Expression])
-  extends LeafRunnableCommand with DeltaCommand with DeleteCommandMetrics {
+  extends LeafRunnableCommand with DeltaCommand with DeleteCommandMetrics
+  with SupportsSubquery {
 
   override def innerChildren: Seq[QueryPlan[_]] = Seq(target)
 
   override val output: Seq[Attribute] = Seq(AttributeReference("num_affected_rows", LongType)())
+
+  private lazy val conditionHasSubquery = condition.exists(SubqueryExpression.hasSubquery)
 
   override lazy val metrics = createMetrics
 
@@ -316,6 +319,28 @@ case class DeleteCommand(
               withStatusCode("DELTA", FINDING_TOUCHED_FILES_MSG) {
                 if (candidateFiles.isEmpty) {
                   Array.empty[String]
+                } else if (conditionHasSubquery) {
+                  // For subqueries: use createTargetDfForScanningForMatches
+                  // which preserves attribute IDs correctly for correlated
+                  // subquery decorrelation. DeltaTableUtils.replaceFileIndex
+                  // causes ATTRIBUTE_NOT_FOUND after decorrelation.
+                  // Also obtain input_file_name() BEFORE filter() because
+                  // filter() with a correlated subquery decorrelates
+                  // into a join, after which input_file_name() returns
+                  // the wrong value.
+                  val subqueryData =
+                    DMLWithDeletionVectorsHelper
+                      .createTargetDfForScanningForMatches(
+                        sparkSession, target, fileIndex)
+                  subqueryData
+                    .withColumn(
+                      DeleteCommand.FILE_NAME_COLUMN, input_file_name())
+                    .filter(Column(cond))
+                    .filter(Column(incrDeletedCountExpr))
+                    .select(DeleteCommand.FILE_NAME_COLUMN)
+                    .distinct()
+                    .as[String]
+                    .collect()
                 } else {
                   data.filter(Column(cond))
                     .select(input_file_name())
@@ -338,16 +363,40 @@ case class DeleteCommand(
             } else {
               // Case 3.2: some files need an update to remove the deleted files
               // Do the second pass and just read the affected files
-              val baseRelation = buildBaseRelation(
-                sparkSession, txn, "delete", deltaLog.dataPath, filesToRewrite, nameToAddFileMap)
-              // Keep everything from the resolved target except a new TahoeFileIndex
-              // that only involves the affected files instead of all files.
-              val newTarget = DeltaTableUtils.replaceFileIndex(target, baseRelation.location)
+              val scannedFiles = filesToRewrite.map(f =>
+                getTouchedFile(deltaLog.dataPath, f, nameToAddFileMap))
+              val rewriteFileIndex = new TahoeBatchFileIndex(
+                sparkSession, "delete", scannedFiles, deltaLog,
+                deltaLog.dataPath, txn.snapshot)
+              val rewriteDf = if (conditionHasSubquery) {
+                // For subqueries: use createTargetDfForScanningForMatches
+                // which preserves attribute IDs for correlated subquery
+                // decorrelation. Drop _metadata to avoid
+                // DELTA_CANNOT_RESOLVE_COLUMN in normalizeColumnNames
+                // during txn.writeFiles.
+                val df = DMLWithDeletionVectorsHelper
+                  .createTargetDfForScanningForMatches(
+                    sparkSession, target, rewriteFileIndex)
+                df.drop("_metadata")
+              } else {
+                val baseRelation = buildBaseRelation(
+                  sparkSession, txn, "delete", deltaLog.dataPath,
+                  filesToRewrite, nameToAddFileMap)
+                val newTarget2 = DeltaTableUtils.replaceFileIndex(
+                  target, baseRelation.location)
+                DataFrameUtils.ofRows(sparkSession, newTarget2)
+              }
               val targetDF = RowTracking.preserveRowTrackingColumns(
-                dfWithoutRowTrackingColumns = DataFrameUtils.ofRows(sparkSession, newTarget),
+                dfWithoutRowTrackingColumns = rewriteDf,
                 snapshot = txn.snapshot)
-              val filterCond = Not(EqualNullSafe(cond, Literal.TrueLiteral))
-              val rewrittenActions = rewriteFiles(txn, targetDF, filterCond, filesToRewrite.length)
+              val filterCond = notOrIsNull(
+                sparkSession, cond, target, deltaLog, "delete")
+              val rewrittenActions = rewriteFiles(
+                sparkSession,
+                txn,
+                targetDF,
+                filterCond,
+                filesToRewrite.length)
               val (changeFiles, rewrittenFiles) = rewrittenActions
                 .partition(_.isInstanceOf[AddCDCFile])
               numAddedFiles = rewrittenFiles.size
@@ -443,37 +492,49 @@ case class DeleteCommand(
    * Returns the list of [[AddFile]]s and [[AddCDCFile]]s that have been re-written.
    */
   private def rewriteFiles(
+      spark: SparkSession,
       txn: OptimisticTransaction,
       baseData: DataFrame,
       filterCondition: Expression,
       numFilesToRewrite: Long): Seq[FileAction] = {
-    val shouldWriteCdc = DeltaConfigs.CHANGE_DATA_FEED.fromMetaData(txn.metadata)
+    val filterCol = Column(filterCondition)
+    val writeCdc = DeltaConfigs.CHANGE_DATA_FEED.fromMetaData(txn.metadata)
 
-    // number of total rows that we have seen / are either copying or deleting (sum of both).
-    val incrTouchedCountExpr = IncrementMetric(TrueLiteral, metrics("numTouchedRows"))
+    val totalRowCount = metrics("numTouchedRows")
+    val incrNoopCountExpr = Column(IncrementMetric(TrueLiteral, totalRowCount))
 
     withStatusCode(
       "DELTA", rewritingFilesMsg(numFilesToRewrite)) {
-      val dfToWrite = if (shouldWriteCdc) {
-        import org.apache.spark.sql.delta.commands.cdc.CDCReader._
-        // The logic here ends up being surprisingly elegant, with all source rows ending up in
-        // the output. Recall that we flipped the user-provided delete condition earlier, before the
-        // call to `rewriteFiles`. All rows which match this latest `filterCondition` are retained
-        // as table data, while all rows which don't match are removed from the rewritten table data
-        // but do get included in the output as CDC events.
-        baseData
-          .filter(Column(incrTouchedCountExpr))
-          .withColumn(
-            CDC_TYPE_COLUMN_NAME,
-            Column(If(filterCondition, CDC_TYPE_NOT_CDC, CDC_TYPE_DELETE))
-          )
+      import org.apache.spark.sql.delta.commands.cdc.CDCReader._
+      val filteredDf = if (writeCdc) {
+        if (conditionHasSubquery) {
+          // For subqueries in OSS: use single-pass If() approach instead
+          // of the union approach. filterCondition wraps EXISTS in
+          // Not(EqualNullSafe(..., true)) which avoids broken LeftSemi
+          // join decorrelation (no SkipSecureViewPlanning in OSS).
+          val updatedDF = baseData
+            .filter(incrNoopCountExpr)
+            .withColumn(
+              CDC_TYPE_COLUMN_NAME,
+              Column(If(filterCondition, CDC_TYPE_NOT_CDC, CDC_TYPE_DELETE)))
+          updatedDF
+        } else {
+          // The logic here ends up being surprisingly elegant, with all source rows ending up in
+          // the output. All rows which match the condition are retained as table data (we flipped
+          // the user-provided condition earlier), while all rows which don't match are removed from
+          // the rewritten table data but do get included in the output as CDC events.
+          val updatedDF = baseData
+            .filter(incrNoopCountExpr)
+            .withColumn(
+              CDC_TYPE_COLUMN_NAME,
+              Column(If(filterCondition, CDC_TYPE_NOT_CDC, CDC_TYPE_DELETE)))
+          updatedDF
+        }
       } else {
-        baseData
-          .filter(Column(incrTouchedCountExpr))
-          .filter(Column(filterCondition))
+        baseData.filter(incrNoopCountExpr).filter(filterCol)
       }
 
-      txn.writeFiles(dfToWrite)
+      txn.writeFiles(filteredDf)
     }
   }
 

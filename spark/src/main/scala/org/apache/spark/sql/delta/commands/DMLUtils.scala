@@ -18,6 +18,11 @@ package org.apache.spark.sql.delta.commands
 
 import org.apache.spark.sql.delta.DeltaCommitTag
 import org.apache.spark.sql.delta.actions.{Action, FileAction}
+import org.apache.spark.sql.delta.DataFrameUtils
+import org.apache.spark.sql.delta.sources.DeltaSQLConf
+
+import org.apache.spark.sql.{Dataset, Row, SparkSession}
+import org.apache.spark.sql.catalyst.analysis.MultiInstanceRelation
 
 object DMLUtils {
 
@@ -37,4 +42,22 @@ object DMLUtils {
   object TaggedCommitData {
     def empty[A <: Action]: TaggedCommitData[A] = TaggedCommitData(Seq.empty[A])
   }
+  /**
+   * Generate new exprIds for all columns in a duplicated Dataset, so that they don't conflict when
+   * combined later (e.g., via a union). This can cause problems after pruning when the types do not
+   * match across expressions with the same exprId (e.g., void field being dropped from a struct).
+   */
+  def assignNewExprIDsBeforeUnion(spark: SparkSession, baseDF: Dataset[Row]): Dataset[Row] = {
+    if (!spark.conf.get(DeltaSQLConf.DELTA_DML_GENERATE_NEW_EXPR_IDS_BEFORE_UNION)) {
+      return baseDF
+    }
+
+    val newPlan = baseDF.queryExecution.analyzed transformUpWithNewOutput {
+      case relation: MultiInstanceRelation =>
+        val newRelation = relation.newInstance()
+        newRelation -> relation.output.zip(newRelation.output)
+    }
+    DataFrameUtils.ofRows(spark, newPlan)
+  }
+
 }

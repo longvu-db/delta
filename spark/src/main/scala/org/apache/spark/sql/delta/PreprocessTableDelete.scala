@@ -18,7 +18,7 @@ package org.apache.spark.sql.delta
 
 import org.apache.spark.sql.delta.commands.DeleteCommand
 
-import org.apache.spark.sql.catalyst.expressions.SubqueryExpression
+import org.apache.spark.sql.catalyst.expressions.{Exists, SubqueryExpression}
 import org.apache.spark.sql.catalyst.plans.logical.{DeltaDelete, LogicalPlan}
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.internal.SQLConf
@@ -32,8 +32,23 @@ case class PreprocessTableDelete(sqlConf: SQLConf) extends Rule[LogicalPlan] {
     plan.resolveOperators {
       case d: DeltaDelete if d.resolved =>
         d.condition.foreach { cond =>
+          // In OSS, only allow EXISTS/NOT EXISTS subqueries in DELETE
+          // conditions. Other subquery types (IN, scalar, lateral) require
+          // notOrIsNull null-handling or SkipSecureViewPlanning for
+          // re-analysis, which are not available in OSS Spark/Delta.
+          // EXISTS is safe because it always returns true/false (never NULL),
+          // so Not(cond) is semantically equivalent to
+          // Not(EqualNullSafe(cond, true)) and allows the optimizer to
+          // decorrelate into LeftSemi/LeftAnti joins.
           if (SubqueryExpression.hasSubquery(cond)) {
-            throw DeltaErrors.subqueryNotSupportedException("DELETE", cond)
+            val hasNonExistsSubquery = cond.exists {
+              case _: Exists => false
+              case _: SubqueryExpression => true
+              case _ => false
+            }
+            if (hasNonExistsSubquery) {
+              throw DeltaErrors.subqueryNotSupportedException("DELETE", cond)
+            }
           }
         }
         DeleteCommand(d)

@@ -51,10 +51,12 @@ trait DeleteCDCMixin extends DeleteSQLMixin with CDCEnabled {
         checkAnswer(
           getCDCForLatestOperation(deltaLog, operation = "DELETE"),
           expectedChangeDataWithoutVersion.toDF())
+        spark.sql(s"DROP TABLE IF EXISTS $deleteSourceTableName")
       }
     }
   }
 
+  protected val deleteSourceTableName = "__delete_cdc_source_table"
 }
 
 trait DeleteCDCTests extends DeleteCDCMixin
@@ -108,6 +110,56 @@ trait DeleteCDCTests extends DeleteCDCMixin
   )
 
 
+  private val numFiles = 5
+  private val numRowsPerFile = 20
+
+  private def testCDCDeleteWithSubquery(testNameSuffix: String)(
+      deleteCondition: String,
+      expectedData: => Dataset[_],
+      expectedChangeDataWithoutVersion: => Dataset[_]): Unit = {
+    testCDCDelete("subquery - " + testNameSuffix)(
+      initialData = {
+        spark.range(0, 100, 1, 10).write.format("delta").mode("overwrite")
+          .saveAsTable(deleteSourceTableName)
+        spark.range(0, numRowsPerFile * numFiles, 1, numFiles)
+      },
+      deleteCondition = deleteCondition,
+      expectedData = expectedData,
+      expectedChangeDataWithoutVersion = expectedChangeDataWithoutVersion
+    )
+  }
+
+
+  // EXISTS subquery CDC tests (supported in both Edge and OSS).
+  testCDCDeleteWithSubquery("EXISTS - all rows")(
+    deleteCondition =
+      s"EXISTS (SELECT 1 FROM $deleteSourceTableName s WHERE s.id = id)",
+    expectedData = spark.range(0),
+    expectedChangeDataWithoutVersion = spark.range(100)
+      .selectExpr("id", "'delete' as _change_type"))
+
+  private val existsTwoRowsCondition =
+    s"EXISTS (SELECT 1 FROM $deleteSourceTableName s WHERE s.id = id AND (s.id = 33 OR s.id = 66))"
+  testCDCDeleteWithSubquery("EXISTS - two random rows")(
+    deleteCondition = existsTwoRowsCondition,
+    expectedData = spark.range(100).where("id != 33 AND id != 66"),
+    expectedChangeDataWithoutVersion = spark.range(100).where("id = 33 OR id = 66")
+      .selectExpr("id", "'delete' as _change_type"))
+
+  testCDCDeleteWithSubquery("NOT EXISTS - delete unmatched rows")(
+    deleteCondition =
+      s"NOT EXISTS (SELECT 1 FROM $deleteSourceTableName s WHERE s.id = id AND s.id < 5)",
+    expectedData = spark.range(5),
+    expectedChangeDataWithoutVersion = spark.range(5, 100)
+      .selectExpr("id", "'delete' as _change_type"))
+
+  testCDCDeleteWithSubquery("EXISTS - no matching rows")(
+    deleteCondition =
+      s"EXISTS (SELECT 1 FROM $deleteSourceTableName s WHERE s.id = id AND s.id > 200)",
+    expectedData = spark.range(100),
+    expectedChangeDataWithoutVersion = spark.range(0)
+      .selectExpr("id", "'delete' as _change_type"))
+
   testCDCDelete("partition-optimized delete")(
     initialData = spark.range(0, 100, step = 1, numPartitions = 10)
       .selectExpr("id % 10 as part", "id"),
@@ -118,5 +170,56 @@ trait DeleteCDCTests extends DeleteCDCMixin
     expectedChangeDataWithoutVersion =
       Range(0, 10).map(x => x * 10 + 3).toDF("id")
         .selectExpr("3 as part", "id", "'delete' as _change_type"))
+
+  test("Read multiple CDC versions") {
+    // Step 0: insert some data
+    append(spark.range(10).coalesce(2).toDF())
+
+    val newCdf0 = spark.range(10)
+      .withColumn(CDC_TYPE_COLUMN_NAME, lit(CDC_TYPE_INSERT))
+      .withColumn(CDC_COMMIT_VERSION, lit(0))
+    checkAnswer(
+      computeCDC(spark, deltaLog, 0, 0).drop(CDC_COMMIT_TIMESTAMP),
+      newCdf0
+    )
+
+    // Step 1: delete half rows
+    executeDelete(tableSQLIdentifier, "id % 2 = 0")
+    val newCdf1 = spark.createDataset(Seq(0, 2, 4, 6, 8))
+      .withColumn(CDC_TYPE_COLUMN_NAME, lit(CDC_TYPE_DELETE_STRING))
+      .withColumn(CDC_COMMIT_VERSION, lit(1))
+    checkAnswer(
+      computeCDC(spark, deltaLog, 0, 1).drop(CDC_COMMIT_TIMESTAMP),
+      newCdf0.union(newCdf1)
+    )
+
+    // Step 2: delete one whole partition
+    executeDelete(tableSQLIdentifier, "id < 5")
+    val newCdf2 = spark.createDataset(Seq(1, 3))
+      .withColumn(CDC_TYPE_COLUMN_NAME, lit(CDC_TYPE_DELETE_STRING))
+      .withColumn(CDC_COMMIT_VERSION, lit(2))
+    checkAnswer(
+      computeCDC(spark, deltaLog, 0, 2).drop(CDC_COMMIT_TIMESTAMP),
+      newCdf0.union(newCdf1).union(newCdf2)
+    )
+
+    // Step 3: delete one row from remaining rows
+    executeDelete(tableSQLIdentifier, "id = 7")
+    val newCdf3 = spark.createDataset(Seq(7))
+      .withColumn(CDC_TYPE_COLUMN_NAME, lit(CDC_TYPE_DELETE_STRING))
+      .withColumn(CDC_COMMIT_VERSION, lit(3))
+    checkAnswer(
+      computeCDC(spark, deltaLog, 0, 3).drop(CDC_COMMIT_TIMESTAMP),
+      newCdf0.union(newCdf1).union(newCdf2).union(newCdf3)
+    )
+  }
+
+
+  testCDCDelete(s"one file and one row - subquery = false")(
+    initialData = spark.range(0, 4, step = 1, numPartitions = 2),
+    deleteCondition = "id >= 1",
+    expectedData = Seq(0).toDF("id"),
+    expectedChangeDataWithoutVersion =
+      spark.range(1, 4).toDF("id").withColumn("_change_type", lit("delete")))
 
 }
