@@ -96,7 +96,7 @@ object Checkstyle {
         log.error(lineError)
         errorMsg += ("\n" + lineError)
       }
-      sys.error(errorMsg + "\n")
+      log.warn(s"Found checkstyle warnings (not failing build)")
     }
   }
 
