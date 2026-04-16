@@ -236,7 +236,7 @@ class AbstractDeltaCatalog extends DelegatingCatalogExtension
           throw DeltaErrors.operationNotSupportedException("replaceUsing")
         }
       }
-      WriteIntoDelta(
+      val writeCmd = WriteIntoDelta(
         DeltaUtils.getDeltaLogFromTableOrPath(spark, existingTableOpt,
           new Path(loc), fileSystemOptions),
         operation.mode,
@@ -246,6 +246,18 @@ class AbstractDeltaCatalog extends DelegatingCatalogExtension
         df,
         Some(tableDesc),
         schemaInCatalog = if (newSchema != schema) Some(newSchema) else None)
+      if (deltaOptions.isReplaceOnOrUsingDefined) {
+        DeltaInsertReplaceOnOrUsingCommand.createCmdForSaveAndSaveAsTable(
+          deltaTable = DeltaTableV2(
+            spark = spark,
+            path = writeCmd.deltaLog.dataPath,
+            catalogTable = Some(tableDesc)),
+          data = df,
+          writeCmd = writeCmd,
+          apiOrigin = InsertReplaceOnOrUsingAPIOrigin.DFv1SaveAsTable)
+      } else {
+        writeCmd
+      }
     }
 
     CreateDeltaTableCommand(
