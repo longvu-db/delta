@@ -74,6 +74,10 @@ trait DeltaTableRefreshSharedBase { self: AnyFunSuite =>
     checkAnswer(spark.sql(s"SELECT * FROM $tableRef"), Seq(Row(1, 100)))
   }
 
+  /** Asserts the full table contents (ordered by id) match `expectedRows`. */
+  protected def assertFinalTableState(tableRef: String, expectedRows: Seq[Row]): Unit =
+    checkAnswer(spark.sql(s"SELECT * FROM $tableRef ORDER BY id"), expectedRows)
+
   /** Runs `body` against a fresh managed catalog table `t` already holding `(1, 100)`. */
   protected def withInitialTable(body: String => Unit): Unit =
     withTable("t") {
@@ -201,6 +205,10 @@ trait DeltaTableRefreshSharedBase { self: AnyFunSuite =>
 
   protected def externalDataWrite(path: String, rows: Seq[(Int, Int)]): Unit =
     writeCommit(path, Seq(writeParquetAndGetAddFileAction(path, idSalaryRowsToDf(rows))))
+
+  /** Appends 3 column rows externally without a schema change (table is already 3 columns). */
+  protected def externalDataWrite3(path: String, rows: Seq[(Int, Int, Int)]): Unit =
+    writeCommit(path, Seq(writeParquetAndGetAddFileAction(path, idSalaryNewColumnRowsToDf(rows))))
 
   protected def externalAddColumnAndWrite(path: String, rows: Seq[(Int, Int, Int)]): Unit = {
     val newSchema = currentSchema(path).add("new_column", IntegerType, nullable = true)
