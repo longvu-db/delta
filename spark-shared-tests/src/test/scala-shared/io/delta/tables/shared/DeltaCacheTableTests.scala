@@ -115,17 +115,16 @@ trait DeltaCacheTableTests
       writerSql("ALTER TABLE t ADD COLUMN new_column INT")
       externalDataWrite3(path, Seq((2, 200, -1)))
       if (v2EnableMode == "STRICT") {
-        // TODO: under STRICT the V2 connector does not pick up the ADD COLUMN (schema is cached at
-        // table lookup), so the new column never surfaces and the external row is read as 2
-        // columns. On 4.0 there is no pinning so that external row is visible immediately; on 4.1+
-        // the cache pins it out until REFRESH.
+        // The session ADD COLUMN surfaces, so new_column reads as NULL for the existing row. The
+        // external write is pinned out of the cache until REFRESH on 4.1+, while on 4.0 there is no
+        // pinning so the external row is visible immediately.
         if (pinningFixedSinceSpark41) {
-          assertFinalTableState("t", Seq(Row(1, 100)))
+          assertFinalTableState("t", Seq(Row(1, 100, null)))
         } else {
-          assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
+          assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
         }
         writerSql("REFRESH TABLE t")
-        assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
+        assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
       } else {
         // Classic: the schema change breaks cache pinning, so the session ADD COLUMN and the
         // external write are both visible.
