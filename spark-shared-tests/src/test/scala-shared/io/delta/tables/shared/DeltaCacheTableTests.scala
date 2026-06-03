@@ -26,7 +26,7 @@ import org.apache.spark.sql.Row
  * Shared across classic and Connect.
  *
  * apache/spark#52764 (Spark 4.1) fixed DSv2 table state pinning for cached tables, so the asserted
- * behavior is version dependent (see [[pinningFixed]]). On Spark 4.1+ the cache pins and REFRESH
+ * behavior is version dependent (see [[pinningFixedSinceSpark41]]). On Spark 4.1+ the cache pins and REFRESH
  * TABLE surfaces external changes. On Spark 4.0 the behavior differs by mode: under AUTO the cache
  * pins but REFRESH TABLE does not surface a direct `_delta_log` write (a drop and recreate is not
  * seen either), while under STRICT there is no pinning at all and external changes are visible
@@ -36,7 +36,7 @@ trait DeltaCacheTableTests
   extends DeltaTableRefreshSharedBase { self: AnyFunSuite =>
 
   /** True once apache/spark#52764 (Spark 4.1) made cached DSv2 tables pin their state. */
-  private def pinningFixed: Boolean = spark.version >= "4.1"
+  private def pinningFixedSinceSpark41: Boolean = spark.version >= "4.1"
 
   /** Runs `body` against an external catalog table `t` holding `(1, 100)` that has been cached. */
   private def withCachedTable(body: String => Unit): Unit =
@@ -49,7 +49,7 @@ trait DeltaCacheTableTests
   test("cache scenario 1: external data write while cached") {
     withCachedTable { path =>
       externalDataWrite(path, Seq((2, 200)))
-      if (pinningFixed) {
+      if (pinningFixedSinceSpark41) {
         // The cache pins, so the external write is invisible until REFRESH TABLE.
         assertFinalTableState("t", Seq(Row(1, 100)))
         writerSql("REFRESH TABLE t")
@@ -74,7 +74,7 @@ trait DeltaCacheTableTests
       writerSql("INSERT INTO t VALUES (2, 200)")
       assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
       externalDataWrite(path, Seq((3, 300)))
-      if (!pinningFixed && v2EnableMode == "STRICT") {
+      if (!pinningFixedSinceSpark41 && v2EnableMode == "STRICT") {
         // Spark 4.0 STRICT: no pinning, the external write is visible immediately.
         assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200), Row(3, 300)))
         writerSql("REFRESH TABLE t")
@@ -83,7 +83,7 @@ trait DeltaCacheTableTests
         // The external write is pinned out of the cache.
         assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
         writerSql("REFRESH TABLE t")
-        if (pinningFixed) {
+        if (pinningFixedSinceSpark41) {
           // 4.1+: REFRESH surfaces the external write.
           assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200), Row(3, 300)))
         } else {
@@ -97,7 +97,7 @@ trait DeltaCacheTableTests
   test("cache scenario 3: external schema change while cached") {
     withCachedTable { path =>
       externalAddColumnAndWrite(path, Seq((2, 200, -1)))
-      if (pinningFixed && v2EnableMode == "STRICT") {
+      if (pinningFixedSinceSpark41 && v2EnableMode == "STRICT") {
         // 4.1+ STRICT: the V2 connector pins the cached snapshot, so the change is invisible.
         assertFinalTableState("t", Seq(Row(1, 100)))
       } else {
@@ -119,7 +119,7 @@ trait DeltaCacheTableTests
         // table lookup), so the new column never surfaces and the external row is read as 2
         // columns. On 4.0 there is no pinning so that external row is visible immediately; on 4.1+
         // the cache pins it out until REFRESH.
-        if (pinningFixed) {
+        if (pinningFixedSinceSpark41) {
           assertFinalTableState("t", Seq(Row(1, 100)))
         } else {
           assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
@@ -140,7 +140,7 @@ trait DeltaCacheTableTests
     withCachedTable { path =>
       externalDropAndRecreate(path)
       writerSql("REFRESH TABLE t")
-      if (!pinningFixed && v2EnableMode != "STRICT") {
+      if (!pinningFixedSinceSpark41 && v2EnableMode != "STRICT") {
         // Spark 4.0 AUTO: the cache pins and REFRESH TABLE does not surface the drop and recreate.
         assertFinalTableState("t", Seq(Row(1, 100)))
       } else {
