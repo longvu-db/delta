@@ -135,30 +135,43 @@ trait DeltaCacheTableTests
     withCachedTable { path =>
       writerSql("ALTER TABLE t ADD COLUMN new_column INT")
       externalThreeColumnDataWrite(path, Seq((2, 200, -1)))
+      // Under STRICT the V2 connector caches the schema at table lookup, so the session ADD COLUMN
+      // never surfaces and rows read back as 2 columns. Under AUTO the schema change breaks cache
+      // pinning, so the ADD COLUMN and the external row are both visible (3 columns).
       if (spark.version >= "4.2") {
         if (v2EnableMode == "STRICT") {
-          // 4.2 STRICT: the session ADD COLUMN surfaces (new_column NULL); the external write is
-          // pinned out of the cache until REFRESH.
-          assertFinalTableState("t", Seq(Row(1, 100, null)))
+          // 4.2 STRICT: the external write is pinned out of the cache until REFRESH.
+          assertFinalTableState("t", Seq(Row(1, 100)))
+          writerSql("REFRESH TABLE t")
+          assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
         } else {
-          // 4.2 AUTO: the schema change breaks cache pinning, so both rows are visible.
+          assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
+          writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
         }
       } else if (spark.version >= "4.1") {
         if (v2EnableMode == "STRICT") {
           // 4.1 STRICT: same as 4.2 STRICT, the external write is pinned out until REFRESH.
-          assertFinalTableState("t", Seq(Row(1, 100, null)))
+          assertFinalTableState("t", Seq(Row(1, 100)))
+          writerSql("REFRESH TABLE t")
+          assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
         } else {
-          // 4.1 AUTO: same as 4.2 AUTO, both rows are visible.
+          assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
+          writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
         }
       } else {
-        // 4.0 STRICT and 4.0 AUTO: no pinning, both the session ADD COLUMN and the external write
-        // are visible immediately.
-        assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
+        if (v2EnableMode == "STRICT") {
+          // 4.0 STRICT: no pinning, the external write is visible immediately (read as 2 columns).
+          assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
+          writerSql("REFRESH TABLE t")
+          assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
+        } else {
+          assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
+          writerSql("REFRESH TABLE t")
+          assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
+        }
       }
-      writerSql("REFRESH TABLE t")
-      assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
     }
   }
 
