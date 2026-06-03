@@ -109,8 +109,8 @@ trait DeltaCacheTableTests
           // invisible.
           assertFinalTableState("t", Seq(Row(1, 100)))
         case ("4.2", "AUTO") | ("4.1", "AUTO") | ("4.0", "STRICT") | ("4.0", "AUTO") =>
-          // Everywhere else: a schema change breaks cache pinning, so the external change is visible
-          // even before REFRESH.
+          // Everywhere else: a schema change breaks cache pinning, so the external change is
+          // visible even before REFRESH.
           assertFinalTableState("t", Seq(Row(1, 100, null), Row(2, 200, -1)))
       }
       writerSql("REFRESH TABLE t")
