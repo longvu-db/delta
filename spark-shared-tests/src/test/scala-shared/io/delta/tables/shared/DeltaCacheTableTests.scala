@@ -135,9 +135,11 @@ trait DeltaCacheTableTests
     withCachedTable { path =>
       writerSql("ALTER TABLE t ADD COLUMN new_column INT")
       externalThreeColumnDataWrite(path, Seq((2, 200, -1)))
-      // Under STRICT the V2 connector caches the schema at table lookup, so the session ADD COLUMN
-      // never surfaces and rows read back as 2 columns. Under AUTO the schema change breaks cache
-      // pinning, so the ADD COLUMN and the external row are both visible (3 columns).
+      // TODO: ADD COLUMN is not properly supported in the STRICT V2 connector yet. The connector
+      // caches the schema at table lookup, so the session ADD COLUMN never surfaces and rows read
+      // back as 2 columns. Once STRICT V2 supports ADD COLUMN, new_column should surface (NULL for
+      // the existing row) and these STRICT assertions should expect 3 columns. Under AUTO the
+      // schema change breaks cache pinning, so the ADD COLUMN and external row are both visible.
       if (spark.version >= "4.2") {
         if (v2EnableMode == "STRICT") {
           // 4.2 STRICT: the external write is pinned out of the cache until REFRESH.
