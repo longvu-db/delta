@@ -206,8 +206,8 @@ trait DeltaTableRefreshSharedBase { self: AnyFunSuite =>
   protected def externalDataWrite(path: String, rows: Seq[(Int, Int)]): Unit =
     writeCommit(path, Seq(writeParquetAndGetAddFileAction(path, idSalaryRowsToDf(rows))))
 
-  /** Appends 3 column rows externally without a schema change (table is already 3 columns). */
-  protected def externalDataWrite3(path: String, rows: Seq[(Int, Int, Int)]): Unit =
+  /** Appends three column rows externally without a schema change (table is already 3 columns). */
+  protected def externalThreeColumnDataWrite(path: String, rows: Seq[(Int, Int, Int)]): Unit =
     writeCommit(path, Seq(writeParquetAndGetAddFileAction(path, idSalaryNewColumnRowsToDf(rows))))
 
   protected def externalAddColumnAndWrite(path: String, rows: Seq[(Int, Int, Int)]): Unit = {
