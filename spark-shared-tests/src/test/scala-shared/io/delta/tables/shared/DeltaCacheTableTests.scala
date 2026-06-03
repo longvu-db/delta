@@ -149,15 +149,22 @@ trait DeltaCacheTableTests
   test("cache scenario 5: external drop and recreate while cached") {
     withCachedTable { path =>
       externalDropAndRecreate(path)
-      writerSql("REFRESH TABLE t")
       (sparkMinorVersion, v2EnableMode) match {
-        case ("4.2", "STRICT") | ("4.2", "AUTO") | ("4.1", "STRICT") | ("4.1", "AUTO") |
-            ("4.0", "STRICT") =>
-          // 4.1, 4.2, and 4.0 STRICT: REFRESH surfaces the drop and recreate, so the table reads
-          // empty.
+        case ("4.2", "STRICT") | ("4.2", "AUTO") | ("4.1", "STRICT") | ("4.1", "AUTO") =>
+          // 4.1 and 4.2: the cache pins, so the drop and recreate is invisible until REFRESH TABLE,
+          // which then surfaces the now empty table.
+          assertFinalTableState("t", Seq(Row(1, 100)))
+          writerSql("REFRESH TABLE t")
+          assertFinalTableState("t", Seq.empty)
+        case ("4.0", "STRICT") =>
+          // 4.0 STRICT: no pinning, the drop and recreate is visible immediately.
+          assertFinalTableState("t", Seq.empty)
+          writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq.empty)
         case ("4.0", "AUTO") =>
           // 4.0 AUTO: the cache pins and REFRESH does not surface the drop and recreate.
+          assertFinalTableState("t", Seq(Row(1, 100)))
+          writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq(Row(1, 100)))
       }
     }
