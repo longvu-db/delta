@@ -27,17 +27,6 @@ import org.apache.spark.SparkThrowable
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.apache.spark.sql.types.{DataType, IntegerType, StructType}
 
-/**
- * Shared base for the repeated table access refresh tests, compiled into both the classic `spark`
- * and the `spark-connect/client` modules (wired via [[Test / unmanagedSourceDirectories]] in
- * build.sbt). It self-types only to [[AnyFunSuite]] and uses only the unified
- * [[org.apache.spark.sql]] API.
- *
- * External writes are simulated by writing commit files directly into the table's `_delta_log` on
- * the local filesystem, which the Connect client and server share.
- *
- * Concrete suites supply [[spark]], [[checkAnswer]], and [[withTable]].
- */
 trait DeltaTableRefreshSharedBase { self: AnyFunSuite =>
 
   protected def spark: SparkSession
@@ -132,16 +121,16 @@ trait DeltaTableRefreshSharedBase { self: AnyFunSuite =>
   }
 
   /** Returns the metaData line with its schemaString replaced (id and configuration preserved). */
-  private def metaLineWithSchema(metaLine: String, schema: StructType): String = {
+  private def metadataLineWithSchema(metadataLine: String, schema: StructType): String = {
     val escaped = schema.json.replace("\"", "\\\"")
     SchemaStringRegex.replaceFirstIn(
-      metaLine, java.util.regex.Matcher.quoteReplacement(s""""schemaString":"$escaped""""))
+      metadataLine, java.util.regex.Matcher.quoteReplacement(s""""schemaString":"$escaped""""))
   }
 
   /** Returns the metaData line with a fresh table id (simulating a recreated table). */
-  private def metaLineWithNewId(metaLine: String): String =
+  private def metadataLineWithNewId(metadataLine: String): String =
     IdRegex.replaceFirstIn(
-      metaLine, java.util.regex.Matcher.quoteReplacement(s""""id":"${UUID.randomUUID()}""""))
+      metadataLine, java.util.regex.Matcher.quoteReplacement(s""""id":"${UUID.randomUUID()}""""))
 
   private def addFileJson(name: String, size: Long): String =
     s"""{"add":{"path":"$name","partitionValues":{},"size":$size,""" +
@@ -213,12 +202,12 @@ trait DeltaTableRefreshSharedBase { self: AnyFunSuite =>
   protected def externalAddColumnAndWrite(path: String, rows: Seq[(Int, Int, Int)]): Unit = {
     val newSchema = currentSchema(path).add("new_column", IntegerType, nullable = true)
     writeCommit(path, Seq(
-      metaLineWithSchema(latestMetaDataLine(path), newSchema),
+      metadataLineWithSchema(latestMetaDataLine(path), newSchema),
       writeParquetAndGetAddFileAction(path, idSalaryNewColumnRowsToDf(rows))))
   }
 
   protected def externalDropAndRecreate(path: String): Unit = {
-    val recreatedMeta = metaLineWithNewId(latestMetaDataLine(path))
+    val recreatedMeta = metadataLineWithNewId(latestMetaDataLine(path))
     writeCommit(path, removeActiveFiles(path) :+ recreatedMeta)
   }
 }
