@@ -31,8 +31,8 @@ import org.apache.spark.sql.Row
  *     their state, so the cache pins and REFRESH TABLE surfaces external changes. A STRICT
  *     schema change additionally stays pinned out until REFRESH.
  *   - 4.0 STRICT: there is no pinning, so external changes are visible immediately.
- *   - 4.0 AUTO: the cache pins but REFRESH TABLE does not surface a direct `_delta_log` write (a
- *     drop and recreate is not seen either).
+ *   - 4.0 AUTO: the cache pins but REFRESH TABLE does not surface an external write (a drop and
+ *     recreate is not seen either).
  */
 trait DeltaCacheTableTests
   extends DeltaTableRefreshSharedBase { self: AnyFunSuite =>
@@ -66,7 +66,7 @@ trait DeltaCacheTableTests
           writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
         case ("4.0", "AUTO") =>
-          // 4.0 AUTO: the cache pins and REFRESH TABLE does not surface a direct _delta_log write.
+          // 4.0 AUTO: the cache pins and REFRESH TABLE does not surface an external write.
           assertFinalTableState("t", Seq(Row(1, 100)))
           writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq(Row(1, 100)))
@@ -91,8 +91,7 @@ trait DeltaCacheTableTests
           writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200), Row(3, 300)))
         case ("4.0", "AUTO") =>
-          // 4.0 AUTO: the external write is pinned out and REFRESH does not surface a direct
-          // _delta_log write.
+          // 4.0 AUTO: the external write is pinned out and REFRESH does not surface it.
           assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
           writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq(Row(1, 100), Row(2, 200)))
