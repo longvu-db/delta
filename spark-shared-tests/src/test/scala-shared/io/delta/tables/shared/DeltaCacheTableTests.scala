@@ -46,10 +46,16 @@ trait DeltaCacheTableTests
     }
 
   /** Spark minor version bucket ("4.0", "4.1", "4.2+") that the asserted behavior keys off. */
-  private def sparkMinorVersion: String =
-    if (spark.version >= "4.2") "4.2+"
-    else if (spark.version >= "4.1") "4.1"
+  private def sparkMinorVersion: String = {
+    // Parse major and minor numerically so the bucket stays correct once Spark reaches 4.10,
+    // where a lexicographic string compare would wrongly rank "4.10" below "4.2".
+    val versionParts = spark.version.split('.')
+    val major = versionParts(0).toInt
+    val minor = versionParts(1).toInt
+    if (major > 4 || (major == 4 && minor >= 2)) "4.2+"
+    else if (major == 4 && minor >= 1) "4.1"
     else "4.0"
+  }
 
   test("cache scenario 1: external data write while cached") {
     withCachedTable { path =>
@@ -151,7 +157,9 @@ trait DeltaCacheTableTests
       (sparkMinorVersion, v2EnableMode) match {
         case ("4.2+", "STRICT") | ("4.2+", "AUTO") | ("4.1", "STRICT") | ("4.1", "AUTO") =>
           // 4.1 and 4.2+: the cache pins, so the drop and recreate is invisible until REFRESH
-          // TABLE, which then surfaces the now empty table.
+          // TABLE, which then surfaces the now empty table. Caching exists to reduce metastore
+          // pressure: a cached connector keeps serving the dropped table's data while its files
+          // remain on disk, never asking the metastore whether the table still exists.
           assertFinalTableState("t", Seq(Row(1, 100)))
           writerSql("REFRESH TABLE t")
           assertFinalTableState("t", Seq.empty)
